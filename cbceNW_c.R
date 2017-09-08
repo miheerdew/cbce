@@ -9,7 +9,7 @@ library(bmdupdate)
 cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALSE, verbose = TRUE, generalOutput = TRUE,
                       updateOutput = TRUE, exhaustive = FALSE, OL_tol = Inf, Dud_tol = Inf, time_limit = 18000,
                       updateMethod = 1, inv.length = TRUE, add_rate = 1, start_nodes = NULL, pval_parallel = FALSE,
-                      calc_full_cor=FALSE, loop_limit = Inf, parallel = FALSE, twoSided = FALSE) {
+                      calc_full_cor=FALSE, loop_limit = Inf, parallel = FALSE, twoSided = FALSE, init.method=1) {
   
   if (FALSE) {
     alpha = 0.05
@@ -32,6 +32,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
     start_nodes = NULL
     pval_parallel = FALSE
     twoSided = FALSE
+    init.method=2
   }
   
   if(Cpp) {
@@ -384,6 +385,10 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
     return(successes)
     
   }
+  
+  initialize2 <- function(u, bObj){
+    return(bh_rejectR(bObj$pvals(u, TRUE), alpha) + ifelse(u <= dx, dx, 0))
+  }
   #-------------------------------------------------------------------------------
   # Extraction function
   extract <- function (indx, interact = FALSE, print_output = verbose) {
@@ -418,7 +423,12 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
     }
     
     # Get general B01 & B02 (regardless of indx)
-    B01 <- initialize1(indx, Cpp = Cpp)
+    if(init.method == 1){
+      B01 <- initialize1(indx, Cpp = Cpp)
+    } else {
+      B01 <- initialize2(indx, bmd_obj)
+    }
+    
     if (length(B01) > 1) {
       
       # Half-update
