@@ -1,4 +1,4 @@
-library(bmdupdate)
+#library(bmdupdate)
 
 backend.chisq <- function(X, Y, ...) {
   args <- list(...)

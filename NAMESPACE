@@ -1,0 +1,7 @@
+# Export all names
+exportPattern(".")
+importFrom("methods", "new")
+importFrom("stats", "cor", "pnorm")
+importFrom("utils", "getS3method")
+importFrom("bmdupdate", "BmdUpdater")
+importFrom("rlist", "list.append", "list.first", "list.mapv", "list.which")

@@ -1,4 +1,4 @@
-source("helper.R")
+#source("helper.R")
 
 diagnostics1 <- function(event){
   e <- parent.frame()

@@ -1,7 +1,6 @@
-source("backend.R")
-source("helper.R")
-source("diagnostics.R")
-library(rlist)
+#source("backend.R")
+#source("diagnostics.R")
+#source("helper.R")
 
 #' Correlation Bi-community Extraction method 
 #' 
@@ -100,15 +99,30 @@ cbce <- function(
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- init(bk, indx, alpha) + dx
-      B02 <- bh_reject(pvals(bk, B01), alpha)
+      if(length(B01) > 1) {
+        B02 <- bh_reject(pvals(bk, B01), alpha)
+      } else {
+        B02 <- integer(0)
+      }
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
       B01 <- init(bk, indx, alpha)
-      B02 <- bh_reject(pvals(bk, B01), alpha) + dx
+      if(length(B01) > 1) {
+        B02 <- bh_reject(pvals(bk, B01), alpha) + dx
+      } else {
+        B02 <- integer(0)
+      }
       return(list(x = B01, y = B02))
     }
   }
+
+  #Split a single set into X, Y each with the global numbering.
+  split_half <- function(set, dx){
+    set_x <- Filter(function(x) x <= dx, set)
+    set_y <- Filter(function(x) x > dx, set)
+    return(list(x=set_x, y=set_y))
+  } 
 
   update <- function(B0, startX=TRUE) {
   #' Do the update starting from B. Do either the two sided or one-sided update.
@@ -144,9 +158,7 @@ cbce <- function(
     #' 
     #'@return The return value is the extract_res field of the final method results.
     
-    
     # Getting start time
-    
     current_time <- proc.time()[3] - start_second
     
     # Doing checks

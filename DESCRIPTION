@@ -1,0 +1,11 @@
+Package: cbce
+Title: Correlation Bi-Community Extraction method
+Description: Find correlated communities in a  bipartite graph of variables.
+Version: 0.1
+Authors@R: c( 
+      person("John", "Palowitch", email= "palojj@email.unc.edu", role="aut"),
+      person("Miheer", "Dewaskar", email= "miheerdew@gmail.com", role=c("aut", "cre"))
+      )
+License: Abbreviation for an open source license
+Suggests: testthat
+Imports: rlist, pipeR, bmdupdate, methods
