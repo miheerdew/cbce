@@ -8,4 +8,5 @@ Authors@R: c(
       )
 License: Abbreviation for an open source license
 Suggests: testthat
-Imports: rlist, pipeR, bmdupdate, methods
+Imports: rlist, pipeR, methods, bmdupdate
+RoxygenNote: 6.0.1

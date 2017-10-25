@@ -1,68 +1,35 @@
-#source("chisq.R")
-#source("normal.R")
-#source("helper.R")
+# backends should implement pvals, cors and pvals_singleton.
+# see the base backend which implements cors and pvals_singleton and can be used by other backends
 
-# backends should:
-#   add more fields to backend.default return objects
-#   set the two_sided field to its meaningfull value
-#   implement their respective pvals
-
-
-backend <- function(X, Y, ...) {
-  UseMethod("backend")
-}
-  
-backend.default <- function(X, Y, calc_full_cor=TRUE, init_method=1){
-  p <- list(full_xy_cor = if (calc_full_cor) cor(X,Y) else NULL,
-            calc_full_cor = calc_full_cor,
-            dx = ncol(X), n = nrow(X),
-            X = scale(X), Y = scale(Y),
-            two_sided = NA) #This must be set by the backend
-  class(p) <- paste0("initmethod", init_method)
-  p
-}
-
-pvals <- function(p, B, ...) {
+pvals <- function(bk, B) {
   #Given a testing set B, return the p-values for the opposite side
   if (length(B) == 0) return(integer(0))
-  UseMethod("pvals", p)
+  UseMethod("pvals", bk)
 }
 
-cors <- function(p, A){
-  #Given a set A (either a subset of X nodes, or Y nodes)
-  #return the correlation to the opposite side.
-  UseMethod("cors", p) 
+pvals_singleton <- function(bk, indx) {
+  #Given indx return the set of all p-values to opposite side. 
+  #This is certainly a special case of pvals(b, A) with A = indx, but can be computed much faster since it does not involve sums of correlations.
+  UseMethod("pvals_singleton", bk)
 }
 
-init <- function(p, indx, alpha, ...) {
-  UseMethod("init", p)
+cors <- function(bk, A) {
+  #calculate the correlations from set A.``
+  UseMethod("cors", bk)
 }
 
-cors.default <- function(p, A){
-  if (p$calc_full_cor) {
-    if (min(A) > p$dx) {
-      #A is in the Y set
-      return(p$full_xy_cor[, A - p$dx, drop = FALSE])
-    } else {
-      #A is in the X set
-      return(t(p$full_xy_cor[A, , drop = FALSE]))
-    }    
-  } else {
-    if (min(A) > p$dx) {
-      return(crossprod(p$X, p$Y[, A - p$dx, drop = FALSE])/(p$n - 1))
-    } else {
-      return(crossprod(p$Y, p$X[, A, drop = FALSE])/(p$n - 1))
-    }
-  }
+init <- function(p, indx, alpha, init_method) {
+  pvals <- pvals_singleton(p, indx) 
+  switch(init_method,
+        "conservative-BH" = bh_reject(pvals, alpha, conserv = TRUE),
+        "non-conservative-BH" = bh_reject(pvals, alpha, conserv = FALSE),
+        "BH-0.5" =  bh_reject(pvals, 0.5, conserv = TRUE),
+        "no-multiple-testing" = which(pvals <= alpha),
+        stop(paste("Unknown init_method:", init_method))
+  )
 }
 
-init.initmethod1 <- function(p, indx, alpha, conserv = TRUE) {
-  fischer_tranformed_cor <- atanh(as.vector(cors(p, indx))) * sqrt(p$n - 3)
-  if (p$two_sided) {
-    pvals <- 2 * pnorm(abs(fischer_tranformed_cor), lower.tail = FALSE)
-  } else {
-    pvals <- pnorm(fischer_tranformed_cor, lower.tail = FALSE)
-  }
-  successes <- bh_reject(pvals, alpha)
-  return(successes)
+## Defaults
+pvals_singleton.default <- function(bk, indx) {
+  pvals(bk, indx)
 }

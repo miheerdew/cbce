@@ -1,11 +1,12 @@
+# Implements the ChiSq backend. Currently all the hevy lifting is done via the bmdupdate library.
 #library(bmdupdate)
 
-backend.chisq <- function(X, Y, ...) {
-  args <- list(...)
-  p <- backend.default(X, Y, ...)
-  p$obj = new(BmdUpdater, X, Y)
+#' @importFrom methods new 
+backend.chisq <- function(X, Y, parallel = FALSE, ...) {
+  p <- backend.base(X, Y, ...)
+  p$obj = new(bmdupdate::BmdUpdater, X, Y)
   p$two_sided = TRUE
-  p$parallel <- if ("parallel" %in% names(args)) args$parallel else FALSE
+  p$parallel <- parallel
   class(p) <- c("chisq", class(p))
   return(p)
 }

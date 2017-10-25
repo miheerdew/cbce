@@ -1,5 +1,7 @@
+#The backend for the normal test
+
 backend.normal <- function(X, Y, ...) {
-  p <- backend.default(X, Y, ...)
+  p <- backend.base(X, Y, ...)
   p$two_sided = FALSE
   
   #p$X and p$Y are scaled version of X and Y.
@@ -75,9 +77,9 @@ zstats <- function(p, B) {
 }
 
 pvals.normal <- function(precomp, B) {
-  pnorm(zstats(precomp, B), lower.tail = FALSE)
+  stats::pnorm(zstats(precomp, B), lower.tail = FALSE)
 }
 
 pvals.normal_two_sided <- function(precomp, B) {
-  2 * pnorm(abs(zstats(precomp, B)), lower.tail = FALSE)
+  2 * stats::pnorm(abs(zstats(precomp, B)), lower.tail = FALSE)
 } 

@@ -1,41 +1,53 @@
-#source("backend.R")
-#source("diagnostics.R")
-#source("helper.R")
-
 #' Correlation Bi-community Extraction method 
 #' 
-#' Given two groups of variables, find correlation bi-communities between them. \code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
+#' Given two groups of variables, find correlation bi-communities between them. For such a community, the nodes from the first group are are higly correlated to the community-nodes from the second group, and vice versa.
+#' 
+#'  \code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
 #' 
 #' The update starts from a single node (starting the initialization step) and then is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
 #' 
 #' @param X,Y Numeric Matices. Represents the two groups of variables.
-#' @param alpha Numeric (default 0.05). Controls the type1 error per update.
-#' @param exhaustive Boolean (default FALSE). If exhaustive is FALSE, new extractions are not started from nodes within found communities. Otherwise, attempt is made to start from all communities.
-#' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by 1:dx and the nodes in Y are denoted by the numbers following dx (hence dx+1:dy)
-#' @example 
+#' @param alpha \eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for BH procedure
+#' @param exhaustive Boolean. If exhaustive is FALSE, new extractions are not started from nodes within found communities. Otherwise, attempt is made to start from all communities.
+#' @param OL_thres \eqn{\in (0,1)}. Threshold  used to conclude significant overlap. The sets have significant overlap if jaccard similarity is >= OL_thres.
+#' @param OL_tol If more than OL_tol found communities have OL_thres overlap, stop method.
+#' @param Dud_tol If more than Dud_tol initializations end in a dud, stop method.
+#' @param time_limit Stop method after time_limit seconds.
+#' @param updateMethod Use the 1(-step) update vs 2(-step) update
+#' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing".
+#' @param inv.length Logical. Use inv.length as score while selecting the smallest community, from communities with significant overlap.
+#' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
+#' @param parallel Use parallel processing.
+#' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix
+#' @param backend The engine to use for p-vlaue computation. Currently must be one of "normal", "normal_two_sided", "chisq".
+#' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final resutls.
+#' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
+#' @export
+#' @examples
+#' \dontrun{
 #' n <- 100
-#' dx <- 200
-#' dy <- 100
+#' dx <- 50
+#' dy <- 70
 #' 
 #' X <- matrix(rnorm(n*dx), ncol=dx)
 #' Y <- matrix(rnorm(n*dy), ncol=dy)
 #' res <- cbce(X, Y)
-#' finalComms <- lapply(result$extract_res[res$finalIndxs], function(r) r$StableComm)
-cbce <- function(
-                X, Y,  #The X and Y matrices
-                alpha = 0.05,  # The type1 error to use for BH procedure
-                OL_thres = 0.9, # Thresholds used for 
-                exhaustive = FALSE, #Initialize starting from all Gene/SNP nodes
-                OL_tol = Inf, #If more than OL_tol found communities have OL_thresh overlap, stop method.
-                Dud_tol = Inf, #If more than Dud_tol initializations end in a dud, stop method.
-                time_limit = 18000, #Stop method after time_limit seconds.
-                updateMethod = 1, #use the 1-step update vs 2-step update
-                init_method = 1,
-                inv.length = TRUE, #?use inv.length while disjointifying 
-                start_nodes = NULL, #The initial set of nodes to start with
-                parallel = FALSE, # Do the p-value computation in parallel
-                calc_full_cor=FALSE, # Calculate ncol(X) \times ncol(Y) correlation matrix
-                backend = "chisq", #One in "normal", "normal_two_sided", "chisq"
+#' finalComms <- lapply(res$extract_res[res$finalIndxs], function(r) r$StableComm)
+#'}
+cbce <- function(X, Y,
+                alpha = 0.05, 
+                OL_thres = 0.9, 
+                exhaustive = FALSE, 
+                OL_tol = Inf, 
+                Dud_tol = Inf, 
+                time_limit = 18000, 
+                updateMethod = 1, 
+                init_method = "conservative-BH",
+                inv.length = TRUE, 
+                start_nodes = NULL, 
+                parallel = FALSE, 
+                calc_full_cor=FALSE, 
+                backend = "chisq", 
                 diagnostics=diagnostics1
                 ) {
   
@@ -46,8 +58,13 @@ cbce <- function(
   cat("#-------------------\n")
   
   cat("Setting up backend\n")
-  #Initialize the backend method specified in \code{backend}. This involves doing some precomputation. The variable bk is an S3 object, it holds the precomputations necessary to do the pvalue computations.
-  bk <- getS3method("backend", backend)(X, Y, calc_full_cor, init_method)
+  #Initialize the backend method specified by \code{backend}. This involves doing some precomputation. The variable bk is an S3 object which stores the precomputation.
+  bk <- switch(backend,
+               chisq = backend.chisq(X, Y, parallel, calc_full_cor),
+               normal = backend.normal(X, Y, calc_full_cor),
+               normal_two_sided = backend.normal_two_sided(X, Y, calc_full_cor), 
+               stop(paste("Unknown backend:", backend))
+      )
    
   dx <- ncol(X) 
   dy <- ncol(Y)
@@ -91,14 +108,14 @@ cbce <- function(
   # The core functions
   
   
-  #' Initialize the extraction.
-  #' Use the backend to do most of the work, but correct for global indices
-  #' @param indx The (global) index of the node (variable) to initialize from.
-  #' @return list(x=integer-vector, y=integer-vector): The initialized x, y sets. 
+  # Initialize the extraction.
+  # Use the backend to do most of the work, but correct for global indices
+  # @param indx The (global) index of the node (variable) to initialize from.
+  # @return list(x=integer-vector, y=integer-vector): The initialized x, y sets. 
   initialize <- function(indx) {
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
-      B01 <- init(bk, indx, alpha) + dx
+      B01 <- init(bk, indx, alpha, init_method) + dx
       if(length(B01) > 1) {
         B02 <- bh_reject(pvals(bk, B01), alpha)
       } else {
@@ -107,7 +124,7 @@ cbce <- function(
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B01 <- init(bk, indx, alpha)
+      B01 <- init(bk, indx, alpha, init_method)
       if(length(B01) > 1) {
         B02 <- bh_reject(pvals(bk, B01), alpha) + dx
       } else {
@@ -125,11 +142,11 @@ cbce <- function(
   } 
 
   update <- function(B0, startX=TRUE) {
-  #' Do the update starting from B. Do either the two sided or one-sided update.
-  #' @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
-  #' @param startX If doing 2 step update start at X side; If FALSE,
-  #'  start at Y side. Does not have any effect on 1 step update.
-  #' @return list(x, y) : The X and Y subsets corresponding to the updated set (again using global numbering) 
+  # Do the update starting from B. Do either the two sided or one-sided update.
+  # @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
+  # @param startX If doing 2 step update start at X side; If FALSE,
+  #  start at Y side. Does not have any effect on 1 step update.
+  # @return list(x, y) : The X and Y subsets corresponding to the updated set (again using global numbering) 
     
     if (updateMethod == 2) {
       if (startX) { 
@@ -151,12 +168,12 @@ cbce <- function(
   }
   
   extract <- function(indx) {
-    #' Start the extraction from indx
-    #' 
-    #' First do the initialization at indx, and then repeateadly apply update till a fixed point is found, or one of the sets repeates (forming a non-trivial cycle). 
-    #' In case there is a cycle and if none of the consecutive sets in the cycle are sufficiently disjoint (jaccard >= 0.5), the take the union of all those sets and start the extraction from the conglomerate set. Othewise we say is break is found, and the extraction is terminated (without any result).
-    #' 
-    #'@return The return value is the extract_res field of the final method results.
+    # Start the extraction from indx
+    # 
+    # First do the initialization at indx, and then repeateadly apply update till a fixed point is found, or one of the sets repeates (forming a non-trivial cycle). 
+    # In case there is a cycle and if none of the consecutive sets in the cycle are sufficiently disjoint (jaccard >= 0.5), the take the union of all those sets and start the extraction from the conglomerate set. Othewise we say is break is found, and the extraction is terminated (without any result).
+    # 
+    #@return The return value is the extract_res field of the final method results.
     
     # Getting start time
     current_time <- proc.time()[3] - start_second
@@ -226,7 +243,7 @@ cbce <- function(
       B_new <- unlist(B1, use.names = FALSE)
       B_old <- unlist(B0, use.names = FALSE)
       
-      jaccards <- list.mapv(chain, jaccard(., B_new))
+      jaccards <- rlist::list.mapv(chain, jaccard(., B_new))
 
       diagnostics("AfterUpdate")
       
@@ -256,7 +273,7 @@ cbce <- function(
           
           # Create conglomerate set (and check, 4.4.1b)
           B_J <- unique(unlist(cycle_chain))
-          B_J_check <- list.mapv(chain, jaccard(B_J, .))
+          B_J_check <- rlist::list.mapv(chain, jaccard(B_J, .))
           if (sum(B_J_check == 0) > 0) {
             cat("------old cycle\n")
             break
@@ -291,13 +308,13 @@ cbce <- function(
                  "report" = "break_or_collapse"), diagnostic_info))
     } else {
       clustered <<- union(clustered, B_new)
-      comms <<- list.append(comms, B_new)
+      comms <<- rlist::list.append(comms, B_new)
     }
     
     
     # Checking overlap with previous sets
     if (length(comms) > 1) {
-      OL_check <- list.mapv(comms, jaccard(B_new, .))
+      OL_check <- rlist::list.mapv(comms, jaccard(B_new, .))
       if (sum(OL_check < 1 - OL_thres) > 0) {
         OL_count <<- OL_count + 1
       }
@@ -316,7 +333,7 @@ cbce <- function(
   
   # Extracting
   extract_res <- lapply(extractord, extract)
-  stopped_at <-  list.first(extract_res, report == "stop_extracting")
+  stopped_at <-  rlist::list.first(extract_res, report == "stop_extracting")
   extract_res <- extract_res[order(extractord)]
   
   #-----------------------------------------------------------------------------
@@ -334,7 +351,7 @@ cbce <- function(
                  Stopped_at = stopped_at)
   
   # Removing blanks and trivial sets
-  nonNullIndxs <- list.which(final.sets, length(.) > 0)
+  nonNullIndxs <- rlist::list.which(final.sets, length(.) > 0)
   if (length(nonNullIndxs) == 0) {
     returnList <- list("communities" = list("X_sets" = NULL,
                                             "Y_sets" = NULL),
