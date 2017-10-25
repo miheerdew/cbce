@@ -4,22 +4,22 @@
 #' 
 #'  \code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
 #' 
-#' The update starts from a single node (starting the initialization step) and then is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
+#' The update starts from a single node (starting with the initialization step) and is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
 #' 
 #' @param X,Y Numeric Matices. Represents the two groups of variables.
 #' @param alpha \eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for BH procedure
-#' @param exhaustive Boolean. If exhaustive is FALSE, new extractions are not started from nodes within found communities. Otherwise, attempt is made to start from all communities.
+#' @param exhaustive Boolean. If exhaustive is FALSE, new extractions are not started from nodes within found communities. Otherwise, attempt is made to start from all nodes.
 #' @param OL_thres \eqn{\in (0,1)}. Threshold  used to conclude significant overlap. The sets have significant overlap if jaccard similarity is >= OL_thres.
 #' @param OL_tol If more than OL_tol found communities have OL_thres overlap, stop method.
 #' @param Dud_tol If more than Dud_tol initializations end in a dud, stop method.
 #' @param time_limit Stop method after time_limit seconds.
 #' @param updateMethod Use the 1(-step) update vs 2(-step) update
 #' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing".
-#' @param inv.length Logical. Use inv.length as score while selecting the smallest community, from communities with significant overlap.
-#' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
+#' @param inv.length Logical. Use inv.length as score while selecting the smallest community from communities with significant overlap.
+#' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes (may still exclude nodes within found communities if exhaustive = FALSE).
 #' @param parallel Use parallel processing.
-#' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix
-#' @param backend The engine to use for p-vlaue computation. Currently must be one of "normal", "normal_two_sided", "chisq".
+#' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
+#' @param backend The engine to use for p-value computation. Currently must be one of "normal", "normal_two_sided", "chisq".
 #' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final resutls.
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
