@@ -57,7 +57,7 @@ test_that("Normal pval matches for testing against entire X set", {
 })
 
 test_that("Normal pval matches for testing against entire Y set", {
-  expect_equal(pvals(bk, 1:dx + dx), pval_calc(sim$Y, sim$X)) 
+  expect_equal(pvals(bk, 1:dy + dx), pval_calc(sim$Y, sim$X))
 })
 
 test_that("Normal pval matches for testing against subset of X set", {

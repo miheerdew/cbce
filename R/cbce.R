@@ -142,7 +142,7 @@ cbce <- function(X, Y,
   } 
 
    # Store the X and Y sets of B in a single vector.
-   # This is an inverse to split_half
+   # This is an inverse to split
    # Note B$y is already uses global numbering, so no information is lost.
    merge <- function(B) {
       c(B$x, B$y)
@@ -286,7 +286,7 @@ cbce <- function(X, Y,
             break
           } else {
             cat("------new cycle\n")
-            B0 <- split_half(B_J, dx)
+            B0 <- split(B_J)
           }
           
         } else {
