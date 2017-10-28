@@ -1,7 +1,18 @@
 #The backend for the normal test
 
-backend.normal <- function(X, Y, ...) {
-  p <- backend.base(X, Y, ...)
+#' Normal backend constructor.
+#' 
+#' This function returns a backend object of class \code{normal}. 
+#' Id does necessary precomputation on the data necessary for normal p-value computation.
+#' 
+#' @param X Matrix. The data vector for the X side
+#' @param Y Matrix. The data vector for the Y side
+#' @param calc_full_cor Logical. Should it calculate the \code{c(ncol(X),ncol(Y))} dimensional correlation matrix or not? Calculating this matrix upfront makes the pvalue computation faster but it also takes up lot of memory.
+#' 
+#' @return an S3 object which implements the methods \code{pvals}, \code{pvals_singleton} and \code{cors} 
+#'@export
+backend.normal <- function(X, Y, calc_full_cor=FALSE) {
+  p <- backend.base(X, Y, calc_full_cor)
   p$two_sided = FALSE
   
   #p$X and p$Y are scaled version of X and Y.
@@ -76,10 +87,11 @@ zstats <- function(p, B) {
   sqrt(n) * corsums / sqrt(allvars)
 }
 
-pvals.normal <- function(precomp, B) {
-  stats::pnorm(zstats(precomp, B), lower.tail = FALSE)
+#' @export
+pvals.normal <- function(bk, B) {
+  stats::pnorm(zstats(bk, B), lower.tail = FALSE)
 }
 
-pvals.normal_two_sided <- function(precomp, B) {
-  2 * stats::pnorm(abs(zstats(precomp, B)), lower.tail = FALSE)
+pvals.normal_two_sided <- function(bk, B) {
+  2 * stats::pnorm(abs(zstats(bk, B)), lower.tail = FALSE)
 } 

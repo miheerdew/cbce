@@ -135,12 +135,19 @@ cbce <- function(X, Y,
   }
 
   #Split a single set into X, Y each with the global numbering.
-  split_half <- function(set, dx){
+  split <- function(set){
     set_x <- Filter(function(x) x <= dx, set)
     set_y <- Filter(function(x) x > dx, set)
     return(list(x=set_x, y=set_y))
   } 
 
+   # Store the X and Y sets of B in a single vector.
+   # This is an inverse to split_half
+   # Note B$y is already uses global numbering, so no information is lost.
+   merge <- function(B) {
+      c(B$x, B$y)
+   }
+    
   update <- function(B0, startX=TRUE) {
   # Do the update starting from B. Do either the two sided or one-sided update.
   # @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
@@ -163,7 +170,7 @@ cbce <- function(X, Y,
       
       #Note that the positions returned by bh_reject are already the global 
       #numbers.
-      return(split_half(bh_reject(c(px, py), alpha), dx))
+      return(split(bh_reject(c(px, py), alpha)))
     }
   }
   
@@ -239,9 +246,9 @@ cbce <- function(X, Y,
         break
       }
       
-      # Again, store B0, B1 in a single vector
-      B_new <- unlist(B1, use.names = FALSE)
-      B_old <- unlist(B0, use.names = FALSE)
+      # Store B0, B1 in a single vector
+      B_new <- merge(B1)
+      B_old <- merge(B0)
       
       jaccards <- rlist::list.mapv(chain, jaccard(., B_new))
 
