@@ -7,10 +7,10 @@ diagnostics1 <- function(event){
     e$consec_sizes <- list(c(length(e$B0$x), length(e$B0$y)))
     e$found_cycle <- NULL
     e$found_break <- NULL
-    e$initial_set <- e$B_old
+    e$initial_set <- unlist(e$B0)
   }, 
   "AfterUpdate" = {
-    consec_jaccard <- jaccard(e$B_new, e$B_old)
+    consec_jaccard <- jaccard(unlist(e$B0), unlist(e$B1))
     e$consec_jaccards <- c(e$consec_jaccards, consec_jaccard)
     e$mean_jaccards <- c(e$mean_jaccards, mean(e$jaccards))
     e$consec_sizes <- c(e$consec_sizes, list(c(length(e$B1$x), length(e$B1$y))))

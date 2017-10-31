@@ -3,6 +3,7 @@ symdiff <- function(s1, s2) {
 }
 
 jaccard <- function(s1, s2) {
+  #The jaccard distance between vectors s1 and s2
   return(length(symdiff(s1, s2)) / length(union(s1, s2)))
 }
 

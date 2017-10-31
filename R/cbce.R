@@ -102,7 +102,7 @@ cbce <- function(X, Y,
   Dud_count <- 0
   # The collection of nodes already clustered.
   clustered <- integer(0)
-  comms <- NULL
+  comms <- list()
   
   #-------------------------------------------------------------------------------
   # The core functions
@@ -148,6 +148,15 @@ cbce <- function(X, Y,
       c(B$x, B$y)
    }
     
+  jac <- function(B1, B2) {
+    jaccard(merge(B1), merge(B2))
+  }
+  
+  conglomerate <- function(chain) {
+    #Construct the union of the sets in chain
+    split(unique(unlist(chain)))
+  }
+
   update <- function(B0, startX=TRUE) {
   # Do the update starting from B. Do either the two sided or one-sided update.
   # @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
@@ -163,7 +172,7 @@ cbce <- function(X, Y,
         B1x <- bh_reject(pvals(bk, B0$y), alpha)
         B1y <- bh_reject(pvals(bk, B1x), alpha) + dx
       }
-      return(c(B1x,B1y))
+      list(x=B1x, y=B1y)
     } else {
       px <- pvals(bk, B0$y) # size dx vector
       py <- pvals(bk, B0$x) # size dy vector
@@ -222,12 +231,11 @@ cbce <- function(X, Y,
     
     # Initializing extraction loop
     
-    B_old <- c(B0$x, B0$y)  #Store the starting set in a single vector
+    chain <- list(B0) #The collection of all sets visited during the extraction
+    B1 <- split(integer(0)) #Initial value for B1
     
-    chain <- list(B_old) #The collection of all sets visited during the extraction
-    
-    B_new <- c(Xindx, Yindx)
     did_it_cycle <- FALSE
+    break_or_collapsed <- FALSE
     itCount <- 0
     
     diagnostics("ExtracionLoopBegins")
@@ -240,24 +248,21 @@ cbce <- function(X, Y,
       B1 <- update(B0, startX = startsAtX)
       
       if (length(B1$y) * length(B1$x) == 0) {
-        B1$y <- B1$x <- integer(0)
+        break_or_collapsed <- TRUE
         diagnostics("Collapsed")
         cat("----collapse on at least one side\n")
         break
       }
       
-      # Store B0, B1 in a single vector
-      B_new <- merge(B1)
-      B_old <- merge(B0)
-      
-      jaccards <- rlist::list.mapv(chain, jaccard(., B_new))
+      jaccards <- rlist::list.mapv(chain, jac(., B1))
 
       diagnostics("AfterUpdate")
       
+      #End loop if fixed point found.
+      if (jac(B1, B0) == 0) break
+      
       # Checking for cycles (4.4.1 in CCME paper)
-      if (jaccard(B_new, B_old) > 0) { # Otherwise loop will end naturally
-        
-        if (sum(jaccards == 0) > 0) { # Cycle has been found
+      if(sum(jaccards == 0) > 0) { 
           diagnostics("FoundCycle")
 
           did_it_cycle <- TRUE
@@ -269,44 +274,38 @@ cbce <- function(X, Y,
           # Checking for cycle break (4.4.1a)
           seq_pair_jaccards <- rep(0, length(cycle_chain) - 1)
           for (j in seq_along(seq_pair_jaccards)) {
-            seq_pair_jaccards[j] <- jaccard(chain[[Start + j - 1]], chain[[Start + j]])
+            seq_pair_jaccards[j] <- jac(chain[[Start + j - 1]], chain[[Start + j]])
           }
           if (sum(seq_pair_jaccards > 0.5) > 0) {# then break needed
             cat("------break found\n")
             diagnostics("FoundBreak")
-            B_new <- integer(0)
+            break_or_collapsed <- TRUE
             break
           }
           
           # Create conglomerate set (and check, 4.4.1b)
-          B_J <- unique(unlist(cycle_chain))
+          B_J <- conglomerate(cycle_chain) 
+          
           B_J_check <- rlist::list.mapv(chain, jaccard(B_J, .))
           if (sum(B_J_check == 0) > 0) {
             cat("------old cycle\n")
+            break_or_collapsed <- TRUE
             break
           } else {
             cat("------new cycle\n")
-            B0 <- split(B_J)
+            B1 <- B_J
           }
-          
-        } else {
-          # From checking jaccards to cycle_chain; if not, then can set B0
-          # to the update and restart.
-          B0 <- B1
-        }
-        
-      } else {# From checking B_new to B_old; if not, B_new = B_old and:
-        break
-      }
+        } 
       cat(paste0("----updated to set of size (", length(B1$x), ", ", length(B1$y), ")\n"))
       cat(paste0("----jaccard to previous = ", round(jaccards[length(jaccards)], 3), "\n"))
-      chain <- c(chain, list(B_new))
+      chain <- rlist::list.append(chain, B1)
+      B0 <- B1 
     }
     
     diagnostic_info <- diagnostics("EndOfExtract")
     # Storing B_new and collecting update info
   
-    if (length(B_new) == 0) {
+    if (break_or_collapsed) {
      Dud_count <<- Dud_count + 1
      return(c(list("indx" = indx,
                  "StableComm" = integer(0),
@@ -314,21 +313,21 @@ cbce <- function(X, Y,
                  "did_it_cycle" = did_it_cycle,
                  "report" = "break_or_collapse"), diagnostic_info))
     } else {
-      clustered <<- union(clustered, B_new)
-      comms <<- rlist::list.append(comms, B_new)
+      clustered <<- union(clustered, merge(B1))
+      comms <<- rlist::list.append(comms, B1)
     }
     
     
     # Checking overlap with previous sets
     if (length(comms) > 1) {
-      OL_check <- rlist::list.mapv(comms, jaccard(B_new, .))
+      OL_check <- rlist::list.mapv(comms, jac(., B1))
       if (sum(OL_check < 1 - OL_thres) > 0) {
         OL_count <<- OL_count + 1
       }
     }
     
     return(c(list("indx" = indx,
-                "StableComm" = B_new,
+                "StableComm" = merge(B1),
                 "itCount" = itCount, "did_it_cycle" = did_it_cycle,
                 "report" = "complete_extraction"), diagnostic_info))
     
