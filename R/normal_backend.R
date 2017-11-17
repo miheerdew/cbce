@@ -1,15 +1,7 @@
 #The backend for the normal test
 
-#' Normal backend constructor.
-#' 
-#' This function returns a backend object of class \code{normal}. 
-#' It does necessary precomputation on the data necessary for normal p-value computation.
-#' 
-#' @param X Matrix. The data vector for the X side
-#' @param Y Matrix. The data vector for the Y side
-#' @param calc_full_cor Logical. Should it calculate the \code{c(ncol(X),ncol(Y))} dimensional correlation matrix or not? Calculating this matrix upfront makes the pvalue computation faster but it also takes up lot of memory.
-#' 
-#' @return an S3 object which implements the methods \code{pvals}, \code{pvals_singleton} and \code{cors} 
+#'@describeIn backend Constructor for one sided sum of correlations under uncorrelated Gene ans SNP sets (the weak null).
+#'@inheritParams backend.base
 #'@export
 backend.normal <- function(X, Y, calc_full_cor=FALSE) {
   p <- backend.base(X, Y, calc_full_cor)
@@ -25,8 +17,11 @@ backend.normal <- function(X, Y, calc_full_cor=FALSE) {
   precomp
 } 
 
-backend.normal_two_sided <- function(...){
-  precomp <- backend.normal(...)
+#'@describeIn backend Constructor for two sided sum of correlations under uncorrelated Gene and SNP sets (the weak null).
+#'@inheritParams backend.base
+#'@export
+backend.normal_two_sided <- function(X, Y, calc_full_cor=FALSE) {
+  precomp <- backend.normal(X, Y, calc_full_cor)
   precomp$two_sided = TRUE
   class(precomp) <- c("normal_two_sided", class(precomp))
   precomp
@@ -87,11 +82,14 @@ zstats <- function(p, B) {
   sqrt(n) * corsums / sqrt(allvars)
 }
 
+#' @describeIn pvals implementation for the one sided sum of correlations under uncorrelated Gene and SNP sets (the weak null)
 #' @export
 pvals.normal <- function(bk, B) {
   stats::pnorm(zstats(bk, B), lower.tail = FALSE)
 }
 
+#' @describeIn pvals implementation for the two sided sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)
+#' @export
 pvals.normal_two_sided <- function(bk, B) {
   2 * stats::pnorm(abs(zstats(bk, B)), lower.tail = FALSE)
 } 

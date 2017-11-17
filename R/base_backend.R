@@ -1,5 +1,12 @@
 # base is a backend which implements pvlas_singleton and cors. The other backends can use that if required.
 
+#' An incomplete backend.
+#' 
+#' Other backends build on this. See and use \link{backend} instead.
+#' 
+#' @param X Matrix. The data vector for the X side
+#' @param Y Matrix. The data vector for the Y side
+#' @param calc_full_cor Logical. Should it calculate the \code{c(ncol(X),ncol(Y))} dimensional correlation matrix or not? Calculating this matrix upfront makes the pvalue computation faster but it also takes up lot of memory.
 backend.base <- function(X, Y, calc_full_cor=TRUE){
   #Thes precomputations are stored to compute pvals_singleton for objects of type base, and store useful settings.
   p <- list(full_xy_cor = if (calc_full_cor) stats::cor(X,Y) else NULL,

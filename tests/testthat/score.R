@@ -21,5 +21,5 @@ score <- function(X, Y) {
   S3 <- crossprod(X2s + Y2s, XYs)/N
   
   S <- S1 + S2/4 - (S3 + t(S3))/2
-  CompQuadForm::davies(n*sum(Rs^2), base::eigen(S)$values, sigma=1, acc=1e-7)
+  #CompQuadForm::davies(n*sum(Rs^2), base::eigen(S)$values, sigma=1, acc=1e-7)
 }
