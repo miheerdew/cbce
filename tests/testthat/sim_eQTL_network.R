@@ -142,7 +142,7 @@ sim_eQTL_network <- function (par_list, randomizeBeta = TRUE) {
     
   }
   
-  return(list("X" = X, "Y" = Y, "bms" = bms))
+  return(list("X" = X, "Y" = Y, "bms" = bms, "dx"=ncol(X)))
   
 }
 

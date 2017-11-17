@@ -3,7 +3,7 @@
 #' Normal backend constructor.
 #' 
 #' This function returns a backend object of class \code{normal}. 
-#' Id does necessary precomputation on the data necessary for normal p-value computation.
+#' It does necessary precomputation on the data necessary for normal p-value computation.
 #' 
 #' @param X Matrix. The data vector for the X side
 #' @param Y Matrix. The data vector for the Y side

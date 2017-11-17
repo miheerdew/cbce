@@ -116,20 +116,12 @@ cbce <- function(X, Y,
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- init(bk, indx, alpha, init_method) + dx
-      if(length(B01) > 1) {
-        B02 <- bh_reject(pvals(bk, B01), alpha)
-      } else {
-        B02 <- integer(0)
-      }
+      B02 <- bh_reject(pvals(bk, B01), alpha)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
       B01 <- init(bk, indx, alpha, init_method)
-      if(length(B01) > 1) {
-        B02 <- bh_reject(pvals(bk, B01), alpha) + dx
-      } else {
-        B02 <- integer(0)
-      }
+      B02 <- bh_reject(pvals(bk, B01), alpha) + dx
       return(list(x = B01, y = B02))
     }
   }
@@ -221,7 +213,7 @@ cbce <- function(X, Y,
     B0 <- initialize(indx)
     
     # Check for dud
-    if (length(B0$x) * length(B0$y) <= 1) {
+    if (min(length(B0$x),length(B0$y)) <= 1) {
       Dud_count <<- Dud_count + 1
       cat("--initialize was a dud\n")
       return(list("indx" = indx, "report" = "dud"))
