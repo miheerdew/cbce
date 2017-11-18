@@ -1,12 +1,13 @@
-symdiff <- function (s1, s2) {
+symdiff <- function(s1, s2) {
   return(union(setdiff(s1, s2), setdiff(s2, s1)))
 }
 
-jaccard <- function (s1, s2) {
+jaccard <- function(s1, s2) {
+  #The jaccard distance between vectors s1 and s2
   return(length(symdiff(s1, s2)) / length(union(s1, s2)))
 }
 
-filter_overlap <- function (comms, tau, inv.length = FALSE) {
+filter_overlap <- function(comms, tau, inv.length = FALSE) {
   
   K <- length(comms)
   if (inv.length) {
@@ -49,19 +50,24 @@ filter_overlap <- function (comms, tau, inv.length = FALSE) {
   
 }
 
-list2df <- function(listoflists) {
-  #Usage: list2df(results$extraction_res)
-  field_names <- unique(unlist(lapply(listoflists, names)))
-  N <- length(listoflists)
+bh_reject <- function(pvals, alpha, conserv = TRUE) {
   
-  transpose_list <- rep(list(rep(list(), N)), length(field_names))
-  names(transpose_list) <- field_names
+  m <- length(pvals)
+  if (m == 0) return(integer(0))
   
-  for(i in 1:N){
-    for(n in field_names){
-      transpose_list[[n]][i] <- listoflists[[i]][[n]] 
-    }
+  if (!conserv) {
+    pvals_adj <- m * pvals / rank(pvals, ties.method = "first")
+  } else {
+    mults <- sum(1 / c(1:m))
+    pvals_adj <- mults * m * pvals / rank(pvals, ties.method = "first")
   }
   
-  do.call(data.frame, c(lapply(transpose_list, I), list(stringsAsFactors=FALSE)))
+  if (sum(pvals_adj <= alpha) > 0) {
+    thres <- max(pvals[pvals_adj <= alpha])
+    return(which(pvals <= thres))
+  } else {
+    return(integer(0))
+  }
+  
 }
+

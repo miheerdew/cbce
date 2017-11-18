@@ -1,9 +1,4 @@
-library(Rcpp)
-library(RcppParallel)
-library(foreach)
-library(doParallel)
 library(bmdupdate)
-
 #sourceCpp("correlation.cpp")
 
 cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALSE, verbose = TRUE, generalOutput = TRUE,
@@ -348,7 +343,6 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
   }
   
   initialize1 <- function (u, Cpp = TRUE) {
-    
     if (u <= dx) {
       
       # Test X
