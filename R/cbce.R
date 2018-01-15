@@ -270,7 +270,7 @@ cbce <- function(X, Y,
           for (j in seq_along(seq_pair_jaccards)) {
             seq_pair_jaccards[j] <- jac(chain[[Start + j - 1]], chain[[Start + j]])
           }
-          if (sum(seq_pair_jaccards > 0.5) > 0) {# then break needed
+          if (sum(seq_pair_jaccards > 1 - OL_thres) > 0) {# then break needed
             cat("------break found\n")
             diagnostics("FoundBreak")
             break_or_collapsed <- TRUE
