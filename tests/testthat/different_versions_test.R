@@ -1,5 +1,5 @@
-source("metrics.R")
 source("sim_eQTL_network.R")
+library(bmdmetrics)
 
 sim <- sim_eQTL_network(make_param_list(cmin=5, cmax=50, b=10, bgmult=0.05))
 
@@ -21,7 +21,7 @@ report <- function(res1, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nu
 }
 
 report_s2 <- report(s2)
-report_s1 <- report(s1)
+librreport_s1 <- report(s1)
 report_ic2 <- report(ic2) 
 report_is1 <- report(is1) 
 

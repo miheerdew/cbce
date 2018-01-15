@@ -5,9 +5,6 @@ library(pipeR)
 
 context("Test ChiSq")
 
-library(pipeR)
-library(rlist)
-
 set.seed(123345)
 
 comms <- function(exres, dx) {
