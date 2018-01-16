@@ -381,7 +381,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
   }
   
   initialize2 <- function(u, bObj){
-    return(bh_rejectR(bObj$pvals(u, TRUE), alpha) + ifelse(u <= dx, dx, 0))
+    return(bh_rejectR(bObj$pvals(u, TRUE, Method$Auto), alpha) + ifelse(u <= dx, dx, 0))
   }
   #-------------------------------------------------------------------------------
   # Extraction function
@@ -426,7 +426,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
     if (length(B01) > 1) {
       
       # Half-update
-      pvals2 <- bmd_obj$pvals(B01, pval_parallel)
+      pvals2 <- bmd_obj$pvals(B01, pval_parallel, Method$Auto)
       if (Cpp) {
         B02 <- bh_rejectC(pvals2, alpha, conserv = TRUE)
       } else {
@@ -480,7 +480,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
       
       if (updateMethod == 1) {
         
-        pvalsXY <- c(bmd_obj$pvals(B_oldy, pval_parallel), bmd_obj$pvals(B_oldx, pval_parallel))
+        pvalsXY <- c(bmd_obj$pvals(B_oldy, pval_parallel, Method$Auto), bmd_obj$pvals(B_oldx, pval_parallel, Method$Auto))
         B_new <- if (Cpp) {
           bh_rejectC(pvalsXY, alpha, conserv = TRUE)
         } else {
@@ -495,7 +495,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
         if (indx > dx) {
           
           # Update X nodes first
-          pvalsx <- bmd_obj$pvals(B_oldy, pval_parallel)
+          pvalsx <- bmd_obj$pvals(B_oldy, pval_parallel, Method$Auto)
           B_newx <- if(Cpp) {
             bh_rejectC(pvalsx, alpha, conserv = TRUE)
           } else {
@@ -505,7 +505,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
             B_newy <- integer(0)
             break
           }
-          pvalsy <- bmd_obj$pvals(B_newx, pval_parallel)
+          pvalsy <- bmd_obj$pvals(B_newx, pval_parallel, Method$Auto)
           B_newy <- if (Cpp) {
             Yindx[bh_rejectC(pvalsy, alpha, conserv = TRUE)]
           } else {
@@ -515,7 +515,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
         } else {
           
           # Update Y nodes first
-          pvalsy <- bmd_obj$pvals(B_oldx, pval_parallel)
+          pvalsy <- bmd_obj$pvals(B_oldx, pval_parallel, Method$Auto)
           B_newy <- if (Cpp) {
             Yindx[bh_rejectC(pvalsy, alpha, conserv = TRUE)]
           } else {
@@ -525,7 +525,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
             B_newx <- integer(0)
             break
           }
-          pvalsx <- bmd_obj$pvals(B_newy, pval_parallel)
+          pvalsx <- bmd_obj$pvals(B_newy, pval_parallel, Method$Auto)
           B_newx <- if (Cpp) {
             bh_rejectC(pvalsx, alpha, conserv = TRUE)
           } else {
