@@ -19,7 +19,8 @@
 #' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes (may still exclude nodes within found communities if exhaustive = FALSE).
 #' @param parallel Use parallel processing.
 #' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
-#' @param backend The engine to use for p-value computation. Currently must be one of "normal", "normal_two_sided", "chisq", "indepChiSq", "indepNormal".
+#' @param mask_extracted Boolean. If true, then once a stable community is found, the nodes in it will never be used in future extractions. 
+#' @param backend The engine to use for p-value computation. Currently must be one of "normal", "normal_two_sided", "chisq", "chisq_fast", "indepChiSq", "indepNormal".
 #' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final resutls.
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
@@ -66,6 +67,7 @@ cbce <- function(X, Y,
   #Initialize the backend method specified by \code{backend}. This involves doing some precomputation. The variable bk is an S3 object which stores the precomputation.
   bk <- switch(backend,
                chisq = backend.chisq(X, Y, parallel, calc_full_cor),
+               chisq_fast = backend.chisq(X, Y, parallel, calc_full_cor, fast_approx=TRUE),
                normal = backend.normal(X, Y, calc_full_cor),
                normal_two_sided = backend.normal_two_sided(X, Y, calc_full_cor), 
                indepChiSq = backend.indepChiSq(X, Y, calc_full_cor),
