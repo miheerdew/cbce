@@ -1,4 +1,4 @@
-context("Check false positives")
+context("Test using metrics")
 
 source("sim_eQTL_network.R")
 library(bmdmetrics)
@@ -7,7 +7,9 @@ library(pipeR)
 
 set.seed(1234556)
 
-THRESH1 <- 0.9
+#High thresh
+THRESH1 <- 0.90
+#Resasonable thresh
 THRESH2 <- 0.6
 
 sim1 <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
@@ -54,6 +56,13 @@ check_sim <- function(sim,
   }
 }
 
+check_results_are_almost_same <- function(res1, res2, sim, 
+                                          thresh1=THRESH1,
+                                          thresh2=THRESH1){
+  rep <- report(res1, sim, res2)
+  expect_gte(mean(rep$report1$closest_match >= thresh1), thresh2)
+  expect_gte(mean(rep$report2$closest_match >= thresh1), thresh2)
+}
 
 test_that("Checking sim for chisq", {
   check_sim(sim1, backend = 'chisq')
@@ -77,7 +86,19 @@ test_that("chisq approximation gives the same result", {
   sim <- sim2
   out <- capture.output({ res <- cbce(sim$X, sim$Y, backend = 'chisq') })
   out <- capture.output({ res_fast <- cbce(sim$X, sim$Y, backend = 'chisq_fast') })
-  rep <- report(res, sim, res_fast)
-  expect_gt(min(rep$report1$closest_match), THRESH1)
-  expect_gt(min(rep$report2$closest_match), THRESH1)
+  check_results_are_almost_same(res, res_fast, sim)
+})
+
+test_that("Results are almost same for chisq, normal", {
+  sim <- sim2
+  out <- capture.output({ resC <- cbce(sim$X, sim$Y, backend = 'chisq') })
+  out <- capture.output({ resN <- cbce(sim$X, sim$Y, backend = 'normal') })
+  check_results_are_almost_same(resC, resN, sim)
+})
+
+test_that("Results are almost same for chisq, normal when masked", {
+  sim <- sim2
+  out <- capture.output({ resC <- cbce(sim$X, sim$Y, backend = 'chisq', mask_extracted = TRUE) })
+  out <- capture.output({ resN <- cbce(sim$X, sim$Y, backend = 'normal', mask_extracted = TRUE) })
+  check_results_are_almost_same(resC, resN, sim)
 })
