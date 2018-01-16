@@ -59,6 +59,31 @@ cors <- function(bk, A) {
   UseMethod("cors", bk)
 }
 
+#' Masks the set B in future computations.
+#' 
+#' The p-vlaues corresponding to Bx, By will no longer need to calculated and 
+#' will be returned as NA during future pvals call.  
+#' 
+#' 
+#' @param bk An object of class backend
+#' @param Bx A set of X indices 
+#' @param By A set of Y indices (globally numbered)
+#' 
+#'@export
+mask <- function(bk, Bx=c(), By=c()) {
+  if(length(Bx) + length(By) > 0) {
+    UseMethod("mask", bk)
+  }
+}
+
+#' Initialization function
+#' 
+#' @param p backend
+#' @param indx The node (in global numbering to initialize from)
+#' @param alpha The cutoff to use for pvalues.
+#' @param init_method One of c("conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing") 
+#'         gives the type of initializtion scheme.
+#'@export
 init <- function(p, indx, alpha, init_method) {
   pvals <- pvals_singleton(p, indx) 
   switch(init_method,

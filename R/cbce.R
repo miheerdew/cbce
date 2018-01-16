@@ -47,12 +47,17 @@ cbce <- function(X, Y,
                 start_nodes = NULL, 
                 parallel = FALSE, 
                 calc_full_cor=FALSE, 
-                backend = "chisq", 
+                backend = "chisq",
+                mask_extracted = FALSE,
                 diagnostics=diagnostics1
                 ) {
   
   #-----------------------------------------------------------------------------
   # Setup 
+  
+  if(mask_extracted && exhaustive) {
+    stop("mask_extracted and exhaustive are incompatible.")
+  }
   
   start_second <- proc.time()[3]
   cat("#-------------------\n")
@@ -306,11 +311,18 @@ cbce <- function(X, Y,
                  "itCount" = itCount, 
                  "did_it_cycle" = did_it_cycle,
                  "report" = "break_or_collapse"), diagnostic_info))
-    } else {
-      clustered <<- union(clustered, merge(B1))
-      comms <<- rlist::list.append(comms, B1)
     }
     
+    stableComm <- merge(B1) 
+    
+    if (mask_extracted) {
+      mask(bk, B1$x, B1$y)
+    }
+    
+    clustered <<- union(clustered, stableComm)
+    comms <<- rlist::list.append(comms, B1)
+    
+
     
     # Checking overlap with previous sets
     if (length(comms) > 1) {
@@ -321,7 +333,7 @@ cbce <- function(X, Y,
     }
     
     return(c(list("indx" = indx,
-                "StableComm" = merge(B1),
+                "StableComm" = stableComm,
                 "itCount" = itCount, "did_it_cycle" = did_it_cycle,
                 "report" = "complete_extraction"), diagnostic_info))
     

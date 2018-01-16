@@ -52,6 +52,7 @@ filter_overlap <- function(comms, tau, inv.length = FALSE) {
 
 bh_reject <- function(pvals, alpha, conserv = TRUE) {
   
+  #pvals may now have NAs, which should not be selected 
   m <- length(pvals)
   if (m == 0) return(integer(0))
   
@@ -62,8 +63,9 @@ bh_reject <- function(pvals, alpha, conserv = TRUE) {
     pvals_adj <- mults * m * pvals / rank(pvals, ties.method = "first")
   }
   
-  if (sum(pvals_adj <= alpha) > 0) {
-    thres <- max(pvals[pvals_adj <= alpha])
+  if (any(pvals_adj <= alpha, na.rm = TRUE)) {
+    candidates <- which(pvals_adj <= alpha)
+    thres <- max(pvals[candidates])
     return(which(pvals <= thres))
   } else {
     return(integer(0))
