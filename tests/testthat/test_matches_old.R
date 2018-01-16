@@ -26,21 +26,23 @@ areIdentical <- function(res1, res2, dx) {
 }
 
 test_that("ChiSq gives the same extraction", {
+out <- 
+capture.output({  
+  sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=1))
+  res1 <- cbce(sim$X, sim$Y)
+  res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE)
+  expect_true(areIdentical(res1, res2, sim$dx))
   
-sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=2))
-res1 <- cbce(sim$X, sim$Y)
-res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE)
-expect_true(areIdentical(res1, res2, sim$dx))
-
-sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=8))
-set.seed(12345)
-res1 <- cbce(sim$X, sim$Y, exhaustive = TRUE)
-set.seed(12345)
-res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE, exhaustive=TRUE)
-expect_true(areIdentical(res1, res2, sim$dx))
-
-sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=5))
-res1 <- cbce(sim$X, sim$Y, start_nodes = 1:sim$dx)
-res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE, start_nodes = 1:sim$dx)
-expect_true(areIdentical(res1, res2, sim$dx))
+  sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=1))
+  set.seed(12345)
+  res1 <- cbce(sim$X, sim$Y, exhaustive = TRUE)
+  set.seed(12345)
+  res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE, exhaustive=TRUE)
+  expect_true(areIdentical(res1, res2, sim$dx))
+  
+  sim <- sim_eQTL_network(make_param_list(cmin=3, cmax=5, b=1))
+  res1 <- cbce(sim$X, sim$Y, start_nodes = 1:sim$dx)
+  res2 <- cbceNW_c(sim$X, sim$Y, twoSided = TRUE, start_nodes = 1:sim$dx)
+  expect_true(areIdentical(res1, res2, sim$dx))
+})
 })
