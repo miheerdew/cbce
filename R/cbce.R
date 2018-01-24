@@ -222,7 +222,7 @@ cbce <- function(X, Y,
     B0 <- initialize(indx)
     
     # Check for dud
-    if (min(length(B0$x),length(B0$y)) <= 1) {
+    if (length(B0$x)*length(B0$y) <= 1) {
       Dud_count <<- Dud_count + 1
       cat("--initialize was a dud\n")
       return(list("indx" = indx, "report" = "dud"))
