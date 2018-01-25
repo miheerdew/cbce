@@ -347,7 +347,7 @@ cbce <- function(X, Y,
   
   # Extracting
   extract_res <- lapply(extractord, extract)
-  stopped_at <-  rlist::list.first(extract_res, report == "stop_extracting")
+  stopped_at <-  rlist::list.findi(extract_res, report == "stop_extracting")
   extract_res <- extract_res[order(extractord)]
   
   #-----------------------------------------------------------------------------
