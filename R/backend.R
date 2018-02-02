@@ -90,6 +90,8 @@ init <- function(p, indx, alpha, init_method) {
         "conservative-BH" = bh_reject(pvals, alpha, conserv = TRUE),
         "non-conservative-BH" = bh_reject(pvals, alpha, conserv = FALSE),
         "BH-0.5" =  bh_reject(pvals, 0.5, conserv = TRUE),
+        "BH-0.5-nc" =  bh_reject(pvals, 0.5, conserv = FALSE),
+        "BH-0.9-nc" =  bh_reject(pvals, 0.9, conserv = FALSE),
         "no-multiple-testing" = which(pvals <= alpha),
         stop(paste("Unknown init_method:", init_method))
   )

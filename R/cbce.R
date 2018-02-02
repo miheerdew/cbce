@@ -14,7 +14,7 @@
 #' @param Dud_tol If more than Dud_tol initializations end in a dud, stop method.
 #' @param time_limit Stop method after time_limit seconds.
 #' @param updateMethod Use the 1(-step) update vs 2(-step) update
-#' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing".
+#' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5",  "BH-0.5-nc", "BH-0.9-nc", "no-multiple-testing".
 #' @param inv.length Logical. Use inv.length as score while selecting the smallest community from communities with significant overlap.
 #' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes (may still exclude nodes within found communities if exhaustive = FALSE).
 #' @param parallel Use parallel processing.
