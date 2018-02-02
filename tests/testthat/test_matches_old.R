@@ -67,8 +67,10 @@ capture.output({
   #expect_false(areIdentical(res1a, res2, sim$dx))
   
   #Indices differ because new dud scheme is more relaxed.
-  check(res1b, res2, expect_differing_indices = TRUE)
+  #check(res1b, res2, expect_differing_indices = TRUE)
   
+  #Back to old dud scheme
+  check(res1b, res2)
   
   sim <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
   res1 <- cbce(sim$X, sim$Y, start_nodes = 1:sim$dx)

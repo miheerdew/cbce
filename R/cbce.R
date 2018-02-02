@@ -122,14 +122,20 @@ cbce <- function(X, Y,
   # @param indx The (global) index of the node (variable) to initialize from.
   # @return list(x=integer-vector, y=integer-vector): The initialized x, y sets. 
   initialize <- function(indx) {
+    B01 <- init(bk, indx, alpha, init_method)
+    if(length(B01) <= 1) {
+      # If B01 = 1 declare it as dud.
+      # This is because lot of B01 = 1 end up as duds
+      # and we don't want to do the update step for them.
+      return(list(x=integer(0), y=integer(0)))
+    }
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
-      B01 <- init(bk, indx, alpha, init_method) + dx
+      B01 <- B01 + dx
       B02 <- bh_reject(pvals(bk, B01), alpha)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B01 <- init(bk, indx, alpha, init_method)
       B02 <- bh_reject(pvals(bk, B01), alpha) + dx
       return(list(x = B01, y = B02))
     }
