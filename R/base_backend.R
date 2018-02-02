@@ -13,6 +13,7 @@ backend.base <- function(X, Y, calc_full_cor=TRUE){
             calc_full_cor = calc_full_cor,
             dx = ncol(X), n = nrow(X),
             X = scale(X), Y = scale(Y),
+            maskX = integer(0), maskY = integer(0),
             two_sided = FALSE) 
   class(p) <- "base"
   p
@@ -38,6 +39,8 @@ cors.base <- function(p, A){
   }
 }
 
+#' @describeIn pvals_singleton implementation for the base class
+#' @export
 pvals_singleton.base <- function(p, indx) {
   # An easy way to calculate p-values from an indx
   fischer_tranformed_cor <- atanh(as.vector(cors(p, indx))) * sqrt(p$n - 3)
@@ -46,6 +49,18 @@ pvals_singleton.base <- function(p, indx) {
   } else {
     pvals <- stats::pnorm(fischer_tranformed_cor, lower.tail = FALSE)
   }
+  
+  if(indx <= p$dx) {
+    pvals[p$maskY] <- NA
+  } else {
+    pvals[p$maskX] <- NA
+  }
   return(pvals)
 }
 
+#' @describeIn mask implementation for the base class
+#' @export
+mask.base <- function(bk, Bx, By) {
+  bk$maskX <- union(bk$maskX, Bx)
+  bk$maskY <- union(bk$maskY, By - bk$dx)
+}

@@ -30,4 +30,5 @@ pvals.chisq <- function(bk, B) {
 #' @export
 mask.chisq <- function(bk, Bx, By) {
   bk$obj$mask(c(Bx,By))
+  mask.base(bk, Bx, By)
 }

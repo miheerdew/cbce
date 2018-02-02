@@ -10,8 +10,7 @@ backend.normal <- function(X, Y, calc_full_cor=FALSE) {
   #p$X and p$Y are scaled version of X and Y.
   extra.precomp <- list(
                   X2 = p$X**2, X3 = p$X**3, X4ColSum = colSums(p$X**4),
-                  Y2 = p$Y**2, Y3 = p$Y**3, Y4ColSum = colSums(p$Y**4),
-                  maskX = c(), maskY = c()
+                  Y2 = p$Y**2, Y3 = p$Y**3, Y4ColSum = colSums(p$Y**4)
                  )
   precomp <- append(p, extra.precomp)
   class(precomp) <- c("normal", class(p))
@@ -103,10 +102,3 @@ pvals.normal <- function(bk, B) {
 pvals.normal_two_sided <- function(bk, B) {
   2 * stats::pnorm(abs(zstats(bk, B)), lower.tail = FALSE)
 } 
-
-#' @describeIn mask implementation for the one sided sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)
-#' @export
-mask.normal <- function(bk, Bx, By) {
-  bk$maskX <- union(bk$maskX, Bx)
-  bk$maskY <- union(bk$maskY, By - bk$dx)
-}
