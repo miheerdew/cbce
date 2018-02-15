@@ -346,9 +346,10 @@ cbce <- function(X, Y,
     cat("Ranking initial sets\n\n")
     scores <- rlist::list.mapv(indices, {
       B0 <- initialize(., pval_func=pvals_quick)
-      if (length(B0$x)*length(B0$y) <= 1) 0 else score_quick(bk, B0$x, B0$y)
+      if (length(B0$x)*length(B0$y) <= 1) NA else score_quick(bk, B0$x, B0$y)
     })
-    extractord <- order(scores, decreasing=TRUE)
+    #Remove the NAs from the ordering
+    extractord <- order(scores, decreasing=TRUE, na.last=NA)
   } else {
     #Use the sum of correlation hurestic to decide the order
     #bk$X, bk$Y are scaled versions of X and Y
