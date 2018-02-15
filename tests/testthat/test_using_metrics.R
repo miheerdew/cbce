@@ -77,6 +77,31 @@ test_that("Checking sim masked", {
 
 })
 
+test_that("Checking sim with ranking", {
+  check_sim(sim1, backend = 'chisq', rank_initial_sets=TRUE)
+  check_sim(sim2, backend = 'normal', rank_initial_sets=TRUE)
+})
+
+test_that("Checking sim with ranking and init_quick_update for new vs old for normal", {
+  sim <- sim2
+  out <- capture.output({ 
+  res_unranked <- cbce(sim$X, sim$Y, backend = 'normal') })
+  out <- capture.output({
+  res_ranked <- cbce(sim$X, sim$Y, backend = 'normal', 
+                       rank_initial_sets = TRUE, init_quick_update=TRUE)  })
+  check_results_are_almost_same(res_unranked, res_ranked, sim)
+})
+
+test_that("Checking sim with ranking new vs old for chisq", {
+  sim <- sim1
+  out <- capture.output({ 
+    res_unranked <- cbce(sim$X, sim$Y, backend = 'chisq') })
+  out <- capture.output({ 
+    res_ranked <- cbce(sim$X, sim$Y, backend = 'chisq', 
+                       rank_initial_sets = TRUE) })
+  check_results_are_almost_same(res_unranked, res_ranked, sim)
+})
+
 test_that("Checking sim for Normal", {
   check_sim(sim1, backend = 'normal')
   check_sim(sim2, backend = 'normal')

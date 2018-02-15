@@ -4,7 +4,7 @@
 #' @param parallel Logical Run pvalue computation using multiple threads?
 #' @param fast_approx Use the BigX_fast approximation?
 #' @inheritParams backend.base
-#'@importFrom methods new 
+#'@importFrom methods new
 #'@export
 backend.chisq <- function(X, Y, parallel = FALSE, calc_full_cor=FALSE, fast_approx=FALSE) {
   p <- backend.base(X, Y, calc_full_cor)
@@ -12,6 +12,8 @@ backend.chisq <- function(X, Y, parallel = FALSE, calc_full_cor=FALSE, fast_appr
   p$two_sided = TRUE
   p$parallel <- parallel
   p$fast_approx <- fast_approx
+  # No need to change:
+  #  p$normal_vector_pval
   class(p) <- c("chisq", class(p))
   return(p)
 }
@@ -24,6 +26,11 @@ pvals.chisq <- function(bk, B) {
   } else {
     bk$obj$pvals(B, bk$parallel, bmdupdate::Method$Auto)
   }
+}
+
+pvals_quick.chisq <- function(bk, B) {
+  R <- cors(bk, B)
+  stats::pchisq(bk$n * rowSums(R^2), length(B), lower.tail = FALSE)
 }
 
 #' @describeIn mask C implementation for sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)

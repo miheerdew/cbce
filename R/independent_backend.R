@@ -4,6 +4,7 @@
 #'@inheritParams backend.base
 #'@export
 backend.indepNormal <- function(X, Y, calc_full_cor=FALSE) {
+  # TODO: change precomp$normal_vector_pval
   p <- backend.base(X, Y, calc_full_cor)
   p$two_sided = FALSE
   class(p) <- c("indepNormal", class(p))
@@ -21,6 +22,7 @@ pvals.indepNormal <- function(bk, B){
 #'@inheritParams backend.base
 #'@export
 backend.indepChiSq <- function(X, Y, calc_full_cor=FALSE) {
+  # Don't change p$normal_vector_pval
   p <- backend.base(X, Y, calc_full_cor)
   p$two_sided = TRUE
   class(p) <- c("indepChiSq", class(p))
