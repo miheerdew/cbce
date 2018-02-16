@@ -24,6 +24,7 @@
 #' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final resutls.
 #' @param rank_initial_sets Logical Start extraction from inital sets with the higher scores. 
 #' @param init_quick_update Logical Use a quick half-update in the init step.
+#' @param break_thresh Numeric A number between [0,1] that determines when a cycle will be broken. A value of 1 means that cycles will allways be broken and 0 that it will never be.
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
 #' @examples
@@ -40,6 +41,7 @@
 cbce <- function(X, Y,
                 alpha = 0.05,
                 OL_thres = 0.9,
+                break_thresh = 0.5,
                 exhaustive = FALSE,
                 OL_tol = Inf,
                 Dud_tol = Inf,
@@ -270,7 +272,7 @@ cbce <- function(X, Y,
           for (j in seq_along(seq_pair_jaccards)) {
             seq_pair_jaccards[j] <- jac(chain[[Start + j - 1]], chain[[Start + j]])
           }
-          if (sum(seq_pair_jaccards > 1 - OL_thres) > 0) {# then break needed
+          if (sum(seq_pair_jaccards > 1 - break_thresh) > 0) {# then break needed
             cat("------break found\n")
             diagnostics("FoundBreak")
             break_or_collapsed <- TRUE
@@ -345,8 +347,16 @@ cbce <- function(X, Y,
   if (rank_initial_sets) {
     cat("Ranking initial sets\n\n")
     scores <- rlist::list.mapv(indices, {
-      B0 <- initialize(., pval_func=pvals_quick)
-      if (length(B0$x)*length(B0$y) <= 1) NA else score_quick(bk, B0$x, B0$y)
+      if( is.null(start_nodes) || . %in% start_nodes ) {
+        B0 <- initialize(., pval_func=pvals_quick)
+        if (length(B0$x)*length(B0$y) > 1) {
+          score_quick(bk, B0$x, B0$y)
+        } else {
+          NA
+        }
+      } else {
+        NA
+      }
     })
     #Remove the NAs from the ordering
     extractord <- order(scores, decreasing=TRUE, na.last=NA)
@@ -359,10 +369,9 @@ cbce <- function(X, Y,
     cor_Y_to_Xsums <- abs(as.vector(t(Xsum) %*% bk$Y))
     extractord <- indices[order(c(cor_X_to_Ysums, cor_Y_to_Xsums),
                                 decreasing = TRUE)]
+    if (!is.null(start_nodes))
+      extractord <- extractord[extractord %in% start_nodes]
   }
-  
-  if (!is.null(start_nodes))
-    extractord <- extractord[extractord %in% start_nodes]
   
 
   # Extracting
