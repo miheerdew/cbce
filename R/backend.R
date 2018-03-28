@@ -117,11 +117,11 @@ mask <- function(bk, Bx=c(), By=c()) {
 init <- function(p, indx, alpha, init_method) {
   pvals <- pvals_singleton(p, indx)
   switch(init_method,
-        "conservative-BH" = bh_reject(pvals, alpha, conserv = TRUE),
-        "non-conservative-BH" = bh_reject(pvals, alpha, conserv = FALSE),
-        "BH-0.5" =  bh_reject(pvals, 0.5, conserv = TRUE),
-        "BH-0.5-nc" =  bh_reject(pvals, 0.5, conserv = FALSE),
-        "BH-0.9-nc" =  bh_reject(pvals, 0.9, conserv = FALSE),
+        "conservative-BH" = bh_reject(pvals, alpha, 'BHY'),
+        "non-conservative-BH" = bh_reject(pvals, alpha, 'BH'),
+        "BH-0.5" =  bh_reject(pvals, 0.5, 'BHY'),
+        "BH-0.5-nc" =  bh_reject(pvals, 0.5, 'BH'),
+        "BH-0.9-nc" =  bh_reject(pvals, 0.9, 'BH'),
         "no-multiple-testing" = which(pvals <= alpha),
         stop(paste("Unknown init_method:", init_method))
   )

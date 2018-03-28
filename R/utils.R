@@ -50,18 +50,20 @@ filter_overlap <- function(comms, tau, inv.length = FALSE) {
   
 }
 
-bh_reject <- function(pvals, alpha, conserv = TRUE) {
+bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
   
   #pvals may now have NAs, which should not be selected 
   m <- length(pvals)
   if (m == 0) return(integer(0))
   
-  if (!conserv) {
-    pvals_adj <- m * pvals / rank(pvals, ties.method = "first")
-  } else {
-    mults <- sum(1 / c(1:m))
-    pvals_adj <- mults * m * pvals / rank(pvals, ties.method = "first")
-  }
+  ranks <- rank(pvals, ties.method = "first")
+  
+  pvals_adj <- switch(multiple_testing_method,
+        BHY=sum(1 / c(1:m)) * m * pvals / ranks, 
+        BH=m * pvals / ranks,
+        sqrt_BH= m * pvals / sqrt(ranks),
+        sqrt_BHY= sum(1 / c(1:m)) * m * pvals / sqrt(ranks)
+      )
   
   if (any(pvals_adj <= alpha, na.rm = TRUE)) {
     candidates <- which(pvals_adj <= alpha)

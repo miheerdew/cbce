@@ -25,6 +25,7 @@
 #' @param rank_initial_sets Logical Start extraction from inital sets with the higher scores. 
 #' @param init_quick_update Logical Use a quick half-update in the init step.
 #' @param break_thresh Numeric A number between [0,1] that determines when a cycle will be broken. A value of 1 means that cycles will allways be broken and 0 that it will never be.
+#' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY')
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
 #' @examples
@@ -56,6 +57,7 @@ cbce <- function(X, Y,
                 mask_extracted = FALSE,
                 rank_initial_sets = FALSE,
                 init_quick_update = FALSE,
+                multiple_testing_method = 'BHY',
                 diagnostics=diagnostics1
                 ) {
 
@@ -121,11 +123,11 @@ cbce <- function(X, Y,
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- B01 + dx
-      B02 <- bh_reject(pval_func(bk, B01), alpha)
+      B02 <- bh_reject(pval_func(bk, B01), alpha, multiple_testing_method)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B02 <- bh_reject(pval_func(bk, B01), alpha) + dx
+      B02 <- bh_reject(pval_func(bk, B01), alpha, multiple_testing_method) + dx
       return(list(x = B01, y = B02))
     }
   }
@@ -162,11 +164,11 @@ cbce <- function(X, Y,
 
     if (updateMethod == 2) {
       if (startX) {
-        B1y <- bh_reject(pvals(bk, B0$x), alpha) + dx
-        B1x <- bh_reject(pvals(bk, B1y), alpha)
+        B1y <- bh_reject(pvals(bk, B0$x), alpha, multiple_testing_method) + dx
+        B1x <- bh_reject(pvals(bk, B1y), alpha, multiple_testing_method)
       } else {
-        B1x <- bh_reject(pvals(bk, B0$y), alpha)
-        B1y <- bh_reject(pvals(bk, B1x), alpha) + dx
+        B1x <- bh_reject(pvals(bk, B0$y), alpha, multiple_testing_method)
+        B1y <- bh_reject(pvals(bk, B1x), alpha, multiple_testing_method) + dx
       }
       list(x=B1x, y=B1y)
     } else {
@@ -175,7 +177,7 @@ cbce <- function(X, Y,
 
       #Note that the positions returned by bh_reject are already the global
       #numbers.
-      return(split(bh_reject(c(px, py), alpha)))
+      return(split(bh_reject(c(px, py), alpha, multiple_testing_method)))
     }
   }
 
