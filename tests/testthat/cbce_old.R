@@ -55,7 +55,7 @@ cbceNW_c <- function (X, Y, alpha = 0.05, OL_thres = 0.9, tag = NULL, Cpp = FALS
       cat("Calculating full cross correlation matrix\n")
     full_xy_cor <- cor(X, Y)
   }
-  bmd_obj <- new(BmdUpdater, X, Y)
+  bmd_obj <- new(BackendChisq, X, Y)
   
   
   #-------------------------------------------------------------------------------

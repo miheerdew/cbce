@@ -127,3 +127,10 @@ test_that("Results are almost same for chisq, normal when masked", {
   out <- capture.output({ resN <- cbce(sim$X, sim$Y, backend = 'normal', mask_extracted = TRUE) })
   check_results_are_almost_same(resC, resN, sim)
 })
+
+test_that("Results are almost same for normal vs normalc", {
+  sim <- sim2
+  out <- capture.output({ resC <- cbce(sim$X, sim$Y, backend = 'normalc') })
+  out <- capture.output({ resN <- cbce(sim$X, sim$Y, backend = 'normal') })
+  check_results_are_almost_same(resC, resN, sim, 0, 0)
+})

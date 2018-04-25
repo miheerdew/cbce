@@ -8,7 +8,7 @@
 #'@export
 backend.chisq <- function(X, Y, parallel = FALSE, calc_full_cor=FALSE, fast_approx=FALSE) {
   p <- backend.base(X, Y, calc_full_cor)
-  p$obj = new(bmdupdate::BmdUpdater, X, Y)
+  p$obj = new(bmdupdate::BackendChisq, X, Y)
   p$two_sided = TRUE
   p$parallel <- parallel
   p$fast_approx <- fast_approx
