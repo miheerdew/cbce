@@ -62,7 +62,9 @@ bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
         BHY=sum(1 / c(1:m)) * m * pvals / ranks, 
         BH=m * pvals / ranks,
         sqrt_BH= m * pvals / sqrt(ranks),
-        sqrt_BHY= sum(1 / c(1:m)) * m * pvals / sqrt(ranks)
+        sqrt_BHY= sum(1 / c(1:m)) * m * pvals / sqrt(ranks),
+        square_BH= pvals / (1/m + (ranks/m)^2),
+        Bonferroni=m * pvals, 
       )
   
   if (any(pvals_adj <= alpha, na.rm = TRUE)) {

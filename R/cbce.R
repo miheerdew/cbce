@@ -25,7 +25,7 @@
 #' @param rank_initial_sets Logical Start extraction from inital sets with the higher scores. 
 #' @param init_quick_update Logical Use a quick half-update in the init step.
 #' @param break_thresh Numeric A number between [0,1] that determines when a cycle will be broken. A value of 1 means that cycles will allways be broken and 0 that it will never be.
-#' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY')
+#' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY', 'square_BH', 'Bonferroni')
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
 #' @examples
