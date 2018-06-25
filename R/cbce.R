@@ -20,7 +20,7 @@
 #' @param parallel Use parallel processing.
 #' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
 #' @param mask_extracted Boolean. If true, then once a stable community is found, the nodes in it will never be used in future extractions.
-#' @param backend The engine to use for p-value computation. Currently must be one of "normal", "normalc", "normal_two_sided", "chisq", "chisq_fast", "indepChiSq", "indepNormal".
+#' @param backend The engine to use for p-value computation. Currently must be one of "normal", "normalc", "normal_two_sided", "chisq", "indepChiSq", "indepNormal".
 #' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final resutls.
 #' @param rank_initial_sets Logical Start extraction from inital sets with the higher scores. 
 #' @param init_quick_update Logical Use a quick half-update in the init step.
@@ -74,8 +74,7 @@ cbce <- function(X, Y,
   cat("Setting up backend\n")
   #Initialize the backend method specified by \code{backend}. This involves doing some precomputation. The variable bk is an S3 object which stores the precomputation.
   bk <- switch(backend,
-               chisq = backend.chisq(X, Y, parallel, calc_full_cor),
-               chisq_fast = backend.chisq(X, Y, parallel, calc_full_cor, fast_approx=TRUE),
+               chisq = backend.chisq(X, Y, calc_full_cor),
                normal = backend.normal(X, Y, calc_full_cor),
                normalc = backend.normalc(X, Y, parallel, calc_full_cor),
                normal_two_sided = backend.normal_two_sided(X, Y, calc_full_cor),
