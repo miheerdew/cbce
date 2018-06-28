@@ -17,7 +17,9 @@ sim2 <- sim_eQTL_network(make_param_list(cmin=5, cmax=20, b=10, bgmult=0.05))
 sim3 <- sim_eQTL_network(make_param_list(cmin=5, cmax=40, b=10, bgmult=0.1))
 
 report <- function(res1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nums) nums > .9) {
-  com1 <- comms(res1, sim$dx)
+  resf <- res1
+  resf$extract_res <- res1$extract_res[res1$finalIndxs]
+  com1 <- comms(resf, sim$dx)
   if(is.null(res2)) {
     com2 <- comms_sim(sim)
   } else {
@@ -66,6 +68,8 @@ check_results_are_almost_same <- function(res1, res2, sim,
 
 test_that("Checking sim for chisq", {
   check_sim(sim1, backend = 'chisq')
+  check_sim(sim2, backend = 'chisq')
+  check_sim(sim3, backend = 'chisq', exhaustive=TRUE, thresh2a=0.8, thresh2b = THRESH2)
 })
 
 test_that("Checking sim masked", {
