@@ -7,6 +7,24 @@ jaccard <- function(s1, s2) {
   return(length(symdiff(s1, s2)) / length(union(s1, s2)))
 }
 
+disjointness <- function(s1, s2) {
+  num <- length(intersect(s1, s2))
+  den <- min(length(s1), length(s2))
+  1 - num/den
+}
+
+disjointness_pairs <- function(B1, B2) {
+  (disjointness(B1$x, B2$x) + disjointness(B1$y, B2$y))/2
+}
+
+intersect_pairs <- function(B1, B2) {
+  list(x=intersect(B1$x, B2$x), y=intersect(B1$y, B2$y))  
+}
+
+jaccard_pairs <- function(B1, B2) {
+  (jaccard(B1$x, B2$x) + jaccard(B1$y, B2$y))/2
+}
+
 filter_overlap <- function(comms, tau, inv.length = FALSE) {
   
   K <- length(comms)
