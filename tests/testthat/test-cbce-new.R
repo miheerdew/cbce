@@ -18,8 +18,8 @@ sim3 <- sim_eQTL_network(make_param_list(cmin=5, cmax=40, b=10, bgmult=0.1))
 
 comms <- function(res) {
   res$extract_res %>>% 
-    list.filter(success) %>>%
-      list.map(StableComm)
+    list.filter(length(bimod$x) * length(bimod$y) > 0) %>>%
+      list.map(bimod)
 }
 report <- function(res1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nums) nums > .9) {
   com1 <- comms(res1)

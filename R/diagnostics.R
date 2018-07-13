@@ -1,7 +1,7 @@
 diagnostics1 <- function(event){
   e <- parent.frame()
   switch(event,
-  "ExtracionLoopBegins" = {
+  "ExtractionLoopBegins" = {
     e$consec_jaccards <- NULL
     e$mean_jaccards <- NULL
     e$consec_sizes <- list(c(length(e$B0$x), length(e$B0$y)))
@@ -42,9 +42,67 @@ diagnostics1 <- function(event){
   }, 
   "UpdatePvalues" = {
     f <- parent.frame(n=2)
-    f$pvals <- c(f$pvals, list(px=e$px, py=e$py))
+    qs <- seq(0, 1, length.out = 1000) 
+    f$pvals <- c(f$pvals, list(quantile(c(e$px, e$py), qs)))
   },
   "Disjointness" = {
     e$disjoint[e$itCount] <- TRUE
   }, NA)
+}
+
+Qs <- seq(0, 1, length.out = 1000) 
+
+diagnostics2 <- function(event, e=parent.frame()) {
+  address <- strsplit(event, ":")[[1]]
+  if(address[1] == "Extract") {
+    i <- get("itCount", e)
+    
+    switch(address[2],
+           Setup={
+             maxit <- get("max_iterations", e)
+             
+             e$pvals <- rep(list(NULL), maxit)
+             e$sizes <- rep(list(NULL), maxit)
+             e$consec_jaccards <- rep(NULL, maxit)
+             e$disjointed <- NULL
+             e$cycle_info <- NULL
+             e$start_time <- Sys.time()
+           },
+           AfterUpdate={
+             B1 <- get("B1", e)
+             jac <- get("dist_to_prev", e)
+             
+             e$sizes[[i]] <- list(x=length(B1$x), y=length(B1$y))
+             e$consec_jaccards[i] <- jac
+           },
+           
+           Disjoint={
+             e$disjointed <- c(e$disjointed, i)
+           },
+           
+           FoundCycle={
+             chain <- get("chain", e)
+             h <- chain[i]
+            
+             e$cycle_info <- c(e$cycle_info, list(c(itCount=i, length=which.max(h %in% chain[i-1:1]))))
+           },
+          End={
+            update_info <- list("consec_jaccards" = e$consec_jaccards[1:i],
+                                "sizes" = e$sizes[1:i],
+                                "pvals" = e$pvals[1:i],
+                                "disjointed" = e$disjointed,
+                                "cycle_info" = e$cycle_info)
+            
+            list("update_info" = update_info, 
+                 "extraction_time" = Sys.time() - e$start_time)
+           },
+           NA)
+  } else if (address[1] == "Update") {
+    i <- get("itCount", e)
+    switch(address[2],
+           Pvalues={
+             e$pvals[[i]] <- quantile(c(e$px, e$py), Qs)
+           },
+           NA)
+  }
 }
