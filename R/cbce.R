@@ -236,7 +236,7 @@ cbce <- function(X, Y,
     break_or_collapsed <- FALSE
     itCount <- 0
 
-    diagnostics("ExtracionLoopBegins")
+    diagnostics("ExtractionLoopBegins")
 
     # Extraction loop
     repeat {
