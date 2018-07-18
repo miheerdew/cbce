@@ -59,6 +59,8 @@ interaction_gui <- function(event, env=parent.frame()) {
              #The labels give sizes 
              labs = rlist::list.mapv(u$sizes, sprintf("%d/%d", .$x, .$y))
              
+             par(mfrow=c(1,2))
+             
              plot(1:itCount, jacs,
                   ylim=c(0,1),
                   xlim=c(0, env$maxit + 2), xlab="Iterations", ylab="Consec jaccards",
@@ -67,6 +69,8 @@ interaction_gui <- function(event, env=parent.frame()) {
              legend("topright", 
                     title="Events",
                     legend=names(char_map), pch=as.numeric(char_map))
+             
+             hist(u$pvals[[itCount]], breaks=500, main="Last p-values")
            }
            
            env$update_status <- function() {

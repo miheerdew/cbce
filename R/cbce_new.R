@@ -130,10 +130,6 @@ cbce2 <- function(X, Y,
       if (dist_to_prev == 0) {
         #End loop if fixed point found.
         stop <- success <- TRUE
-      } else if (disjointness_pairs(B1, B0) > break_thresh) {
-        #The sets are too disjoint. Start from the intersection.
-        diagnostic("Extract:Disjoint", f)
-        B0 <- intersect_pairs(B0, B1)
       } else if (did_it_cycle) {
         # Matches an old set.
         cycle_count = cycle_count + 1

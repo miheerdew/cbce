@@ -6,6 +6,7 @@
 #'@export
 backend.chisq <- function(X, Y, calc_full_cor=FALSE) {
   p <- backend.base(X, Y, calc_full_cor)
+  p$two_sided <- TRUE
   # No need to change:
   #  p$normal_vector_pval
   class(p) <- c("chisq", class(p))
