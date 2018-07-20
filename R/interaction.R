@@ -42,7 +42,7 @@ interaction_gui <- function(event, env=parent.frame()) {
                               fixed_point = 19,
                               collapse = 8,
                               overflow = 13)
-
+             
              #The plotting characters
              chars = rep(char_map$default, itCount)
              chars[u$disjointed] <- char_map$disjoint
@@ -55,12 +55,16 @@ interaction_gui <- function(event, env=parent.frame()) {
              }
              
              chars[rlist::list.mapv(u$cycle_info, itCount)] <- char_map$cycles
-            
+             
              #The labels give sizes 
              labs = rlist::list.mapv(u$sizes, sprintf("%d/%d", .$x, .$y))
+             if(length(labs) == 0) {
+               browser()
+               warning(sprintf("Size list: 0, but itCount: %d. Not plotting\n", itCount))
+               return(NULL)
+             } 
              
              par(mfrow=c(1,2))
-             
              plot(1:itCount, jacs,
                   ylim=c(0,1),
                   xlim=c(0, env$maxit + 2), xlab="Iterations", ylab="Consec jaccards",
@@ -69,12 +73,11 @@ interaction_gui <- function(event, env=parent.frame()) {
              legend("topright", 
                     title="Events",
                     legend=names(char_map), pch=as.numeric(char_map))
-             
-             hist(u$pvals[[itCount]], breaks=500, main="Last p-values")
+             hist(u$pvals[[itCount]], main="P-values from the last iteration", xlab="pvals", breaks=100)
            }
            
            env$update_status <- function() {
-
+             
              if(is.null(res <- get("res", envir = env))) {
                return(NULL)
              }
@@ -91,14 +94,14 @@ interaction_gui <- function(event, env=parent.frame()) {
                # Update status every second
                tclvalue(env$statusLabel) <- sprintf(
                  "%d iterations, %d: fixed points, %d: duds, %d: collapsed, %d: cycled, %d: overflowed",
-                        i, 
-                        env$fixed_points, 
-                        env$duds, 
-                        env$collapsed, 
-                        env$cycled, 
-                        env$overflowed)
+                 i, 
+                 env$fixed_points, 
+                 env$duds, 
+                 env$collapsed, 
+                 env$cycled, 
+                 env$overflowed)
                tcl("update")
-
+               
                tkconfigure(env$pb, value=i)
                tkrplot::tkrreplot(env$plot)
                return(TRUE)
@@ -109,25 +112,25 @@ interaction_gui <- function(event, env=parent.frame()) {
            
            # ----- Setup the GUI -----------
            env$win <- tktoplevel()
-           tktitle(env$win) <- "CBCE progress"
+           tktitle(env$win) <- TITLE
            
            env$stop <- tclVar(0)
            env$browser <- tclVar(0)
            
            env$statusLabel <- tclVar("The extraction status will be shown here")
            
-           env$pb <- tk2progress(env$win, length=500)
+           env$pb <- tk2progress(env$win, length=700)
            tkconfigure(env$pb, value=0, maximum=env$tot)
-             
+           
            Stop.but <- tkbutton(env$win, text = "Stop",
                                 command = function() tclvalue(env$stop) <- 1)
            Browser.but <- tkbutton(env$win, text="Browser",
-                                command = function() tclvalue(env$browser) <- 1)
+                                   command = function() tclvalue(env$browser) <- 1)
            
            Status.lab  <- tk2label(env$win, textvariable = env$statusLabel) 
            
            
-           env$plot <- tkrplot::tkrplot(env$win, fun=plot_func, hscale=1.5, vscale = 1.5)
+           env$plot <- tkrplot::tkrplot(env$win, fun=plot_func, hscale=2, vscale = 1.5)
            
            tkgrid(env$plot, columnspan=2)
            tkgrid(Status.lab, columnspan=2)

@@ -1,3 +1,20 @@
+#' Correlation Bi-community Extraction method
+#'
+#' Given two groups of variables, find correlation bi-communities between them. For such a community, the nodes from the first group are are higly correlated to the community-nodes from the second group, and vice versa.
+#'
+#'  \code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
+#'
+#' The update starts from a single node (starting with the initialization step) and is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
+#'
+#' @param X,Y Numeric Matices. Represents the two groups of variables.
+#' @param alpha \eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for multiple_testing procedure
+#' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5",  "BH-0.5-nc", "BH-0.9-nc", "no-multiple-testing".
+#' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
+#' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
+#' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final results.
+#' @param interaction This is a function that will be called between extracts to allow interaction with the program. For instance one cas pass interaction_gui (EXPERIMENTAL!) or interaction_none.  
+#' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY', 'square_BH', 'Bonferroni')
+#' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
 #' @export
 cbce2 <- function(X, Y, 
                   alpha = 0.05, 
@@ -6,7 +23,6 @@ cbce2 <- function(X, Y,
                   multiple_testing_method = 'BHY',
                   start_nodes=NULL,
                   max_iterations = 20,
-                  break_thresh = 0.6, #If the disjointness > break_tresh, then stop iteration.
                   interaction=interaction_none,
                   diagnostic=diagnostics2) {
   
@@ -125,8 +141,7 @@ cbce2 <- function(X, Y,
       diagnostic("Extract:AfterUpdate", f)
       
       chain[itCount] <- h
-      
-      
+
       if (dist_to_prev == 0) {
         #End loop if fixed point found.
         stop <- success <- TRUE
@@ -135,7 +150,10 @@ cbce2 <- function(X, Y,
         cycle_count = cycle_count + 1
         diagnostic("Extract:FoundCycle", f)
         if(cycle_count > 2) {
-          #Cycled thrice already. Stop extraction.
+          # Cycled thrice already. Stop extraction.
+          # This is because most iterations that cycle > 2 times
+          # do not end up reaching a fixed point. And we don't have
+          # infinite resources to keep dealing with cycles.
           diagnostic("Extract:FoundBreak", f)
           stop <- TRUE
           B0 <- B1

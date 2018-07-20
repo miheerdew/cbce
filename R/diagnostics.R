@@ -8,7 +8,6 @@ diagnostics1 <- function(event){
     e$found_cycle <- NULL
     e$found_break <- NULL
     e$pvals <- list()
-    e$disjoint <- NULL
     e$initial_set <- unlist(e$B0)
     e$start_time <- Sys.time()
   }, 
@@ -19,7 +18,6 @@ diagnostics1 <- function(event){
     e$consec_sizes <- c(e$consec_sizes, list(c(length(e$B1$x), length(e$B1$y))))
     e$found_cycle <- c(e$found_cycle, FALSE)
     e$found_break <- c(e$found_break, FALSE)
-    e$disjoint <- c(e$disjoint, FALSE)
   }, 
   "EndOfExtract" = {
     update_info <- list("mean_jaccards" = e$mean_jaccards, 
@@ -27,8 +25,7 @@ diagnostics1 <- function(event){
                         "consec_sizes" = e$consec_sizes,
                         "found_cycle" = e$found_cycle,
                         "found_break" = e$found_break,
-                        "pvals" = e$pvals,
-                        "disjointness" = e$disjoint)
+                        "pvals" = e$pvals)
     list("update_info" = update_info, 
          "initial_set" = e$initial_set,
          "extraction_time" = Sys.time() - e$start_time
@@ -44,13 +41,11 @@ diagnostics1 <- function(event){
     f <- parent.frame(n=2)
     qs <- seq(0, 1, length.out = 1000) 
     f$pvals <- c(f$pvals, list(quantile(c(e$px, e$py), qs)))
-  },
-  "Disjointness" = {
-    e$disjoint[e$itCount] <- TRUE
   }, NA)
 }
 
-Qs <- seq(0, 1, length.out = 1000) 
+Qs <- seq(0, 1, length.out = 50)
+
 
 diagnostics2 <- function(event, e=parent.frame()) {
   address <- strsplit(event, ":")[[1]]
@@ -70,20 +65,22 @@ diagnostics2 <- function(event, e=parent.frame()) {
            },
            AfterUpdate={
              B1 <- get("B1", e)
+             B0 <- get("B0", e)
+
              jac <- get("dist_to_prev", e)
              
              e$sizes[[i]] <- list(x=length(B1$x), y=length(B1$y))
              e$consec_jaccards[i] <- jac
-           },
-           
-           Disjoint={
-             e$disjointed <- c(e$disjointed, i)
+
+             if(disjointness_pairs(B0, B1) > 0.7) {
+               e$disjointed <- c(e$disjointed, i)
+             }
            },
            
            FoundCycle={
              chain <- get("chain", e)
              h <- chain[i]
-            
+ 
              e$cycle_info <- c(e$cycle_info, list(c(itCount=i, length=which.max(h %in% chain[i-1:1]))))
            },
           End={
@@ -92,8 +89,8 @@ diagnostics2 <- function(event, e=parent.frame()) {
                                 "pvals" = e$pvals[1:i],
                                 "disjointed" = e$disjointed,
                                 "cycle_info" = e$cycle_info)
-            
-            list("update_info" = update_info, 
+
+            list("update_info" = update_info,
                  "extraction_time" = Sys.time() - e$start_time)
            },
            NA)
@@ -105,4 +102,8 @@ diagnostics2 <- function(event, e=parent.frame()) {
            },
            NA)
   }
+}
+
+diagnostics_none <- function(event, e=parent.frame()) {
+  NULL
 }
