@@ -128,6 +128,7 @@ init <- function(p, indx, alpha, init_method) {
 }
 
 ## Defaults
+#'@export
 pvals_singleton.default <- function(bk, indx) {
   pvals(bk, indx)
 }

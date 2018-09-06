@@ -191,7 +191,7 @@ cbce2 <- function(X, Y,
   
   
   # -------------- Global variables -------------------- 
-  bk <- backend.chisq(X, Y, calc_full_cor)
+  bk <- backend.perm(X, Y, calc_full_cor)
   
   dx <- ncol(X)
   dy <- ncol(Y)

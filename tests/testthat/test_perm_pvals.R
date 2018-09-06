@@ -46,7 +46,9 @@ fit_shifted_chisq <- function(perm_moments, type='p', x=NA, nsim=NA) {
 
 set.seed(12345)
 
-test_that("pvalues are same as simulation", {
+test_that("pvals are same as simulation", {
+  set.seed(12345)
+  
   dx <- 5
   dy <- 6
   n <- 4
@@ -58,7 +60,7 @@ test_that("pvalues are same as simulation", {
   X[, 1:2] <- rowSums(X)
   Y[, 1] <- rowSums(Y)
   
-  bk <- backend.chisq(X, Y)
+  bk <- backend.perm(X, Y)
   py <- pvals(bk, 1:dx)
   px <- pvals(bk, (1:dy) + dx)
   
@@ -69,4 +71,23 @@ test_that("pvalues are same as simulation", {
   fp <- freds_pval(list(x=1:dx, y=1:dy), e)
   expect_equal(fp$x, px)
   expect_equal(fp$y, py)
+})
+
+test_that("pvals_singleton is uniform", {
+  dy <- 100
+  dx <- 1
+  n <- 10
+  alpha <- 0.01
+  
+  set.seed(12345)
+  
+  X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
+  Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
+  
+  bk <- backend.perm(X, Y)
+        
+  pv <- pvals_singleton(bk, 1)
+  
+  expect_equal(length(pv), dy)
+  expect_gte(ks.test(pv, punif)$p.value, alpha)
 })
