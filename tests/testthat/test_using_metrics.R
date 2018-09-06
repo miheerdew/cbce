@@ -1,5 +1,7 @@
 context("Test using metrics")
 
+skip("Moving to cbce2")
+
 source("sim_eQTL_network.R")
 library(bmdmetrics)
 library(rlist)

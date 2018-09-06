@@ -1,5 +1,7 @@
 source("sim_eQTL_network.R")
 
+skip("Moving to cbce2")
+
 context("Check Pvalue computation for Normal")
 
 varcalc1_multi <- function (Ymat, Xmat) {
