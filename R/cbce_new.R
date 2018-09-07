@@ -18,7 +18,7 @@
 #' @export
 cbce2 <- function(X, Y, 
                   alpha = 0.05, 
-                  alpha.init = 2*alpha,
+                  alpha.init = alpha,
                   calc_full_cor=TRUE,
                   multiple_testing_method = 'BHY',
                   start_nodes=NULL,
@@ -44,11 +44,11 @@ cbce2 <- function(X, Y,
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- B01 + dx
-      B02 <- bh_reject(pvals(bk, B01), alpha, multiple_testing_method)
+      B02 <- bh_reject(pvals(bk, B01), alpha.init, multiple_testing_method)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B02 <- bh_reject(pvals(bk, B01), alpha, multiple_testing_method) + dx
+      B02 <- bh_reject(pvals(bk, B01), alpha.init, multiple_testing_method) + dx
       return(list(x = B01, y = B02))
     }
   }
@@ -138,7 +138,7 @@ cbce2 <- function(X, Y,
       
       if (length(B1$y) * length(B1$x) == 0) {
         stop <- collapsed <- TRUE
-        #diagnostic("Extract:Collapsed", f)
+        diagnostic("Extract:Collapsed", f)
         break
       }
       

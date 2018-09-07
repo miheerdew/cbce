@@ -7,6 +7,6 @@ Authors@R: c(
       person("Miheer", "Dewaskar", email= "miheerdew@gmail.com", role=c("aut", "cre"))
       )
 License: MIT
-Suggests: testthat, bmdmetrics, tcltk2
+Suggests: testthat, bmdmetrics, tcltk2, tcltk
 Imports: rlist, pipeR, methods, bmdupdate (>= 0.1.1)
 RoxygenNote: 6.0.1

@@ -27,17 +27,20 @@ interaction_gui <- function(event, env=parent.frame()) {
            env$timestamp <- env$start_time <- Sys.time()
            
            plot_func <- function() {
-             #Plot the results from the latest extraction.
-             if(is.null(res <- get("res", envir = env)) || res$itCount == 0) {
-               return(NULL)
+             #Plot the results from the latest non_dud extraction.
+             if(is.null(res <- get("res", envir = env)) || ! (res$itCount > 0)) {
+               if(is.null(res <- env$old_res)) {
+                 return(NULL)
+               }
              }
-            
+             
+             env$old_res <- res
+             
              u <- res$update_info
              itCount <- res$itCount
              jacs <- u$consec_jaccards
              
              char_map <- list(default = 1,
-                              disjoint = 4,
                               cycles = 5,
                               fixed_point = 19,
                               collapse = 8,
@@ -59,12 +62,12 @@ interaction_gui <- function(event, env=parent.frame()) {
              #The labels give sizes 
              labs = rlist::list.mapv(u$sizes, sprintf("%d/%d", .$x, .$y))
              if(length(labs) == 0) {
-               browser()
-               warning(sprintf("Size list: 0, but itCount: %d. Not plotting\n", itCount))
-               return(NULL)
+               msg <- sprintf("Size list: 0, but itCount: %d. Not plotting\n", itCount)
+               return(plot(0,0, main = msg))
              } 
              
-             par(mfrow=c(1,2))
+             #opar <- par()
+             #par(mfrow=c(1,2))
              plot(1:itCount, jacs,
                   ylim=c(0,1),
                   xlim=c(0, env$maxit + 2), xlab="Iterations", ylab="Consec jaccards",
@@ -73,7 +76,9 @@ interaction_gui <- function(event, env=parent.frame()) {
              legend("topright", 
                     title="Events",
                     legend=names(char_map), pch=as.numeric(char_map))
-             hist(u$pvals[[itCount]], main="P-values from the last iteration", xlab="pvals", breaks=100)
+             #if(!all(is.na(u$pvals[[itCount]]))) { 
+             #  hist(u$pvals[[itCount]], main="P-values from the last iteration", xlab="pvals")
+             #}
            }
            
            env$update_status <- function() {
@@ -159,4 +164,18 @@ interaction_gui <- function(event, env=parent.frame()) {
          }, NA)
 }
 
+#' @export
+interaction_gui_safe <- function(...) {
+  tryCatch({
+    interaction_gui(...)
+  }, error=function(e) {
+    browser()
+    cat(paste("in err handler1\n"))
+  }, warning=function(w) {
+    browser()
+    cat(paste("in warn handler2\n"))
+  })
+}
+
+#' @export
 interaction_none <- function(...) TRUE
