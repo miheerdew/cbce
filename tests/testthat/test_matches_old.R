@@ -4,7 +4,6 @@ library(rlist)
 library(pipeR)
 
 context("Test ChiSq with old version")
-skip("New backend for ChiSq")
 
 set.seed(123345)
 
