@@ -123,7 +123,7 @@ init <- function(p, indx, alpha, init_method) {
         "BH-0.5-nc" =  bh_reject(pvals, 0.5, 'BH'),
         "BH-0.9-nc" =  bh_reject(pvals, 0.9, 'BH'),
         "no-multiple-testing" = which(pvals <= alpha),
-        stop(paste("Unknown init_method:", init_method))
+        bh_reject(pvals, alpha, init_method)
   )
 }
 

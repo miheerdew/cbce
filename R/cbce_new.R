@@ -8,7 +8,7 @@
 #'
 #' @param X,Y Numeric Matices. Represents the two groups of variables.
 #' @param alpha \eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for multiple_testing procedure
-#' @param init_method The initialization procedure to use. Must be one of "conservative-BH", "non-conservative-BH", "BH-0.5",  "BH-0.5-nc", "BH-0.9-nc", "no-multiple-testing".
+#' @param alpha.init \eqn{\in (0,1)} Controls the type1 error for the initialization step. This should perhaps be more lax than alpha.
 #' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
 #' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
 #' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final results.
@@ -18,7 +18,7 @@
 #' @export
 cbce2 <- function(X, Y, 
                   alpha = 0.05, 
-                  init_method = "conservative-BH",
+                  alpha.init = 2*alpha,
                   calc_full_cor=TRUE,
                   multiple_testing_method = 'BHY',
                   start_nodes=NULL,
@@ -34,7 +34,7 @@ cbce2 <- function(X, Y,
   # @param indx The (global) index of the node (variable) to initialize from.
   # @return list(x=integer-vector, y=integer-vector): The initialized x, y sets.
   initialize <- function(indx) {
-    B01 <- init(bk, indx, alpha, init_method)
+    B01 <- init(bk, indx, alpha.init, multiple_testing_method)
     if(length(B01) <= 1) {
       # If B01 = 1 declare it as dud.
       # This is because lot of B01 = 1 end up as duds
