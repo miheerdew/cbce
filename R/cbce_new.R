@@ -67,21 +67,28 @@ cbce2 <- function(X, Y,
     c(B$x, B$y)
   }
   
-  update <- function(B0, env=parent.frame()) {
+  update <- function(B0, env=parent.frame(), first.update.X=TRUE) {
     # Do the update starting from B.
     # @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
     # @return list(x, y) : The X and Y subsets corresponding to the updated set (again using global numbering)
     
-      px <- pvals(bk, B0$y) # size dx vector
-      py <- pvals(bk, B0$x) # size dy vector
+      B1 <- list()
       
-      env$px <- px
-      env$py <- py
+      if(first.update.X) {
+        B1$x <- bh_reject(pvals(bk, B0$y), alpha, multiple_testing_method)
+        B1$y <- bh_reject(pvals(bk, B1$x), alpha, multiple_testing_method) + dx
+      } else {
+        B1$y <- bh_reject(pvals(bk, B0$x), alpha, multiple_testing_method) + dx
+        B1$x <- bh_reject(pvals(bk, B1$y), alpha, multiple_testing_method)
+      }
       
-      diagnostic("Update:Pvalues", env)
+      #env$px <- px
+      #env$py <- py
+      
+      #diagnostic("Update:Pvalues", env)
       #Note that the positions returned by bh_reject are already the global
       #numbers.
-      return(split(bh_reject(c(px, py), alpha, multiple_testing_method)))
+      return(B1)
   }
   
   hash <- function(B) {
@@ -127,7 +134,7 @@ cbce2 <- function(X, Y,
     # Extraction loop
     while(itCount < max_iterations && !stop) {
       itCount <- itCount + 1
-      B1 <- update(B0, f)
+      B1 <- update(B0, f, first.update.X = (indx > dx))
       
       if (length(B1$y) * length(B1$x) == 0) {
         stop <- collapsed <- TRUE
