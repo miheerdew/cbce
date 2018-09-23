@@ -179,8 +179,10 @@ cbce2 <- function(X, Y,
     if(!collapsed) {
       B0$y <- B0$y - dx
       stableComm <- B0 
+      log.pval <- summary.pval(X[, B0$x, drop=FALSE], Y[, B0$y, drop=FALSE])
     } else {
       stableComm <- list(x=integer(0), y=integer(0))
+      log.pval <- NA
     }
     
     return(c(list("indx" = indx,
@@ -189,7 +191,8 @@ cbce2 <- function(X, Y,
                   "fixed_point" = success,
                   "collapsed" = collapsed,
                   "cycle_count" = cycle_count,
-                  "overflowed" = !stop), 
+                  "overflowed" = !stop,
+                  "log.pvalue" = log.pval), 
                   diagnostic_info))
   }
   
