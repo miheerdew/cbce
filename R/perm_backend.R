@@ -51,7 +51,7 @@ pvals_quick.perm <- function(bk, B) {
 pvals_singleton.perm <- function(bk, indx) {
   # An easy way to calculate p-values from an indx
   r2 <- as.vector(cors(bk, indx))^2
-  pvals <- pbeta(r2, 0.5, 0.5*(bk$n - 1), lower.tail = FALSE)
+  pvals <- pbeta(r2, 0.5, 0.5*(bk$n - 2), lower.tail = FALSE)
   
   if(indx <= bk$dx) {
     pvals[bk$maskY] <- NA
