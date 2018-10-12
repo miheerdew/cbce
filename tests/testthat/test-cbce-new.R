@@ -9,6 +9,7 @@ set.seed(1234556)
 
 #High thresh
 THRESH1 <- 0.90
+THRESH75 <- 0.75 
 #Resasonable thresh
 THRESH2 <- 0.6
 
@@ -16,8 +17,8 @@ sim1 <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
 sim2 <- sim_eQTL_network(make_param_list(cmin=5, cmax=20, b=10, bgmult=0.05))
 sim3 <- sim_eQTL_network(make_param_list(cmin=5, cmax=40, b=10, bgmult=0.1))
 
-comms <- function(res) {
-  res$extract_res %>>% 
+comms <- function(extract_res) {
+  extract_res %>>% 
     list.filter(length(bimod$x) * length(bimod$y) > 0) %>>%
       list.map(bimod)
 }
@@ -35,17 +36,21 @@ check_sim <- function(sim,
                       thresh1 = THRESH1, 
                       thresh2a = THRESH1,
                       thresh2b = THRESH2,
+                      thresh3 = THRESH75,
                       ...) {
   args <- list(...)
   
   res <- cbce2(sim$X, sim$Y, ...)
   
-  rep <- report(res, sim)
+  rep <- report(res$extract_res[res$filtered_res.df$index], sim)
   
   #TYPE1
   expect_true(all(rep$report1$coverage >= thresh1))
   #TYPE2
   expect_true(mean(rep$report2$coverage >= thresh2a) >= thresh2b)
+  
+  n <- length(sim$bms)
+  expect_lte(abs(nrow(res$filtered_res.df) - n)/n, 1 - thresh3)
 }
 
 check_results_are_almost_same <- function(res1, res2, sim, 

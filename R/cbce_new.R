@@ -250,5 +250,6 @@ cbce2 <- function(X, Y,
   }
   
   interaction("Main:End", e)
-  list(extract_res=extract_res)
+  list(extract_res=extract_res,
+       filtered_res.df=filter_and_summarize(extract_res, show.progress = FALSE))
 }
