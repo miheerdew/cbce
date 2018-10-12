@@ -71,7 +71,9 @@ interaction_gui <- function(event, env=parent.frame()) {
              plot(1:itCount, jacs,
                   ylim=c(0,1),
                   xlim=c(0, env$maxit + 2), xlab="Iterations", ylab="Consec jaccards",
-                  pch=chars, main=sprintf("Extraction time %s", format(res$extraction_time, digits=2)))
+                  pch=chars, main=sprintf("Extraction time %s. log(p-value)=%.2f", 
+                                          format(res$extraction_time, digits=2),
+                                          res$log.pvalue))
              text(1:itCount, jacs, labels=labs, pos=3, cex=0.5, bty="l")
              legend("topright", 
                     title="Events",
@@ -169,11 +171,9 @@ interaction_gui_safe <- function(...) {
   tryCatch({
     interaction_gui(...)
   }, error=function(e) {
-    browser()
-    cat(paste("in err handler1\n"))
+    cat(paste("Error:", e))
   }, warning=function(w) {
-    browser()
-    cat(paste("in warn handler2\n"))
+    cat(paste("Error", e))
   })
 }
 
