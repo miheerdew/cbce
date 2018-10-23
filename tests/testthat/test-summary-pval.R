@@ -23,6 +23,6 @@ test_that("P-value uniform under permutation", {
     summary[i] <- sum(cor(X[sample(n), ], Y)^2)
   }
   
-  log.pv <- summary.pval(X, Y, summary = summary)
+  log.pv <- summary_pval(X, Y, summary = summary)
   testthat::expect_gt(ks.test(-log.pv, pexp)$p.value, 0.01)
 })

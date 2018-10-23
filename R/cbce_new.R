@@ -11,10 +11,26 @@
 #' @param alpha.init \eqn{\in (0,1)} Controls the type1 error for the initialization step. This should perhaps be more lax than alpha.
 #' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
 #' @param calc_full_cor Calculate \code{c(ncol(X),ncol(Y))} dimensional correlation matrix. This makes the computation faster but requires more memory.
-#' @param diagnostics This is a function that is called whenever internal events happen. It can then collect useful meta-data which is added to the final results.
 #' @param interaction This is a function that will be called between extracts to allow interaction with the program. For instance one cas pass interaction_gui (EXPERIMENTAL!) or interaction_none.  
 #' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY', 'square_BH', 'Bonferroni')
+#' @param max_iterations The maximum number of iterations per extraction. If a fixed point is not found by this step, the extraciton is terminated.
+#' @param diagnostic This is a function for probing the internal state of the method. It will be called at "Events" and can look into what the method is doing. Pass either diagnostics2, diagnostics_none or a custom function.
+#' 
 #' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
+#' 
+#' @examples 
+#' \dontrun{
+#' n <- 100
+#' dx <- 50
+#' dy <- 70
+#'
+#' X <- matrix(rnorm(n*dx), ncol=dx)
+#' Y <- matrix(rnorm(n*dy), ncol=dy)
+#' res <- cbce2(X, Y)
+#' df <- res$filtered_result.df
+#' # The filtered bimodules:
+#' bms <- rlist::list.map(res$extract_res[df$index], bimod)
+#'}
 #' @export
 cbce2 <- function(X, Y, 
                   alpha = 0.05, 
@@ -179,7 +195,7 @@ cbce2 <- function(X, Y,
     if(!collapsed) {
       B0$y <- B0$y - dx
       stableComm <- B0 
-      log.pval <- summary.pval(X[, B0$x, drop=FALSE], Y[, B0$y, drop=FALSE])
+      log.pval <- summary_pval(X[, B0$x, drop=FALSE], Y[, B0$y, drop=FALSE])
     } else {
       stableComm <- list(x=integer(0), y=integer(0))
       log.pval <- NA

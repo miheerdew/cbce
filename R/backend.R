@@ -5,13 +5,15 @@
 #' The methods below are constructors for the differnt backend objects and return an S3 object which implements pvalue methods listed above.
 #'
 #' @examples
-#' X <- matrix(rnorm(100), nrow=10)
-#' Y <- matrix(rnorm(50), nrow=10)
-#' bk <- backend.indepNormal(X, Y)
-#' #Calculate Y pvalues againt the X (column) subset {1,2..,7}
-#' py <- pvals(bk, 1:7)
-#' #Calculate X pvalues againt the Y (column) subset {2, 3}. Use global numbering.
-#' px <- pvals(bk, 10 + c(2,3))
+#' \dontrun{
+#'  X <- matrix(rnorm(100), nrow=10)
+#'  Y <- matrix(rnorm(50), nrow=10)
+#'  bk <- backend.indepNormal(X, Y)
+#'  #Calculate Y pvalues againt the X (column) subset {1,2..,7}
+#'  py <- pvals(bk, 1:7)
+#'  #Calculate X pvalues againt the Y (column) subset {2, 3}. Use global numbering.
+#'  px <- pvals(bk, 10 + c(2,3))
+#' }
 #'@name backend
 NULL
 

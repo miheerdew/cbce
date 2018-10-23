@@ -25,7 +25,6 @@
 #' }
 #' 
 #' @examples 
-#' 
 #' \dontrun{
 #' n <- 100
 #' dx <- 50
@@ -43,6 +42,10 @@
 #'}
 #' 
 #'@export
+#'@importFrom pipeR "%>>%"
+#'@import rlist
+#'@import stats
+#'@import graphics
 filter_and_summarize <- function(extract_res, 
                                  show.progress=TRUE,
                                  plot.dendrogram=FALSE,
@@ -55,7 +58,7 @@ filter_and_summarize <- function(extract_res,
   
   bms <- rlist::list.map(ex.fixed, bimod)
   
-  Jac <- jacc.matrix(bms, show.progress=show.progress)
+  Jac <- jacc_matrix(bms, show.progress=show.progress)
   
   efnum <- switch(count.method,
                   "1" =  effective.num1(bms),
@@ -108,7 +111,7 @@ effective.num1 <- function(bimods, show.progress=FALSE) {
   total <- 0
   
   if(show.progress) {
-    pb <- txtProgressBar(max=length(bimods))
+    pb <- utils::txtProgressBar(max=length(bimods))
   }
   
   for(i in seq_along(bimods)) {
@@ -129,7 +132,7 @@ effective.num1 <- function(bimods, show.progress=FALSE) {
     total <- total + expected_overlap
     
     if(show.progress) {
-      setTxtProgressBar(pb, i)
+      utils::setTxtProgressBar(pb, i)
     }
   }
   

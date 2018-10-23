@@ -40,10 +40,25 @@ diagnostics1 <- function(event){
   "UpdatePvalues" = {
     f <- parent.frame(n=2)
     qs <- seq(0, 1, length.out = 1000) 
-    f$pvals <- c(f$pvals, list(quantile(c(e$px, e$py), qs)))
+    f$pvals <- c(f$pvals, list(stats::quantile(c(e$px, e$py), qs)))
   }, NA)
 }
 
+#' This is the default diagnositcs method passed to cbce.
+#' 
+#' It collects data about the internal state of the method 
+#' and returns it alonside the result.
+#' 
+#' Currently, the diagnostics collected are:
+#' \enumerate{
+#' \item Consecutive_jaccards : The jaccard distance at each stage
+#'  \item sizes : The sizes at each stage in the extaction
+#'  \item disjointed : Whether disjointed at each point.
+#' \item cycle : Whether cycled at each point.
+#' \item Extraction time.
+#' }
+#' 
+#' @keywords internal
 #' @export
 diagnostics2 <- function(event, e=parent.frame()) {
   address <- strsplit(event, ":")[[1]]
@@ -54,7 +69,6 @@ diagnostics2 <- function(event, e=parent.frame()) {
            Setup={
              maxit <- get("max_iterations", e)
              
-             e$pvals <- rep(list(NULL), maxit)
              e$sizes <- rep(list(NULL), maxit)
              e$consec_jaccards <- rep(NULL, maxit)
              e$disjointed <- NULL
@@ -86,7 +100,6 @@ diagnostics2 <- function(event, e=parent.frame()) {
            End={
              update_info <- list("consec_jaccards" = e$consec_jaccards[1:i],
                                  "sizes" = e$sizes[1:i],
-                                 "pvals" = e$pvals[1:i],
                                  "disjointed" = e$disjointed,
                                  "cycle_info" = e$cycle_info)
              
@@ -97,6 +110,11 @@ diagnostics2 <- function(event, e=parent.frame()) {
   }
 }
 
+#' Don't collect any diagnostics from the method.
+#' 
+#' @describeIn diagnositcs2
+#' 
+#' @keywords internal
 #' @export
 diagnostics_none <- function(event, e=parent.frame()) {
   NULL

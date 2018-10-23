@@ -1,7 +1,6 @@
 # Implements the Normal backend in C. All the hevy lifting is done via the bmdupdate library.
 
 #' @describeIn backend Constructor for sum of correlations under uncorrelated Gene ans SNP sets (the weak null).
-#' @param parallel Logical Run pvalue computation using multiple threads?
 #' @inheritParams backend.base
 #'@importFrom methods new
 #'@export

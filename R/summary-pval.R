@@ -1,12 +1,12 @@
-summary.perm_moments <- function(X, Y) {
+summary_perm_moments <- function(X, Y) {
   
   n <- nrow(X)
   
   X <- scale(X)/sqrt(n-1)
   Y <- scale(Y)/sqrt(n-1)
   
-  lambda1 <- symmetric.eigenvals(X)
-  lambda2 <- symmetric.eigenvals(Y)
+  lambda1 <- symmetric_eigenvals(X)
+  lambda2 <- symmetric_eigenvals(Y)
   
   # Equal to sum(lambda) since X, Y were normalized.
   sum.1 <- ncol(X)
@@ -72,16 +72,19 @@ summary.perm_moments <- function(X, Y) {
   c(mean=mu, var=var, skewness=skewness)
 }
 
-symmetric.eigenvals <- function(X) {
+symmetric_eigenvals <- function(X) {
   m <- ncol(X)
   n <- nrow(X)
   A <- if(m <= n) crossprod(X) else tcrossprod(X)
   eigen(A)$values
 }
 
+#' Compute the score or a summarizing p-vlaue for the 
+#' 
 #' @export
-summary.pval <- function(X, Y, log.p = TRUE, summary=NULL) {
-  pm <- as.list(summary.perm_moments(X, Y))
+#' @keywords internal
+summary_pval <- function(X, Y, log.p = TRUE, summary=NULL) {
+  pm <- as.list(summary_perm_moments(X, Y))
   
   b <- 8/pm$skewness^2
   a <- sqrt(pm$var/(2*b))

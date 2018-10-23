@@ -95,7 +95,7 @@ bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
   
 }
 
-jaccard.sim <- function(B1, B2) {
+jaccard_sim <- function(B1, B2) {
   #Extension of Jaccard similarity to bimodules by considering it as a set of pairs.
   C12 <- list(x=length(intersect(B1$x, B2$x)), y=length(intersect(B1$y, B2$y)))
   C1 <- list.map(B1, length(unique(.)))
@@ -107,20 +107,20 @@ jaccard.sim <- function(B1, B2) {
   common_pairs/total_pairs
 }
 
-jacc.matrix <- function(bimods, show.progress=FALSE) {
+jacc_matrix <- function(bimods, show.progress=FALSE) {
   k <- length(bimods)
   
   if(show.progress) {    
-    pb <- txtProgressBar(max=choose(k, 2))
+    pb <- utils::txtProgressBar(max=choose(k, 2))
   }
   
   Jac <- matrix(numeric(0), nrow=k, ncol=k)
   
   for(i in seq_along(bimods)) {
     for(j in seq_len(i-1)) {
-      Jac[i, j] <- Jac[j, i] <- jaccard.sim(bimods[[i]], bimods[[j]])
+      Jac[i, j] <- Jac[j, i] <- jaccard_sim(bimods[[i]], bimods[[j]])
       if(show.progress) {
-        setTxtProgressBar(pb, choose(i-1, 2) + j)
+        utils::setTxtProgressBar(pb, choose(i-1, 2) + j)
       }
     }
   }

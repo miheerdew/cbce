@@ -1,19 +1,7 @@
-plot.progress <- function(...)	{
-  vectOfBar <- c(...)*100
-  labels <- names(vectOfBar)
-  numOfBar <- length(vectOfBar)
-  plot(c(0,100), c(0,numOfBar), type='n', xlab='', ylab='', yaxt='n', mar=c(3,3,3,3))
-  for(i in 1:numOfBar) {
-    rect(0, 0.1+i-1, vectOfBar[i], 0.9+i-1, col=rainbow(numOfBar)[i])
-    text(0.5, 0.5+i-1, paste0(labels[i], ': ', round(vectOfBar[i],2), '%'), adj=0)
-  }
-  title('Progress...')
-}
 
 #' @import tcltk2
 #' @import tcltk
-#' @export
-interaction_gui <- function(event, env=parent.frame()) {
+interaction_gui_non_safe <- function(event, env=parent.frame()) {
   switch(event, 
          "Main:Setup" = {
            
@@ -119,7 +107,7 @@ interaction_gui <- function(event, env=parent.frame()) {
            
            # ----- Setup the GUI -----------
            env$win <- tktoplevel()
-           tktitle(env$win) <- TITLE
+           tktitle(env$win) <- get0("TITLE", envir=globalenv(), ifnotfound = "CBCE Progress")
            
            env$stop <- tclVar(0)
            env$browser <- tclVar(0)
@@ -166,16 +154,18 @@ interaction_gui <- function(event, env=parent.frame()) {
          }, NA)
 }
 
+#' Provides a GUI for interaction with cbce.
+#' 
+#' Pass this as the interaction argument to cbce.
+#' 
+#' @keywords internal
 #' @export
-interaction_gui_safe <- function(...) {
+interaction_gui <- function(...) {
   tryCatch({
-    interaction_gui(...)
+    interaction_gui_non_safe(...)
   }, error=function(e) {
     cat(paste("Error:", e))
-  }, warning=function(w) {
-    cat(paste("Error", e))
   })
 }
 
-#' @export
 interaction_none <- function(...) TRUE
