@@ -21,32 +21,30 @@ backend.base <- function(X, Y, calc_full_cor=TRUE){
 }
 
 
-cors.base <- function(p, A, B=NULL){
+cors.base <- function(p, A){
   #When p is of class base, calculate the correlations from set A.
   testX <- min(A) > p$dx
 
-  # Correct A and B to use local numbering.
+  # Correct A to use local numbering.
   if(testX) {
       A <- A - p$dx
-      B <- if(is.null(B)) 1:p$dx else B
   } else {
       A <- A
-      B <- if(is.null(B)) 1:p$dy else B-p$dx
   }
 
   if (p$calc_full_cor) {
     if (testX) {
       #A is in the Y set
-      return(p$full_xy_cor[B, A, drop = FALSE])
+      return(p$full_xy_cor[ , A, drop = FALSE])
     } else {
       #A is in the X set
-      return(t(p$full_xy_cor[A, B, drop = FALSE]))
+      return(t(p$full_xy_cor[A, , drop = FALSE]))
     }
   } else {
     if (testX) {
-      return(crossprod(p$X[, B, drop=FALSE], p$Y[, A, drop = FALSE])/(p$n - 1))
+      return(crossprod(p$X, p$Y[, A, drop = FALSE])/(p$n - 1))
     } else {
-      return(crossprod(p$Y[, B, drop=FALSE], p$X[, A, drop = FALSE])/(p$n - 1))
+      return(crossprod(p$Y, p$X[, A, drop = FALSE])/(p$n - 1))
     }
   }
 }

@@ -20,12 +20,14 @@ bk3 <- backend.normal(X, Y)
 bk4 <- backend.chisq(X, Y)
 
 test_that("cors.base gives correlations", {
-  expect_equal(cors.base(bk, 1:8, 1:4 + dx), cor(sim$Y[,1:4], sim$X[,1:8]))
-  expect_equal(cors.base(bk, 8:1+dx, 4:6), cor(sim$X[,4:6], sim$Y[,8:1]))
-  expect_equal(cors.base(bk, 8:1+dx), cor(sim$X, sim$Y[,8:1]))
+  expect_equal(cors.base(bk, 1:4 + dx), cor(sim$X, sim$Y[,1:4]))
+  expect_equal(cors.base(bk, 4:6), cor( sim$Y, sim$X[,4:6]))
 })
 
+
 test_that("score_quick calculates sensible score", {
+  skip("Score depricated")
+  
   expect_gt(score_quick(bk, 1:dx, 1:dy+dx), 10)
   expect_gt(score_quick(bk2, 1:dx, 1:dy+dx), 50)
   expect_equal(score_quick(bk, 1:dx, 1:dy+dx), score_quick(bk, 1:dy + dx, 1:dx))
@@ -33,6 +35,8 @@ test_that("score_quick calculates sensible score", {
 })
 
 test_that("score_quick low under null", {
+  skip("Score depricated")
+  
   expect_lt(score_quick(bk3, 1:dx, 1:dy+dx), 2)
   expect_lt(score_quick(bk4, 1:dx, 1:dy+dx), 2)
 })

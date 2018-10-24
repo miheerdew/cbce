@@ -36,8 +36,8 @@ pvals.perm <- function(bk, B) {
   a<-sqrt(sigma2/(2*b))
   d<-mu-a*b
   
-  R <- apply(cors(bk, B), 1, crossprod)
-  pchisq((R-d)/a, df=b, lower.tail=FALSE)
+  R <- cors(bk, B)
+  pchisq((rowSums(R^2)-d)/a, df=b, lower.tail=FALSE)
 }
 
 pvals_quick.perm <- function(bk, B) {
@@ -50,7 +50,7 @@ pvals_quick.perm <- function(bk, B) {
 #' @export
 pvals_singleton.perm <- function(bk, indx) {
   # An easy way to calculate p-values from an indx
-  r2 <- as.vector(cors(bk, indx))^2
+  r2 <- cors(bk, indx)^2
   pvals <- pbeta(r2, 0.5, 0.5*(bk$n - 2), lower.tail = FALSE)
   
   if(indx <= bk$dx) {
