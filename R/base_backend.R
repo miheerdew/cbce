@@ -74,10 +74,3 @@ mask.base <- function(bk, Bx, By) {
   bk$maskX <- union(bk$maskX, Bx)
   bk$maskY <- union(bk$maskY, By - bk$dx)
 }
-
-#' @describeIn score_quick implementation for the base class
-#' @export
-score_quick.base <- function(bk, Bx, By) {
-  R <- cors.base(bk, Bx, By)
-  -log10(bk$normal_vector_pval(as.vector(sqrt(bk$n)*R)))
-}
