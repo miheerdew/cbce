@@ -20,7 +20,7 @@ backend.chisq <- function(X, Y, parallel = FALSE, calc_full_cor=FALSE, fast_appr
 
 #' @describeIn pvals C implementation for sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)
 #' @export
-pvals.chisq <- function(bk, B) {
+pvals.chisq <- function(bk, B, thresh.alpha) {
   if(bk$fast_approx){
     bk$obj$pvals(B, bk$parallel, bmdupdate::Method$BigX_fast)
   } else {

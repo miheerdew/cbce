@@ -95,13 +95,13 @@ zstats <- function(p, B) {
 
 #' @describeIn pvals implementation for the one sided sum of correlations under uncorrelated Gene and SNP sets (the weak null)
 #' @export
-pvals.normal <- function(bk, B) {
+pvals.normal <- function(bk, B, thresh.alpha) {
   stats::pnorm(zstats(bk, B), lower.tail = FALSE)
 }
 
 #' @describeIn pvals implementation for the two sided sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)
 #' @export
-pvals.normal_two_sided <- function(bk, B) {
+pvals.normal_two_sided <- function(bk, B, thresh.alpha) {
   2 * stats::pnorm(abs(zstats(bk, B)), lower.tail = FALSE)
 }
 

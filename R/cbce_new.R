@@ -60,11 +60,11 @@ cbce2 <- function(X, Y,
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- B01 + dx
-      B02 <- bh_reject(pvals(bk, B01), alpha.init, multiple_testing_method)
+      B02 <- bh_reject(pvals(bk, B01, thresh.alpha=alpha.init), alpha.init, multiple_testing_method)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B02 <- bh_reject(pvals(bk, B01), alpha.init, multiple_testing_method) + dx
+      B02 <- bh_reject(pvals(bk, B01, thresh.alpha=alpha.init), alpha.init, multiple_testing_method) + dx
       return(list(x = B01, y = B02))
     }
   }
@@ -91,11 +91,15 @@ cbce2 <- function(X, Y,
       B1 <- list()
       
       if(first.update.X) {
-        B1$x <- bh_reject(pvals(bk, B0$y), alpha, multiple_testing_method)
-        B1$y <- bh_reject(pvals(bk, B1$x), alpha, multiple_testing_method) + dx
+        B1$x <- bh_reject(pvals(bk, B0$y, thresh.alpha=alpha), 
+                          alpha, multiple_testing_method)
+        B1$y <- bh_reject(pvals(bk, B1$x, thresh.alpha=alpha), 
+                          alpha, multiple_testing_method) + dx
       } else {
-        B1$y <- bh_reject(pvals(bk, B0$x), alpha, multiple_testing_method) + dx
-        B1$x <- bh_reject(pvals(bk, B1$y), alpha, multiple_testing_method)
+        B1$y <- bh_reject(pvals(bk, B0$x, thresh.alpha=alpha), 
+                          alpha, multiple_testing_method) + dx
+        B1$x <- bh_reject(pvals(bk, B1$y, thresh.alpha=alpha), 
+                          alpha, multiple_testing_method)
       }
       
       #env$px <- px

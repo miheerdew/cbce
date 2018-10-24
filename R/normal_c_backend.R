@@ -16,7 +16,7 @@ backend.normalc <- function(X, Y, parallel = FALSE, calc_full_cor=FALSE) {
 
 #' @describeIn pvals C implementation for sum of correlations under uncorrelated Gene and SNP sets (the weak null)
 #' @export
-pvals.normalc <- function(bk, B) {
+pvals.normalc <- function(bk, B, thresh.alpha) {
     bk$obj$pvals(B, bk$parallel)
 }
 

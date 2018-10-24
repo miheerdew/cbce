@@ -51,7 +51,7 @@ cors.base <- function(p, A){
 
 #' @describeIn pvals_singleton implementation for the base class
 #' @export
-pvals_singleton.base <- function(bk, indx) {
+pvals_singleton.base <- function(bk, indx, thresh.alpha) {
   # An easy way to calculate p-values from an indx
   fischer_tranformed_cor <- atanh(as.vector(cors(bk, indx))) * sqrt(bk$n - 3)
   if (bk$two_sided) {

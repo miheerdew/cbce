@@ -13,7 +13,7 @@ backend.indepNormal <- function(X, Y, calc_full_cor=FALSE) {
 
 #' @describeIn pvals p-values for the sum of correlations under strong independence (with in Gene and SNP's and between them too).
 #' @export
-pvals.indepNormal <- function(bk, B){
+pvals.indepNormal <- function(bk, B, thresh.alpha){
   R <- cors(bk, B)
   stats::pnorm(sqrt(bk$n) * rowSums(R), sd=sqrt(length(B)), lower.tail = FALSE)
 }
@@ -21,7 +21,7 @@ pvals.indepNormal <- function(bk, B){
 #'@describeIn backend Constructor for sum of squared correlations under strong independence.
 #'@inheritParams backend.base
 #'@export
-backend.indepChiSq <- function(X, Y, calc_full_cor=FALSE) {
+backend.indepChiSq <- function(X, Y, thresh.alpha, calc_full_cor=FALSE) {
   # Don't change p$normal_vector_pval
   p <- backend.base(X, Y, calc_full_cor)
   p$two_sided = TRUE
@@ -31,7 +31,7 @@ backend.indepChiSq <- function(X, Y, calc_full_cor=FALSE) {
 
 #' @describeIn pvals p-values for the sum of squared correlations under strong independence (with in Gene and SNP's and between them too).
 #' @export
-pvals.indepChiSq <- function(bk, B){
+pvals.indepChiSq <- function(bk, B, thresh.alpha){
   R <- cors(bk, B)
   stats::pchisq(bk$n * rowSums(R^2), length(B), lower.tail = FALSE)
 }
