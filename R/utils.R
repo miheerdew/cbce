@@ -98,8 +98,8 @@ bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
 jaccard_sim <- function(B1, B2) {
   #Extension of Jaccard similarity to bimodules by considering it as a set of pairs.
   C12 <- list(x=length(intersect(B1$x, B2$x)), y=length(intersect(B1$y, B2$y)))
-  C1 <- list.map(B1, length(unique(.)))
-  C2 <- list.map(B2, length(unique(.)))
+  C1 <- rlist::list.map(B1, length(unique(.)))
+  C2 <- rlist::list.map(B2, length(unique(.)))
   
   common_pairs <- C12$x*C12$y
   total_pairs <- C1$x*C1$y + C2$x*C2$y - common_pairs

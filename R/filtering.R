@@ -43,7 +43,6 @@
 #' 
 #'@export
 #'@importFrom pipeR "%>>%"
-#'@import rlist
 #'@import stats
 #'@import graphics
 filter_and_summarize <- function(extract_res, 
@@ -52,33 +51,44 @@ filter_and_summarize <- function(extract_res,
                                  count.method=1,
                                  hclust.method="average") {
   
-  rlist::list.update(extract_res, index.orig=.i) %>>%
-    rlist::list.filter(exists("fixed_point") && fixed_point) %>>%
+  rlist::list.takeWhile(extract_res, !is.null(.)) %>>%
+    rlist::list.update(index.orig=.i) %>>%
+    rlist::list.filter(fixed_point) %>>%
       rlist::list.select(bimod, index.orig, log.pvalue) -> ex.fixed
   
   bms <- rlist::list.map(ex.fixed, bimod)
   
+  if(length(bms) <= 1) {
+    rlist::list.select(ex.fixed, 
+                       x.size=length(bimod$x), 
+                       y.size=length(bimod$y),
+                       score=-log.pvalue, 
+                       group=1,
+                       group.size=1,
+                       index=index.orig) %>>%
+      rlist::list.stack() -> df
+    return(df)
+  } 
+  
   Jac <- jacc_matrix(bms, show.progress=show.progress)
-  
   efnum <- switch(count.method,
-                  "1" =  effective.num1(bms),
-                  "2" = effective.num2(Jac),
-                  stop(sprintf('Unknown count.method: "%s"', count.method))
-            )
-  
-  
+                    "1" =  effective.num1(bms),
+                    "2" = effective.num2(Jac),
+                    stop(sprintf('Unknown count.method: "%s"', count.method))
+              )
+    
   n.tot <- length(bms)
   n.cut <- ceiling(efnum)
-  
+    
   hc <- hclust(as.dist(1-Jac), method=hclust.method) 
   grps <- cutree(hc, k=n.cut)
-  
+    
   if(plot.dendrogram) {
-    height <- hc$height[n.tot - n.cut]
-    plot(hc, labels=FALSE)
-    abline(h=height, lty=2)
+      height <- hc$height[n.tot - n.cut]
+      plot(hc, labels=FALSE)
+      abline(h=height, lty=2)
   }
-  
+
   #Bms, ex.fixed, df.fixed_all are in same orider.
   rlist::list.select(ex.fixed, 
               x.size=length(bimod$x), 
@@ -116,7 +126,7 @@ effective.num1 <- function(bimods, show.progress=FALSE) {
   
   for(i in seq_along(bimods)) {
     b1 <- bimods[[i]]
-    len <- list.map(b1, length(unique(.)))
+    len <- rlist::list.map(b1, length(unique(.)))
     Counts <- matrix(0, nrow=len$x, ncol=len$y)
     
     for(b2 in bimods) {
@@ -148,10 +158,10 @@ select_rep <- function(bimods) {
   
   # Map the genes and SNPs to a uniform range.
   
-  all.x <- unique(unlist(list.map(bimods, .$x)))
-  all.y <- unique(unlist(list.map(bimods, .$y)))
+  all.x <- unique(unlist(rlist::list.map(bimods, .$x)))
+  all.y <- unique(unlist(rlist::list.map(bimods, .$y)))
   
-  bimods <- list.map(bimods, 
+  bimods <- rlist::list.map(bimods, 
                      list(x=match(.$x, all.x), y=match(.$y, all.y)))
   
   # Count the number of occurances of each pair
@@ -161,7 +171,7 @@ select_rep <- function(bimods) {
     Count.pairs[b$x, b$y] <- Count.pairs[b$x, b$y] + 1 
   }
   
-  counts <- list.mapv(bimods, {
+  counts <- rlist::list.mapv(bimods, {
     sum(Count.pairs[.$x, .$y])
   })
   
