@@ -49,20 +49,17 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
              
              #The labels give sizes 
              labs = rlist::list.mapv(u$sizes, sprintf("%d/%d", .$x, .$y))
-             if(length(labs) == 0) {
-               msg <- sprintf("Size list: 0, but itCount: %d. Not plotting\n", itCount)
-               return(plot(0,0, main = msg))
-             } 
              
              #opar <- par()
              #par(mfrow=c(1,2))
-             plot(1:itCount, jacs,
+             plot(0:itCount, jacs,
                   ylim=c(0,1),
                   xlim=c(0, env$maxit + 2), xlab="Iterations", ylab="Consec jaccards",
-                  pch=chars, main=sprintf("Extraction time %s. log(p-value)=%.2f", 
+                  pch=c(char_map$default, chars), 
+                  main=sprintf("Extraction time %s. log(p-value)=%.2f", 
                                           format(res$extraction_time, digits=2),
                                           res$log.pvalue))
-             text(1:itCount, jacs, labels=labs, pos=3, cex=0.5, bty="l")
+             text(0:itCount, jacs, labels=labs, pos=3, cex=0.5, bty="l")
              legend("topright", 
                     title="Events",
                     legend=names(char_map), pch=as.numeric(char_map))

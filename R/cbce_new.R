@@ -145,7 +145,7 @@ cbce2 <- function(X, Y,
     
     B1 <- split(integer(0)) #Initial value for B1
     
-    
+    diagnostic("Extract:LoopBegins", f)
     # Extraction loop
     while(itCount < max_iterations && !stop) {
       itCount <- itCount + 1
