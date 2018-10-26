@@ -4,8 +4,8 @@
 #' @inheritParams backend.base
 #'@importFrom methods new
 #'@export
-backend.perm <- function(X, Y, calc_full_cor=FALSE) {
-  p <- backend.base(X, Y, calc_full_cor)
+backend.perm <- function(X, Y, cache.size=0) {
+  p <- backend.base(X, Y, cache.size=cache.size)
   p$two_sided <- TRUE
   # No need to change:
   #  p$normal_vector_pval

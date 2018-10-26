@@ -11,7 +11,7 @@ X <- matrix(rnorm(n*dx), ncol=dx)
 Y <- matrix(rnorm(n*dy), ncol=dy)
 
 test_that("No bimodule on noise", {
-  res <- cbce2(X, Y)
+  res <- cbce(X, Y)
   expect_null(res$filtered_result.df)
 })
 
@@ -26,6 +26,6 @@ stop_after_five <- function(event, env) {
 }
 
 test_that("Run stopped", {
-  res <- cbce2(X, Y, interaction=stop_after_five)
+  res <- cbce(X, Y, interaction=stop_after_five)
   expect_null(res$filtered_result.df)
 })

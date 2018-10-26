@@ -1,49 +1,3 @@
-diagnostics1 <- function(event){
-  e <- parent.frame()
-  switch(event,
-  "ExtractionLoopBegins" = {
-    e$consec_jaccards <- NULL
-    e$mean_jaccards <- NULL
-    e$consec_sizes <- list(c(length(e$B0$x), length(e$B0$y)))
-    e$found_cycle <- NULL
-    e$found_break <- NULL
-    e$pvals <- list()
-    e$initial_set <- unlist(e$B0)
-    e$start_time <- Sys.time()
-  }, 
-  "AfterUpdate" = {
-    consec_jaccard <- jaccard_pairs(e$B0, e$B1)
-    e$consec_jaccards <- c(e$consec_jaccards, consec_jaccard)
-    #e$mean_jaccards <- c(e$mean_jaccards, mean(e$jaccards))
-    e$consec_sizes <- c(e$consec_sizes, list(c(length(e$B1$x), length(e$B1$y))))
-    e$found_cycle <- c(e$found_cycle, FALSE)
-    e$found_break <- c(e$found_break, FALSE)
-  }, 
-  "EndOfExtract" = {
-    update_info <- list("mean_jaccards" = e$mean_jaccards, 
-                        "consec_jaccards" = e$consec_jaccards,
-                        "consec_sizes" = e$consec_sizes,
-                        "found_cycle" = e$found_cycle,
-                        "found_break" = e$found_break,
-                        "pvals" = e$pvals)
-    list("update_info" = update_info, 
-         "initial_set" = e$initial_set,
-         "extraction_time" = Sys.time() - e$start_time
-         )
-  },
-  "FoundCycle" = {
-    e$found_cycle[e$itCount] <- TRUE
-  },
-  "FoundBreak" = {
-    e$found_break[e$itCount] <- TRUE 
-  }, 
-  "UpdatePvalues" = {
-    f <- parent.frame(n=2)
-    qs <- seq(0, 1, length.out = 1000) 
-    f$pvals <- c(f$pvals, list(stats::quantile(c(e$px, e$py), qs)))
-  }, NA)
-}
-
 #' This is the default diagnositcs method passed to cbce.
 #' 
 #' It collects data about the internal state of the method 
@@ -60,7 +14,7 @@ diagnostics1 <- function(event){
 #' 
 #' @keywords internal
 #' @export
-diagnostics2 <- function(event, e=parent.frame()) {
+diagnostics <- function(event, e=parent.frame()) {
   address <- strsplit(event, ":")[[1]]
   if(address[1] == "Extract") {
     i <- get("itCount", e)

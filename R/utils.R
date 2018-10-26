@@ -127,3 +127,5 @@ jacc_matrix <- function(bimods, show.progress=FALSE) {
   diag(Jac) <- 1
   Jac
 }
+
+NUMERIC_SIZE <- 8

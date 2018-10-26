@@ -49,36 +49,6 @@ pvals_singleton <- function(bk, indx, thresh.alpha=1) {
   UseMethod("pvals_singleton", bk)
 }
 
-#' Calculate p-values against a testing set quickly.
-#'
-#' Given a testing set B, return the p-values for the opposite side.
-#' This will be very fast but also very crude approximation because it
-#' assumes that variables within B are independent.
-#'
-#' @param bk An object of class backend
-#' @param B A set of either X or Y indices (using global numbering). The method calculates the pvalues from this set to the opposite side.
-#'
-#' @return The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether B is from Y or X respectively.
-#' @seealso \code{\link{pvals}}, \code{\link{pvals_singleton}}
-#' @export
-pvals_quick <- function(bk, B) {
-  UseMethod("pvals_quick", bk)
-}
-
-#' Calculate score for a Bi-set
-#'
-#' Given a bi-set (Bx, By) of indices return a quick score for the signal inside it.
-#'
-#' @param bk An object of class backend
-#' @param Bx A set of X nodes.
-#' @param By A set of globally numbered Y nodes
-#'
-#' @return The result is a non-negative number representing the score for the signal inside the Bi-set. The larger the score more is the signal.
-#' @export
-score_quick <- function(bk, Bx, By) {
-  UseMethod("score_quick", bk)
-}
-
 #' Calculate correlation vector from the set A
 #'
 #' The backends typically have a faster way to implement this (using precomputations)
@@ -92,22 +62,6 @@ cors <- function(bk, A) {
   UseMethod("cors", bk)
 }
 
-#' Masks the set B in future computations.
-#'
-#' The p-vlaues corresponding to Bx, By will no longer need to calculated and
-#' will be returned as NA during future pvals call.
-#'
-#'
-#' @param bk An object of class backend
-#' @param Bx A set of X indices
-#' @param By A set of Y indices (globally numbered)
-#'
-#'@export
-mask <- function(bk, Bx=c(), By=c()) {
-  if(length(Bx) + length(By) > 0) {
-    UseMethod("mask", bk)
-  }
-}
 
 #' Initialization function
 #'
@@ -131,11 +85,6 @@ init <- function(p, indx, alpha, init_method) {
 }
 
 ## Defaults
-#'@export
 pvals_singleton.default <- function(bk, indx, thresh.alpha=1) {
   pvals(bk, indx, thresh.alpha)
-}
-
-pvals_quick.default <- function(bk, B) {
-  pvals(bk, B, 1)
 }

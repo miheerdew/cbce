@@ -7,6 +7,7 @@ Authors@R: c(
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
       )
 License: MIT
-Suggests: testthat, bmdmetrics, mvtnorm
-Imports: rlist, dplyr, pipeR, methods, bmdupdate (>= 0.1.1), tcltk2, tcltk, digest, tkrplot
+Suggests: testthat, mvtnorm
+Imports: rlist, dplyr, pipeR, methods, tcltk2, tcltk, digest, tkrplot, futile.logger, Rcpp (>= 0.12.19)
+LinkingTo: Rcpp
 RoxygenNote: 6.1.0

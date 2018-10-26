@@ -1,7 +1,8 @@
-context("Test cbce new")
+context("Test cbce")
 
 source("sim_eQTL_network.R")
-library(bmdmetrics)
+source("metrics.R")
+
 library(rlist)
 library(pipeR)
 
@@ -40,7 +41,7 @@ check_sim <- function(sim,
                       ...) {
   args <- list(...)
   
-  res <- cbce2(sim$X, sim$Y, ...)
+  res <- cbce(sim$X, sim$Y, ...)
   
   rep <- report(res$extract_res[res$filtered_res.df$index], sim)
   
@@ -61,7 +62,7 @@ check_results_are_almost_same <- function(res1, res2, sim,
   expect_gte(mean(rep$report2$closest_match >= thresh1), thresh2)
 }
 
-test_that("Checking sim for cbce2", {
+test_that("Checking sim for cbce", {
   check_sim(sim1)
   check_sim(sim2)
   check_sim(sim3, thresh2a=THRESH2)
