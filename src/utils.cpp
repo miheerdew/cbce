@@ -1,22 +1,18 @@
-#include <Rcpp.h>
+// we only include RcppArmadillo.h which pulls Rcpp.h in for us
+#include "RcppArmadillo.h"
+// [[Rcpp::depends(RcppArmadillo)]]
 
-using namespace Rcpp;
+using namespace arma;
+// via the depends attribute we tell Rcpp to create hooks for
+// RcppArmadillo so that the build process will know what to do
 
-// This is a simple example of exporting a C++ function to R. You can
-// source this function into an R session using the Rcpp::sourceCpp 
-// function (or via the Source button on the editor toolbar). Learn
-// more about Rcpp at:
-//
-//   http://www.rcpp.org/
-//   http://adv-r.had.co.nz/Rcpp.html
-//   http://gallery.rcpp.org/
-//
-
+//' Update the colmns ind of matrix A in place by matrix B
+//' 
+//' @export
 // [[Rcpp::export]]
-void updateColumnsInPlace(NumericMatrix &A,
-                          const IntegerVector &ind, 
-                         const NumericMatrix &B) {
-  for(int i=0; i < ind.length(); i++) {
-    A.column(ind[i]-1) = B.column(i);
-  }
+void updateColumnsInPlace(arma::mat &A,
+                          arma::uvec ind, 
+                          const arma::mat &B) {
+  ind.transform([](arma::uword i) -> arma::uword { return (i - 1); });
+  A.cols(ind) = B;
 }

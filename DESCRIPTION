@@ -9,5 +9,5 @@ Authors@R: c(
 License: MIT
 Suggests: testthat, mvtnorm
 Imports: rlist, dplyr, pipeR, methods, tcltk2, tcltk, digest, tkrplot, futile.logger, Rcpp (>= 0.12.19)
-LinkingTo: Rcpp
+LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.0
