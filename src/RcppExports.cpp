@@ -19,8 +19,11 @@ BEGIN_RCPP
 END_RCPP
 }
 
+RcppExport SEXP _rcpp_module_boot_cbase();
+
 static const R_CallMethodDef CallEntries[] = {
     {"_cbce_updateColumnsInPlace", (DL_FUNC) &_cbce_updateColumnsInPlace, 3},
+    {"_rcpp_module_boot_cbase", (DL_FUNC) &_rcpp_module_boot_cbase, 0},
     {NULL, NULL, 0}
 };
 

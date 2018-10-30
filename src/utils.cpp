@@ -8,7 +8,6 @@ using namespace arma;
 
 //' Update the colmns ind of matrix A in place by matrix B
 //' 
-//' @export
 // [[Rcpp::export]]
 void updateColumnsInPlace(arma::mat &A,
                           arma::uvec ind, 
