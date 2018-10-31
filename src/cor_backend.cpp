@@ -1,6 +1,8 @@
 #include <unordered_map>
 #include <vector>
 #include <RcppArmadillo.h>
+#include <functional>
+#include "lru_cache.hpp"
 // we only include RcppArmadillo.h which pulls Rcpp.h in for us
 
 
@@ -19,79 +21,23 @@ mat scale(const mat& X) {
   return (X.each_row() - mu).each_row()/sigma;
 }
 
-typedef std::unordered_map<uword, uword> cached_db;
-typedef std::unordered_map<uword, int> timestamp_db;
-  
-mat get_cors(const uvec& A,
-             mat& cache,
-             cached_db& cached,
-             timestamp_db& tstamp,
-             int& elapsed,
-             const std::function<mat(uvec)>& calc_cor) {
-    // Calculate the corelations for A.
-    // A p x m matrix  where m = len(A)
-    uword m = A.n_elem;
-    uword p = cache.n_rows;
-    
-    std::vector<uword> A_new(m), A_old(m), old_pos(m); 
-    
-    std::for_each(A.begin(), A.end(), [&](uword a) {
-      auto search = cached.find(a);
-      if(search != cached.end()) {
-        A_old.push_back(a);
-        old_pos.push_back(search->second);
-      } else {
-        A_new.push_back(a);
-      }
-    });
-      
-    elapsed += 1;
-    
-    mat R(p, m);
-    
-    if (A_old.size() > 0 ) {
-      //Assign the correlations already in cache.
-      R.cols(conv_to< uvec >::from(A_old)) = cache.cols(conv_to< uvec >::from(old_pos));
-      std::for_each(A_old.begin(), A_old.end(), [&](uword a) {
-        //Assign the latest time stamp
-        tstamp[a] = elapsed;
-      });
-    }
-        
-    if (A_new.size() > 0) {
-          uvec A_new_v = conv_to< uvec >::from(A_new);
-          // Calculate the new correlations
-          R.cols(A_new_v) = calc_cor(A_new);
-          
-          // Find the indices which must be removed 
-          //Populate the cache with these correlations.
-    }
-    
-    return R;
-}
-
 class CorBackend {
 
 public:
   mat X, Y;
   uword dx, dy, n;
 
+  typedef cache::lru_cache_vec<uword, double> cache_t;
   //The cache limit
-  uword cache_lim_x, cache_lim_y;
-  mat cache_x, cache_y;
-
-  //What indices are cached:
-  //cached_db cached_x, cached_y;
-
-  //Time stamps
-  //timestamp_db tstamp_x, tstamp_y;
-
+  cache_t cache_x, cache_y;
+  
   CorBackend(const mat &X, const mat &Y,
              uword cache_size_x, uword cache_size_y) :
     X(scale(X)), Y(scale(Y)),
     dx(X.n_cols), dy(Y.n_cols), n(Y.n_rows),
-    cache_lim_x(cache_size_x/(NUMERIC_SIZE*dy)), cache_lim_y(cache_size_y/(NUMERIC_SIZE)*dx),
-    cache_x(dy, cache_lim_y), cache_y(dx, cache_lim_y) {}
+    cache_x(cache_size_x/(NUMERIC_SIZE*dy), dy), cache_y(cache_size_y/(NUMERIC_SIZE*dx), dx) {
+      
+    }
   
   mat calc_cor_x(uvec A) {
     return Y.t() * X.cols(A)/(n-1);
@@ -101,12 +47,44 @@ public:
     return X.t() * Y.cols(A)/(n-1);
   }
   
-  mat get_cor_x(uvec A) {
-    return calc_cor_x(A);
+  mat calc_cor_memoized(const uvec& A, 
+                 uword val_len,
+                 cache_t& cache,
+                 const std::function<mat(uvec)>& calc_cor) {
+    uword m = A.n_elem;
+    mat R(val_len, m);
+    std::vector<uword> ind_new, A_new;
+    
+    for(uword i=0; i < m; i++) {
+      uword a = A(i);
+      if(cache.exists(a)) {
+        R.col(i) = cache.get(a);
+      } else {
+        ind_new.push_back(i);
+        A_new.push_back(a);
+      }
+    }
+    
+    //Compute the new correlations
+    R.cols(conv_to<uvec>::from(ind_new)) = calc_cor(conv_to<uvec>::from(A_new));
+    
+    for(uword i=0; i < ind_new.size(); i++) {
+      cache.put(A_new[i], R.col(ind_new[i]));
+    }
+    
+    return R;
   }
   
-  mat get_cor_y(uvec A) {
-    return calc_cor_y(A);
+  mat get_cor_x(const uvec& A) {
+    return calc_cor_memoized(A, dy, cache_x, [this](uvec A) -> mat {
+      return this->calc_cor_x(A);
+    });
+  }
+  
+  mat get_cor_y(const uvec& A) {
+    return calc_cor_memoized(A, dx, cache_y, [this](uvec A) -> mat {
+      return this->calc_cor_y(A);
+    });
   }
 };
 

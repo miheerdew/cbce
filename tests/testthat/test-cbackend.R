@@ -30,4 +30,12 @@ test_that("cors.base is correct when cache != 0", {
   expect_equal(bk$getCor(3:4), cor(sim$Y, sim$X[, 3:4]))
   expect_equal(bk$getCor(1:dy + dx), cor(sim$X, sim$Y[, 1:dy]))
   expect_equal(bk$getCor(3:4 + dx), cor(sim$X, sim$Y[, 3:4]))
+  
+  #Border cases
+  expect_equal(bk$getCor(2 + dx), cor(sim$X, sim$Y[,2]))
+  expect_equal(bk$getCor(2), cor(sim$Y, sim$X[, 2]))
+  expect_equal(bk$getCor(dx), cor(sim$Y, sim$X[, dx]))
+  expect_equal(bk$getCor(4), cor(sim$Y, sim$X[, 4]))
+  expect_equal(bk$getCor(1 + dx), cor(sim$X, sim$Y[, 1]))
+  expect_equal(bk$getCor(dy + dx), cor(sim$X, sim$Y[, dy]))
 })
