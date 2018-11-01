@@ -37,8 +37,7 @@ pvals.perm <- function(bk, B, thresh.alpha=1) {
   a<-sqrt(sigma2/(2*b))
   d<-mu-a*b
   
-  R <- cors(bk, B)
-  Tstat <- (rowSums(R^2) - d)/a
+  Tstat <- (getTstat(bk, B) - d)/a
   
   pvals <- rep(NA, length(Tstat))
   thresh <- qchisq(thresh.alpha, df=b, lower.tail=FALSE)

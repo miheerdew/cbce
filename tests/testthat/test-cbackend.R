@@ -19,6 +19,12 @@ test_that("cors.base is correct when cache=0", {
   expect_equal(bk$getCor(4:6), cor(sim$Y, sim$X[, 4:6]))
 })
 
+test_that("Test tstat", {
+  bk <- new(CorBackend, sim$X, sim$Y, 10, 5)
+  expect_equal(as.vector(bk$getSqTstat(1:4 + dx)), rowSums(cor(sim$X, sim$Y[,1:4])^2))
+  expect_equal(as.vector(bk$getSqTstat(4:6)), rowSums(cor(sim$Y, sim$X[, 4:6])^2))
+})
+
 test_that("cors.base is correct when cache != 0", {
   bk <- new(CorBackend, sim$X, sim$Y, 200, 200)
   

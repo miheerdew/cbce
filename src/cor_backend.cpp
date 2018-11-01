@@ -100,6 +100,21 @@ mat get_cor_export(CorBackend *bk, uvec A) {
   }
 } 
 
+vec get_sq_tstat(CorBackend *bk, const uvec& A) {
+ return sum(square(get_cor_export(bk, A)), 1);
+} 
+
+mat get_scale_mat_export(CorBackend *bk, uvec A) {
+  uword dx = bk->dx;
+  if(A.min() > dx) {
+    A.transform([dx](uword i) { return (i - dx - 1);});
+    return bk->Y.cols(A);
+  } else {
+    A.transform([](uword i) { return (i - 1);});
+    return bk->X.cols(A); 
+  }
+}
+
 RCPP_MODULE(cbase) {
   using namespace Rcpp;
 
@@ -107,6 +122,11 @@ RCPP_MODULE(cbase) {
 //     // expose the default constructor
       .constructor<arma::mat, arma::mat, arma::uword,  arma::uword>()
       .method("getCor", &get_cor_export , "Get the correrlations")
+      .method("getSqTstat", &get_sq_tstat , "Get the sum of squared test statistic")
+      .method("getScaledMat", &get_scale_mat_export, "Get the scaled matrices")
+      .field("dx", &CorBackend::dx)
+      .field("dy", &CorBackend::dy)
+      .field("n", &CorBackend::n)
 //     .method("set", &CorBackend::set     , "set the message")
      ;
 }
