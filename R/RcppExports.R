@@ -7,8 +7,6 @@ updateColumnsInPlace <- function(A, ind, B) {
     invisible(.Call(`_cbce_updateColumnsInPlace`, A, ind, B))
 }
 
-#'
-#'@export
 fast_bh_beta <- function(Tstat, alpha, shape1, shape2, lower = FALSE) {
     .Call(`_cbce_fast_bh_beta`, Tstat, alpha, shape1, shape2, lower)
 }
@@ -17,5 +15,13 @@ fast_bh_beta <- function(Tstat, alpha, shape1, shape2, lower = FALSE) {
 #'@export
 fast_bh_chisq <- function(Tstat, alpha, df, lower = FALSE) {
     .Call(`_cbce_fast_bh_chisq`, Tstat, alpha, df, lower)
+}
+
+jacc_matrix_c <- function(bimod_list) {
+    .Call(`_cbce_jacc_matrix_c`, bimod_list)
+}
+
+effective_num_c <- function(bimod_list) {
+    .Call(`_cbce_effective_num_c`, bimod_list)
 }
 

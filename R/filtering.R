@@ -46,9 +46,7 @@
 #'@import stats
 #'@import graphics
 filter_and_summarize <- function(extract_res, 
-                                 show.progress=TRUE,
                                  plot.dendrogram=FALSE,
-                                 count.method=1,
                                  hclust.method="average") {
   
   rlist::list.takeWhile(extract_res, !is.null(.)) %>>%
@@ -70,12 +68,8 @@ filter_and_summarize <- function(extract_res,
     return(df)
   } 
   
-  Jac <- jacc_matrix(bms, show.progress=show.progress)
-  efnum <- switch(count.method,
-                    "1" =  effective.num1(bms),
-                    "2" = effective.num2(Jac),
-                    stop(sprintf('Unknown count.method: "%s"', count.method))
-              )
+  Jac <- jacc_matrix_c(bms)
+  efnum <- effective_num_c(bms) 
     
   n.tot <- length(bms)
   n.cut <- ceiling(efnum)

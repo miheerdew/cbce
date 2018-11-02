@@ -47,6 +47,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// jacc_matrix_c
+NumericMatrix jacc_matrix_c(List bimod_list);
+RcppExport SEXP _cbce_jacc_matrix_c(SEXP bimod_listSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type bimod_list(bimod_listSEXP);
+    rcpp_result_gen = Rcpp::wrap(jacc_matrix_c(bimod_list));
+    return rcpp_result_gen;
+END_RCPP
+}
+// effective_num_c
+double effective_num_c(List bimod_list);
+RcppExport SEXP _cbce_effective_num_c(SEXP bimod_listSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type bimod_list(bimod_listSEXP);
+    rcpp_result_gen = Rcpp::wrap(effective_num_c(bimod_list));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_cbase();
 
@@ -54,6 +76,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_cbce_updateColumnsInPlace", (DL_FUNC) &_cbce_updateColumnsInPlace, 3},
     {"_cbce_fast_bh_beta", (DL_FUNC) &_cbce_fast_bh_beta, 5},
     {"_cbce_fast_bh_chisq", (DL_FUNC) &_cbce_fast_bh_chisq, 4},
+    {"_cbce_jacc_matrix_c", (DL_FUNC) &_cbce_jacc_matrix_c, 1},
+    {"_cbce_effective_num_c", (DL_FUNC) &_cbce_effective_num_c, 1},
     {"_rcpp_module_boot_cbase", (DL_FUNC) &_rcpp_module_boot_cbase, 0},
     {NULL, NULL, 0}
 };

@@ -33,11 +33,11 @@ test_that("BH-reject beta", {
   samples <- rbeta(n, a, b)
   
   lower <- TRUE
-  expect_equal(fast_bh_beta(samples, alpha, a, b, lower), 
+  expect_equal(cbce:::fast_bh_beta(samples, alpha, a, b, lower), 
                bh_reject(pbeta(samples, a, b, lower.tail = lower), alpha))
   
   lower <- FALSE
-  expect_equal(fast_bh_beta(samples, alpha, a, b, lower), 
+  expect_equal(cbce:::fast_bh_beta(samples, alpha, a, b, lower), 
                bh_reject(pbeta(samples, a, b, lower.tail = lower), alpha))
 })
 
@@ -48,10 +48,36 @@ test_that("BH-reject chisq", {
   
   lower <- TRUE
 
-  expect_equal(fast_bh_chisq(samples, alpha, df, lower), 
+  expect_equal(cbce:::fast_bh_chisq(samples, alpha, df, lower), 
                bh_reject(pchisq(samples, df, lower.tail = lower), alpha))
   
   lower <- FALSE
-  expect_equal(fast_bh_chisq(samples, alpha, df, lower), 
+  
+  expect_equal(cbce:::fast_bh_chisq(samples, alpha, df, lower), 
                bh_reject(pchisq(samples, df, lower.tail = lower), alpha))
+})
+
+test_that("Jac Matrix works", {
+  bimods <- list(
+    list(x=1:3, y=5:3),
+    list(y=5:7, x=2:5),
+    list(y=1:7, x=3:20),
+    list(x=2:4, y=4:7)
+  )
+  
+  expect_identical(cbce:::jacc_matrix(bimods), cbce:::jacc_matrix_c(bimods))
+})
+
+test_that("Effective num works", {
+  bimods <- list(
+    list(x=1:3, y=5:3),
+    list(y=5:7, x=2:5),
+    list(y=1:7, x=3:20),
+    list(x=2:4, y=4:7)
+  )
+  
+  expect_identical(cbce:::effective.num1(bimods), cbce:::effective_num_c(bimods))
+  
+  expect_identical(cbce:::effective.num1(list()), cbce:::effective_num_c(list()))
+  
 })
