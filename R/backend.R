@@ -62,6 +62,14 @@ cors <- function(bk, A) {
   UseMethod("cors", bk)
 }
 
+getTstat <- function(bk, A) {
+  #calculate the correlations from set A.``
+  UseMethod("getTstat", bk)
+}
+
+rejectPvals <- function(bk, A, alpha) {
+ UseMethod("rejectPvals", bk) 
+}
 
 #' Initialization function
 #'
@@ -87,4 +95,12 @@ init <- function(p, indx, alpha, init_method) {
 ## Defaults
 pvals_singleton.default <- function(bk, indx, thresh.alpha=1) {
   pvals(bk, indx, thresh.alpha)
+}
+
+rejectPvals.default <- function(bk, A, alpha) {
+  if(length(A) == 1) {
+    bh_reject(pvals_singleton(bk, A, alpha), alpha, "BH")
+  } else {
+    bh_reject(pvals(bk, A, alpha), alpha, "BH")
+  }
 }

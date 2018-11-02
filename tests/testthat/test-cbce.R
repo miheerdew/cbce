@@ -20,7 +20,7 @@ sim3 <- sim_eQTL_network(make_param_list(cmin=5, cmax=40, b=10, bgmult=0.1))
 
 comms <- function(extract_res) {
   extract_res %>>% 
-    list.filter(length(bimod$x) * length(bimod$y) > 0) %>>%
+    list.filter(fixed_point) %>>%
       list.map(bimod)
 }
 report <- function(res1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nums) nums > .9) {

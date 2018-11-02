@@ -12,7 +12,6 @@
 #' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
 #' @param cache.size The amount of memory to dedicate for caching correlations. This will speed things up. Defaults to the average memory required by X and Y matrices
 #' @param interaction This is a function that will be called between extracts to allow interaction with the program. For instance one cas pass interaction_gui (EXPERIMENTAL!) or interaction_none.  
-#' @param multiple_testing_method Method to use for multiple testing. Should be one of c('BHY', 'BH', 'sqrt_BH', 'sqrt_BHY', 'square_BH', 'Bonferroni')
 #' @param max_iterations The maximum number of iterations per extraction. If a fixed point is not found by this step, the extraciton is terminated.
 #' @param diagnostic This is a function for probing the internal state of the method. It will be called at "Events" and can look into what the method is doing. Pass either diagnostics2, diagnostics_none or a custom function.
 #' 
@@ -36,7 +35,6 @@ cbce <- function(X, Y,
                   alpha = 0.05, 
                   alpha.init = alpha,
                   cache.size = (object.size(X) + object.size(Y))/2,
-                  multiple_testing_method = 'BHY',
                   start_nodes=NULL,
                   max_iterations = 20,
                   interaction=interaction_none,
@@ -50,16 +48,16 @@ cbce <- function(X, Y,
   # @param indx The (global) index of the node (variable) to initialize from.
   # @return list(x=integer-vector, y=integer-vector): The initialized x, y sets.
   initialize <- function(indx) {
-    B01 <- init(bk, indx, alpha.init, multiple_testing_method)
+    B01 <- rejectPvals(bk, indx, alpha.init)
 
     if (indx <= dx) {
       #indx on the X side, so only need to correct the init-step.
       B01 <- B01 + dx
-      B02 <- bh_reject(pvals(bk, B01, thresh.alpha=alpha.init), alpha.init, multiple_testing_method)
+      B02 <- rejectPvals(bk, B01, alpha.init)
       return(list(x = B02, y = B01))
     } else {
       #indx on the Y side, so only need to correct the half update following the init step.
-      B02 <- bh_reject(pvals(bk, B01, thresh.alpha=alpha.init), alpha.init, multiple_testing_method) + dx
+      B02 <- rejectPvals(bk, B01, alpha.init) + dx
       return(list(x = B01, y = B02))
     }
   }
@@ -86,15 +84,11 @@ cbce <- function(X, Y,
       B1 <- list()
       
       if(first.update.X) {
-        B1$x <- bh_reject(pvals(bk, B0$y, thresh.alpha=alpha), 
-                          alpha, multiple_testing_method)
-        B1$y <- bh_reject(pvals(bk, B1$x, thresh.alpha=alpha), 
-                          alpha, multiple_testing_method) + dx
+        B1$x <- rejectPvals(bk, B0$y, alpha)
+        B1$y <- rejectPvals(bk, B1$x, alpha) + dx
       } else {
-        B1$y <- bh_reject(pvals(bk, B0$x, thresh.alpha=alpha), 
-                          alpha, multiple_testing_method) + dx
-        B1$x <- bh_reject(pvals(bk, B1$y, thresh.alpha=alpha), 
-                          alpha, multiple_testing_method)
+        B1$y <- rejectPvals(bk, B0$x, alpha) + dx
+        B1$x <- rejectPvals(bk, B1$y, alpha)
       }
       
       #env$px <- px

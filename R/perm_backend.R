@@ -13,13 +13,11 @@ backend.perm <- function(X, Y, cache.size=0) {
   return(p)
 }
 
-#' @describeIn pvals Implementation for sum of squared correlations under independent Gene and SNP sets. 
-#'             Uses the permutation moments approximation.
-#' @export
-pvals.perm <- function(bk, B, thresh.alpha=1) {
+perm_moments <- function(bk, B) {
+  #Fred Wright's code
   m <- length(B)
   n <- bk$n
-
+  
   X <- (if(min(B) > bk$dx) bk$Y[,B-bk$dx] else bk$X[,B])/sqrt(n-1)
   A <- if(m <= n) crossprod(X) else tcrossprod(X)
   lambda <- eigen(A, symmetric = TRUE, only.values = TRUE)$values
@@ -33,18 +31,27 @@ pvals.perm <- function(bk, B, thresh.alpha=1) {
   
   # The code to fit a shifted Chi-Square
   # r^2 ~ a + d \chi_b^2
-  b<-8/gamma1^2
-  a<-sqrt(sigma2/(2*b))
-  d<-mu-a*b
   
-  Tstat <- (getTstat(bk, B) - d)/a
+  b <- 8/gamma1^2
+  a <- sqrt(sigma2/(2*b))
+  d <- mu-a*b
+  list(a=a, b=b, d=d)
+}
+
+#' @describeIn pvals Implementation for sum of squared correlations under independent Gene and SNP sets. 
+#'             Uses the permutation moments approximation.
+#' @export
+pvals.perm <- function(bk, B, thresh.alpha=1) {
+  pm <- perm_moments(bk, B)
+  
+  Tstat <- (getTstat(bk, B) - pm$d)/pm$a
   
   pvals <- rep(NA, length(Tstat))
-  thresh <- qchisq(thresh.alpha, df=b, lower.tail=FALSE)
+  thresh <- qchisq(thresh.alpha, df=pm$b, lower.tail=FALSE)
   
   interesting <- Tstat > thresh
   
-  pvals[interesting] <- pchisq(Tstat[interesting], df=b, lower.tail=FALSE)
+  pvals[interesting] <- pchisq(Tstat[interesting], df=pm$b, lower.tail=FALSE)
   
   return(pvals)
 }
@@ -74,3 +81,19 @@ pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
 }
 
 
+#'@export
+rejectPvals.perm <- function(bk, A, alpha) {
+  if(length(A) == 1) {
+    # An easy way to calculate p-values from an indx
+    # Use beta approximation.
+    a <- 0.5
+    b <- 0.5*(bk$n - 2)
+    fast_bh_beta(cors(bk, A)^2, alpha, a, b)
+  } else if(length(A) > 1) {
+    pm <- perm_moments(bk, A)
+    Tstat <- (getTstat(bk, A) - pm$d)/pm$a
+    fast_bh_chisq(Tstat, alpha, pm$b)
+  } else {
+    integer(0)
+  }
+}

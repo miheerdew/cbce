@@ -7,3 +7,15 @@ updateColumnsInPlace <- function(A, ind, B) {
     invisible(.Call(`_cbce_updateColumnsInPlace`, A, ind, B))
 }
 
+#'
+#'@export
+fast_bh_beta <- function(Tstat, alpha, shape1, shape2, lower = FALSE) {
+    .Call(`_cbce_fast_bh_beta`, Tstat, alpha, shape1, shape2, lower)
+}
+
+#'
+#'@export
+fast_bh_chisq <- function(Tstat, alpha, df, lower = FALSE) {
+    .Call(`_cbce_fast_bh_chisq`, Tstat, alpha, df, lower)
+}
+

@@ -18,11 +18,42 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// fast_bh_beta
+IntegerVector fast_bh_beta(NumericVector Tstat, double alpha, double shape1, double shape2, bool lower);
+RcppExport SEXP _cbce_fast_bh_beta(SEXP TstatSEXP, SEXP alphaSEXP, SEXP shape1SEXP, SEXP shape2SEXP, SEXP lowerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Tstat(TstatSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type shape1(shape1SEXP);
+    Rcpp::traits::input_parameter< double >::type shape2(shape2SEXP);
+    Rcpp::traits::input_parameter< bool >::type lower(lowerSEXP);
+    rcpp_result_gen = Rcpp::wrap(fast_bh_beta(Tstat, alpha, shape1, shape2, lower));
+    return rcpp_result_gen;
+END_RCPP
+}
+// fast_bh_chisq
+IntegerVector fast_bh_chisq(NumericVector Tstat, double alpha, double df, bool lower);
+RcppExport SEXP _cbce_fast_bh_chisq(SEXP TstatSEXP, SEXP alphaSEXP, SEXP dfSEXP, SEXP lowerSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< NumericVector >::type Tstat(TstatSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< double >::type df(dfSEXP);
+    Rcpp::traits::input_parameter< bool >::type lower(lowerSEXP);
+    rcpp_result_gen = Rcpp::wrap(fast_bh_chisq(Tstat, alpha, df, lower));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP _rcpp_module_boot_cbase();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_cbce_updateColumnsInPlace", (DL_FUNC) &_cbce_updateColumnsInPlace, 3},
+    {"_cbce_fast_bh_beta", (DL_FUNC) &_cbce_fast_bh_beta, 5},
+    {"_cbce_fast_bh_chisq", (DL_FUNC) &_cbce_fast_bh_chisq, 4},
     {"_rcpp_module_boot_cbase", (DL_FUNC) &_rcpp_module_boot_cbase, 0},
     {NULL, NULL, 0}
 };
