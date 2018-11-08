@@ -27,7 +27,6 @@ NULL
 #' @param thresh.alpha We are only interested in p-values less than thresh.alpha. So the method free to return NA for pvalues > thresh.alpha if it helps with optimization.
 #' @return The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether B is from Y or X respectively.
 #' @seealso \code{\link{pvals_singleton}}
-#'@export
 pvals <- function(bk, B, thresh.alpha=1) {
   if (length(B) == 0) return(integer(0))
   UseMethod("pvals", bk)
@@ -42,7 +41,6 @@ pvals <- function(bk, B, thresh.alpha=1) {
 #' @param thresh.alpha We are only interested in p-values less than thresh.alpha. So the method free to return NA for pvalues > thresh.alpha if it helps with optimization.
 #' @return The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether indx is from Y or X respectively.
 #' @seealso \code{\link{pvals}}
-#' @export
 pvals_singleton <- function(bk, indx, thresh.alpha=1) {
   #Given indx return the set of all p-values to opposite side.
   #This is certainly a special case of pvals(b, A) with A = indx, but can be computed much faster since it does not involve sums of correlations.
@@ -56,7 +54,6 @@ pvals_singleton <- function(bk, indx, thresh.alpha=1) {
 #'
 #' @param bk An object of class \link{backend}
 #' @param A Either a subset of X or Y columns (in global numbering)
- #'@export
 cors <- function(bk, A) {
   #calculate the correlations from set A.``
   UseMethod("cors", bk)
@@ -78,7 +75,6 @@ rejectPvals <- function(bk, A, alpha) {
 #' @param alpha The cutoff to use for pvalues.
 #' @param init_method One of c("conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing")
 #'         gives the type of initializtion scheme.
-#'@export
 init <- function(p, indx, alpha, init_method) {
   pvals <- pvals_singleton(p, indx, thresh.alpha = alpha)
   switch(init_method,

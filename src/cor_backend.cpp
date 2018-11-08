@@ -2,7 +2,7 @@
 #include <vector>
 #include <RcppArmadillo.h>
 #include <functional>
-#include "lru_cache.hpp"
+#include "lru_cache.cpp"
 // we only include RcppArmadillo.h which pulls Rcpp.h in for us
 
 

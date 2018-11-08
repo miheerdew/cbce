@@ -6,9 +6,10 @@ Authors@R: c(
       person("John", "Palowitch", email= "johnpalowitch@gmail.com", role="aut"),
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
       )
-License: MIT
+License: MIT + file LICENSE
 Suggests: testthat, mvtnorm
 Imports: rlist, dplyr, pipeR, methods, tcltk2, tcltk, digest, tkrplot, futile.logger, Rcpp (>= 0.12.19)
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 SystemRequirements: C++11
+Encoding: UTF-8

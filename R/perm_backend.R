@@ -3,7 +3,6 @@
 #' @describeIn backend Constructor for sum of squared correlations under independent Gene and SNP sets (the strong null).
 #' @inheritParams backend.base
 #'@importFrom methods new
-#'@export
 backend.perm <- function(X, Y, cache.size=0) {
   p <- backend.base(X, Y, cache.size=cache.size)
   p$two_sided <- TRUE
@@ -63,7 +62,6 @@ pvals_quick.perm <- function(bk, B) {
 }
 
 #' @describeIn pvals_singleton implementation for the perm class
-#' @export
 pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
   # An easy way to calculate p-values from an indx
   a <- 0.5

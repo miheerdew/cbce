@@ -34,7 +34,7 @@
 cbce <- function(X, Y, 
                   alpha = 0.05, 
                   alpha.init = alpha,
-                  cache.size = (object.size(X) + object.size(Y))/2,
+                  cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
                   start_nodes=NULL,
                   max_iterations = 20,
                   interaction=interaction_none,

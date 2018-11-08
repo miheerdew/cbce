@@ -7,10 +7,7 @@
 #' 
 #' @param extract_res Pass result$extract_res where result is the returned 
 #' by the cbce2 procedure
-#' @param show.progress Show a progress bar while computing the Jaccard distances
 #' @param plot.dendrogram Plot the dendrogram along with the line it is cut at. 
-#' @param count.method The method (1 or 2) to use for the calculating the 
-#' effective-number of bimodules
 #' @param hclust.method The clustering method to use (passed to hclust)
 #' 
 #' @return 

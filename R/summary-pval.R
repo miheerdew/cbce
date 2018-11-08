@@ -79,7 +79,8 @@ symmetric_eigenvals <- function(X) {
   eigen(A)$values
 }
 
-#' Compute the score or a summarizing p-vlaue for the 
+#' Compute the score (i.e a summarizing p-vlaue) for the 
+#' bimodule given by the entire X and Y matrices.
 #' 
 #' @export
 #' @keywords internal

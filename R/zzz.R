@@ -11,5 +11,4 @@ NULL
   library.dynam.unload("cbce", libpath)
 }
 
-#'@export CorBackend
 loadModule("cbase", TRUE)
