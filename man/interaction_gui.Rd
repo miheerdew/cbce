@@ -7,6 +7,7 @@
 interaction_gui(...)
 }
 \description{
-Pass this as the interaction argument to cbce.
+Pass interaction=\code{interaction_gui} to cbce for a GUI interface.
+The global variable \code{TITLE} constrols the title of the GUI.
 }
 \keyword{internal}

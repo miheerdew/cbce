@@ -1,10 +1,7 @@
-
-#' @import tcltk2
-#' @import tcltk
 interaction_gui_non_safe <- function(event, env=parent.frame()) {
   switch(event, 
          "Main:Setup" = {
-           
+
            env$maxit <- get("max_iterations", envir=env)
            env$fixed_points <- 0
            env$duds <- 0
@@ -12,7 +9,8 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
            env$cycled <- 0
            env$overflowed <- 0
            env$tot <- length(get("extractord", envir=env))
-           env$timestamp <- env$start_time <- Sys.time()
+           env$start_time <- Sys.time()
+           env$timestamp_plot  <- env$timestamp_update <- Sys.time()
            
            plot_func <- function() {
              #Plot the results from the latest non_dud extraction.
@@ -81,10 +79,10 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
              env$overflowed <- env$overflowed + res$overflowed
              i <- get("i", envir=env)
              
-             if(Sys.time() - env$timestamp > 1) {
-               env$timestamp <- Sys.time()
+             if(Sys.time() - env$timestamp_update > 1 || i == 1) {
+               env$timestamp_update <- Sys.time()
                # Update status every second
-               tclvalue(env$statusLabel) <- sprintf(
+               tcltk::tclvalue(env$statusLabel) <- sprintf(
                  "%d iterations, %d: fixed points, %d: duds, %d: collapsed, %d: cycled, %d: overflowed",
                  i, 
                  env$fixed_points, 
@@ -92,10 +90,13 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
                  env$collapsed, 
                  env$cycled, 
                  env$overflowed)
-               tcl("update")
-               
-               tkconfigure(env$pb, value=i)
-               tkrplot::tkrreplot(env$plot)
+               tcltk::tcl("update")
+               tcltk::tkconfigure(env$pb, value=i)
+               if(Sys.time() - env$timestamp_plot > 5 || i == 1) {
+                env$timestamp_plot <- Sys.time()
+                # Update plot every 5 seconds
+                tkrplot::tkrreplot(env$plot)
+               }
                return(TRUE)
              } else {
                return(FALSE)
@@ -103,57 +104,62 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
            }
            
            # ----- Setup the GUI -----------
-           env$win <- tktoplevel()
-           tktitle(env$win) <- get0("TITLE", envir=globalenv(), ifnotfound = "CBCE Progress")
+           env$win <- tcltk::tktoplevel()
+           tcltk::tktitle(env$win) <- get0("TITLE", envir=globalenv(), ifnotfound = "CBCE Progress")
            
-           env$stop <- tclVar(0)
-           env$browser <- tclVar(0)
+           env$stop <- tcltk::tclVar(0)
+           env$browser <- tcltk::tclVar(0)
            
-           env$statusLabel <- tclVar("The extraction status will be shown here")
+           env$statusLabel <- tcltk::tclVar("The extraction status will be shown here")
            
-           env$pb <- tk2progress(env$win, length=700)
-           tkconfigure(env$pb, value=0, maximum=env$tot)
+           env$pb <- tcltk2::tk2progress(env$win, length=700)
+           tcltk::tkconfigure(env$pb, value=0, maximum=env$tot)
            
-           Stop.but <- tkbutton(env$win, text = "Stop",
-                                command = function() tclvalue(env$stop) <- 1)
-           Browser.but <- tkbutton(env$win, text="Browser",
-                                   command = function() tclvalue(env$browser) <- 1)
+           Stop.but <- tcltk::tkbutton(env$win, text = "Stop",
+                              command = function() tcltk::tclvalue(env$stop) <- 1)
+           Browser.but <- tcltk::tkbutton(env$win, text="Browser",
+                              command = function() tcltk::tclvalue(env$browser) <- 1)
            
-           Status.lab  <- tk2label(env$win, textvariable = env$statusLabel) 
+           Status.lab  <- tcltk2::tk2label(env$win, textvariable = env$statusLabel) 
            
            
            env$plot <- tkrplot::tkrplot(env$win, fun=plot_func, hscale=2, vscale = 1.5)
            
-           tkgrid(env$plot, columnspan=2)
-           tkgrid(Status.lab, columnspan=2)
-           tkgrid(Stop.but, Browser.but)
-           tkgrid(env$pb, columnspan=2)
+           tcltk::tkgrid(env$plot, columnspan=2)
+           tcltk::tkgrid(Status.lab, columnspan=2)
+           tcltk::tkgrid(Stop.but, Browser.but)
+           tcltk::tkgrid(env$pb, columnspan=2)
            
            
-           tkfocus(env$win)
+           tcltk::tkfocus(env$win)
          },
          "Main:NextExtraction"={
            
            if(env$update_status()) {
-             if(as.numeric(tclvalue(env$browser))) {
-               tclvalue(env$browser) <- 0
+             if(as.numeric(tcltk::tclvalue(env$browser))) {
+               tcltk::tclvalue(env$browser) <- 0
                return("browse")
              } 
              
-             if (as.numeric(tclvalue(env$stop))) {
+             if (as.numeric(tcltk::tclvalue(env$stop))) {
                return("stop")
              } 
            }
          },
-         
+         "Main:Filtering"={
+           tcltk::tclvalue(env$statusLabel) <- "Filtering bimodules. Please wait."
+           tcltk::tcl("update")
+         },
          "Main:End" = {
-           tkdestroy(env$win)
-         }, NA)
+           tcltk::tkdestroy(env$win)
+         }, 
+         warning("Unknown event in interaction_gui ", event))
 }
 
 #' Provides a GUI for interaction with cbce.
 #' 
-#' Pass this as the interaction argument to cbce.
+#' Pass interaction=\code{interaction_gui} to cbce for a GUI interface.
+#' The global variable \code{TITLE} constrols the title of the GUI.
 #' 
 #' @keywords internal
 #' @export
@@ -161,8 +167,35 @@ interaction_gui <- function(...) {
   tryCatch({
     interaction_gui_non_safe(...)
   }, error=function(e) {
-    cat(paste("Error:", e))
+    warning("Error detected by GUI:", e)
+  }, warning=function(w) {
+    warning("Warning detected by GUI:", w)
   })
 }
 
 interaction_none <- function(...) TRUE
+
+#' Provides a CLI for interaction with cbce.
+#' 
+#' Pass interaction=\code{interaction_cli} to get a progress indicator.
+#' 
+#' @keywords internal
+#' @export
+interaction_cli <- function(event, env=parent.frame()) {
+  switch (event,
+    "Main:Setup" = {
+      env$pb <- utils::txtProgressBar(max=length(get("extractord", envir=env)),
+                               style=3)
+    },
+    "Main:NextExtraction" = {
+      utils::setTxtProgressBar(env$pb, get("i", envir=env))
+    },
+    "Main:End" = {
+      close(env$pb)
+    }, 
+    "Main:Filtering" = {
+      NULL
+    }, 
+    warning("Unknown event in interaction_cli ", event)
+  )
+}

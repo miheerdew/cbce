@@ -7,8 +7,8 @@ Authors@R: c(
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
       )
 License: MIT + file LICENSE
-Suggests: testthat, mvtnorm
-Imports: rlist, dplyr, pipeR, methods, tcltk2, tcltk, digest, tkrplot, futile.logger, Rcpp (>= 0.12.19)
+Suggests: testthat, mvtnorm, tcltk2, tcltk, tkrplot
+Imports: rlist, dplyr, pipeR, methods, digest, Rcpp (>= 0.12.19)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
 SystemRequirements: C++11

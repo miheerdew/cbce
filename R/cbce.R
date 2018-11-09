@@ -258,7 +258,10 @@ cbce <- function(X, Y,
     extract_res[[i]] <- res
   }
   
+  interaction("Main:Filtering", e)
+  filtered_res.df <- filter_and_summarize(extract_res)
+  
   interaction("Main:End", e)
   list(extract_res=extract_res,
-       filtered_res.df=filter_and_summarize(extract_res))
+       filtered_res.df=filtered_res.df)
 }

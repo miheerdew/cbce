@@ -10,6 +10,9 @@ mvn <- function(n, m, rho=0.5, mu=rep(0, m)) {
   Sigma <- matrix(0, m, m)
   Sigma[1:m/2, 1:m/2] <- rho
   diag(Sigma) <- 1
+  if (!requireNamespace("mvtnorm", quietly = TRUE)) {
+    skip("Package \"mvtnorm\" needed for this function to work. Please install it.")
+  }
   X <- mvtnorm::rmvnorm(n, sigma=Sigma, mean=mu)
 }
 
