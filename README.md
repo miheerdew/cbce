@@ -1,10 +1,10 @@
 # cbce
 
-Consider two sets of high-dimensional measurements on the same set of samples. CBCE (Correlation Bi-Community Extraction method) finds sets of variables from the first measurement which and sets of variables from the second measurement which are correlated to each other.
+Consider two sets of high-dimensional measurements on the same set of samples. CBCE (Correlation Bi-Community Extraction method) finds sets of variables from the first measurement and sets of variables from the second measurement which are correlated to each other.
 
 ## Installation
 
-You can install the latest version of cbce directly from the github repo:
+You can install the latest version of cbce directly from the github repo by first installing [devtools](https://github.com/r-lib/devtools).
 
 ``` r
 if("devtools" %in% rownames(installed.packages()) == FALSE) {
@@ -39,7 +39,8 @@ Y[, 3:6] <- sqrt(1-rho)*Y[, 3:6] + sqrt(rho)*rowSums(X[, 4:5])
 
 res <- cbce(X, Y)
 
-#Recovers the indices 4:5 for X and 3:6 for Y
-res$comms[[1]]
+# Recovers the indices 4:5 for X and 3:6 for Y
+# If the strength of the correlation was higher
+# all the indices could be recovered.
+res$comms
 ```
-

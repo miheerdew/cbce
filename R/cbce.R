@@ -39,8 +39,11 @@
 #' Y[, 3:6] <- sqrt(1-rho)*Y[, 3:6] + sqrt(rho)*rowSums(X[, 4:5])
 #' 
 #' res <- cbce(X, Y)
+#' 
 #' #Recovers the indices 4:5 for X and 3:6 for Y
-#' res$comms[[1]]
+#' #If the strength of the correlation was higher
+#' #all the indices could be recovered.
+#' res$comms
 #'}
 #' @export
 cbce <- function(X, Y, 
