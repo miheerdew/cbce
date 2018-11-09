@@ -39,15 +39,27 @@ The update starts from a single node (starting with the initialization step) and
 }
 \examples{
 \dontrun{
-n <- 100
-dx <- 50
-dy <- 70
+library(cbce)
 
-X <- matrix(rnorm(n*dx), ncol=dx)
-Y <- matrix(rnorm(n*dy), ncol=dy)
-res <- cbce2(X, Y)
-df <- res$filtered_result.df
-# The filtered bimodules:
-bms <- rlist::list.map(res$extract_res[df$index], bimod)
+#Sample size
+n <- 40
+#Dimension of measurement 1
+dx <- 20
+#Dimension of measurement 2
+dy <- 50
+#Correlation strength
+rho <- 0.5
+set.seed(1245)
+
+# Assume first measurement is gaussian
+X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
+
+# Measurements 3:6 in set 2 are correlated to 4:7 in set 1
+Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
+Y[, 3:6] <- sqrt(1-rho)*Y[, 3:6] + sqrt(rho)*rowSums(X[, 4:5])
+
+res <- cbce(X, Y)
+#Recovers the indices 4:5 for X and 3:6 for Y
+res$comms[[1]]
 }
 }
