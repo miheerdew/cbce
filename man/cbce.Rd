@@ -71,7 +71,6 @@ repeats. Each such run is called an extraction. Since the extraction
  possible extractions.
 }
 \examples{
-\dontrun{
 library(cbce)
 #Sample size
 n <- 40
@@ -92,5 +91,4 @@ res <- cbce(X, Y)
 #If the strength of the correlation was higher
 #all the indices could be recovered.
 res$comms
-}
 }

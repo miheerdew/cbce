@@ -1,0 +1,76 @@
+---
+title: "Getting Started"
+author: "Miheer Dewaskar"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+Abstractly, CBCE is a new algorthim to find communities in a bipartite correlation network. Concretely, given two groups of variables with common samples, CBCE finds collection of variables from the first and second group which are correlated to each other. Such a collection will be called a Correlation Bi-Community, or simply a community. CBCE tries to find all Correlation Bi-Communities within the data.
+
+# Getting Started
+
+## The Data
+
+The data that we work on will need to have two groups of variables on a common sample. So for instance, it could be two high-dimensional measurements, like RNA-Seq and Genotyping, on the same set of subjects.
+
+Assume that the varaibles/measurements are given in the form of two matrices $X$ and $Y$. The rows represent the samples (which are same for both the matrices) and the coulmns represent the variables. In the theoretical analysis, the samples are assumed to be independent and indentical to each other. As an example, let us generated these measurements randomly:
+```{r}
+n <- 50 #Sample size
+dx <- 20 #Dim of measurement 1
+dy <- 50 #Dim of measurement 2
+rho <- 0.5 #Correlation to induce
+set.seed(1245)
+noise.X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
+noise.Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy) 
+#Assume the noise from X[, 4:6] is 
+# correlated from the noise from Y[, 9:11]
+noise.Y[, 9:11] <- sqrt(1-rho)*noise.Y[, 9:11] + sqrt(rho/3)*rowSums(noise.X[, 4:6])
+
+muX <- 1:dx 
+muY <- 1:dy
+# X represents noisy measurement of muX
+X <- matrix(rep(muX,each=n), nrow=n) + noise.X 
+# Y represents noisy measurement of muY
+Y <- matrix(rep(muY,each=n), nrow=n) + noise.Y
+```
+
+## Objective
+
+From the measurement matrices $X$ and $Y$ we want to find the columns of $X$ which are correlated with the columns of $Y$. So hence in the example above, we want to recover the set $(A_x, A_y) = \left( \{ 4, 5, 6\}, \{9, 10, 11 \} \right)$ since we have deliberately induced a correlation between the variables $A_x$ from $X$ and variables $A_y$ from $Y$. Let us see if CBCE can do this for us:
+
+```{r}
+library(cbce)
+res <- cbce(X, Y)
+if(length(res$comms) > 0) {
+  res$comms[[1]]
+}
+```
+So we recovered $A_y$ completely, but couldn't recover all of $A_x$ (we missed variable $6$). If we wish to recover all of $A_x$ we would need the correlations to be stronger, or the sample size to be larger.
+
+# Running the method on your data set
+
+To run CBCE on your own dataset, you would need to load it into $X$ and $Y$ matrices and pass them `cbce()` as shown in the previous section. The CBCE procedure will probably take some time to finish its search, so to get updates while `cbce` runs, you might want to pass the arguments `interaction=interaction_cli` -- provides a commandline progress bar,  or `interaction=interaction_gui` -- provides an experimental GUI to interact with the procedure. If the result seems to be finding too many (or too little) things, you might want to decrease (or increase) the value of the parameter `alpha` from its default at `0.05`. See `?cbce` for more details about the arguments. 
+
+```{r}
+#Load your data into X and Y matrices
+res <- cbce(X, Y, interaction=interaction_gui, alpha=0.01)
+
+# List of communities. 
+# Each community is a list consisting of fields x and y resp, which
+# represent the variables from X and Y in that community.
+res$comms
+```
+
