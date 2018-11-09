@@ -14,7 +14,7 @@ n <- nrow(sim$Y)
 R <- cor(sim$X, sim$Y)
 
 test_that("cors.base is correct when cache=0", {
-  bk <- backend.perm(sim$X, sim$Y, cache.size=0)
+  bk <- cbce:::backend.perm(sim$X, sim$Y, cache.size=0)
   expect_equal(cors(bk, 1:4 + dx), cor(sim$X, sim$Y[,1:4]))
   expect_equal(cors(bk, 4:6), cor(sim$Y, sim$X[, 4:6]))
 })

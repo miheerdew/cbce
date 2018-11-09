@@ -6,18 +6,6 @@
 
 using namespace Rcpp;
 
-// updateColumnsInPlace
-void updateColumnsInPlace(arma::mat& A, arma::uvec ind, const arma::mat& B);
-RcppExport SEXP _cbce_updateColumnsInPlace(SEXP ASEXP, SEXP indSEXP, SEXP BSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type A(ASEXP);
-    Rcpp::traits::input_parameter< arma::uvec >::type ind(indSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type B(BSEXP);
-    updateColumnsInPlace(A, ind, B);
-    return R_NilValue;
-END_RCPP
-}
 // fast_bh_beta
 IntegerVector fast_bh_beta(NumericVector Tstat, double alpha, double shape1, double shape2, bool lower);
 RcppExport SEXP _cbce_fast_bh_beta(SEXP TstatSEXP, SEXP alphaSEXP, SEXP shape1SEXP, SEXP shape2SEXP, SEXP lowerSEXP) {
@@ -73,7 +61,6 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_cbase();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_cbce_updateColumnsInPlace", (DL_FUNC) &_cbce_updateColumnsInPlace, 3},
     {"_cbce_fast_bh_beta", (DL_FUNC) &_cbce_fast_bh_beta, 5},
     {"_cbce_fast_bh_chisq", (DL_FUNC) &_cbce_fast_bh_chisq, 4},
     {"_cbce_jacc_matrix_c", (DL_FUNC) &_cbce_jacc_matrix_c, 1},

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Initialization function — init • cbce</title>
+<title>This is the default diagnositcs method passed to cbce. — diagnostics • cbce</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Initialization function — init" />
+<meta property="og:title" content="This is the default diagnositcs method passed to cbce. — diagnostics" />
 
-<meta property="og:description" content="Initialization function" />
+<meta property="og:description" content="It collects data about the internal state of the method 
+and returns it alonside the result." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,49 +93,38 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Initialization function</h1>
+    <h1>This is the default diagnositcs method passed to cbce.</h1>
     
-    <div class="hidden name"><code>init.Rd</code></div>
+    <div class="hidden name"><code>diagnostics.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Initialization function</p>
+    <p>It collects data about the internal state of the method 
+and returns it alonside the result.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>init</span>(<span class='no'>p</span>, <span class='no'>indx</span>, <span class='no'>alpha</span>, <span class='no'>init_method</span>)</pre>
-    
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>p</th>
-      <td><p>backend</p></td>
-    </tr>
-    <tr>
-      <th>indx</th>
-      <td><p>The node (in global numbering to initialize from)</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>The cutoff to use for pvalues.</p></td>
-    </tr>
-    <tr>
-      <th>init_method</th>
-      <td><p>One of <code>c("conservative-BH", 
-"non-conservative-BH", "BH-0.5", "no-multiple-testing")</code>
-        gives the type of initializtion scheme.</p></td>
-    </tr>
-    </table>
+    <pre class="usage"><span class='fu'>diagnostics</span>(<span class='no'>event</span>, <span class='kw'>e</span> <span class='kw'>=</span> <span class='fu'>parent.frame</span>())</pre>
+        
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Currently, the diagnostics collected are:</p><ol>
+<li><p>Consecutive_jaccards : The jaccard distance at each stage</p></li>
+<li><p>sizes : The sizes at each stage in the extaction</p></li>
+<li><p>disjointed : Whether disjointed at each point.</p></li>
+<li><p>cycle : Whether cycled at each point.</p></li>
+<li><p>Extraction time.</p></li>
+</ol>
     
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-                </ul>
+      
+      <li><a href="#details">Details</a></li>
+          </ul>
 
   </div>
 </div>

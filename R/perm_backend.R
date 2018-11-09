@@ -1,9 +1,8 @@
 # Implements the Perm backend using Fred's moment based approximation.
 
-#' @describeIn backend Constructor for sum of squared correlations under independent Gene and SNP sets (the strong null).
 #' @inheritParams backend.base
+#' @keywords internal
 #'@importFrom methods new
-#'@export
 backend.perm <- function(X, Y, cache.size=0) {
   p <- backend.base(X, Y, cache.size=cache.size)
   p$two_sided <- TRUE
@@ -40,7 +39,7 @@ perm_moments <- function(bk, B) {
 
 #' @describeIn pvals Implementation for sum of squared correlations under independent Gene and SNP sets. 
 #'             Uses the permutation moments approximation.
-#' @export
+#' @keywords internal
 pvals.perm <- function(bk, B, thresh.alpha=1) {
   pm <- perm_moments(bk, B)
   
@@ -63,7 +62,7 @@ pvals_quick.perm <- function(bk, B) {
 }
 
 #' @describeIn pvals_singleton implementation for the perm class
-#' @export
+#' @keywords internal
 pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
   # An easy way to calculate p-values from an indx
   a <- 0.5
@@ -81,7 +80,6 @@ pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
 }
 
 
-#'@export
 rejectPvals.perm <- function(bk, A, alpha) {
   if(length(A) == 1) {
     # An easy way to calculate p-values from an indx

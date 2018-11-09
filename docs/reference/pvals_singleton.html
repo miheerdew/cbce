@@ -21,17 +21,23 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Calculate p-values against a single variable. — pvals_singleton" />
 
-<meta property="og:description" content="Given a node return the p-values for the opposite side for the correlations to this node. This is supposed to be a special case of pvals (with a singleton set) but it is more faster and accurate." />
+<meta property="og:description" content="Given a node return the p-values for the opposite side for the 
+correlations to this node. This is supposed to be a special 
+case of pvals (with a singleton set) but it 
+is more faster and accurate." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -58,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cbce</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.6</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -96,17 +102,17 @@
 
     <div class="ref-description">
     
-    <p>Given a node return the p-values for the opposite side for the correlations to this node. This is supposed to be a special case of <code><a href='pvals.html'>pvals</a></code> (with a singleton set) but it is more faster and accurate.</p>
+    <p>Given a node return the p-values for the opposite side for the 
+correlations to this node. This is supposed to be a special 
+case of <code><a href='pvals.html'>pvals</a></code> (with a singleton set) but it 
+is more faster and accurate.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pvals_singleton</span>(<span class='no'>bk</span>, <span class='no'>indx</span>)
-
-<span class='co'># S3 method for base</span>
-<span class='fu'>pvals_singleton</span>(<span class='no'>bk</span>, <span class='no'>indx</span>)
+    <pre class="usage"><span class='fu'>pvals_singleton</span>(<span class='no'>bk</span>, <span class='no'>indx</span>, <span class='kw'>thresh.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
 <span class='co'># S3 method for perm</span>
-<span class='fu'>pvals_singleton</span>(<span class='no'>bk</span>, <span class='no'>indx</span>)</pre>
+<span class='fu'>pvals_singleton</span>(<span class='no'>bk</span>, <span class='no'>indx</span>, <span class='kw'>thresh.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -119,22 +125,25 @@
       <th>indx</th>
       <td><p>Either an X or Y indices (using global numbering).</p></td>
     </tr>
+    <tr>
+      <th>thresh.alpha</th>
+      <td><p>We are only interested in p-values less than
+thresh.alpha. So the method free to return NA for 
+pvalues &gt; thresh.alpha if it helps with optimization.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether indx is from Y or X respectively.</p>
+    <p>The result is a vector of p-values of 
+length ncol(X) or ncol(Y) depending on whether indx is 
+from Y or X respectively.</p>
     
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>base</code>: implementation for the base class</p></li>
 <li><p><code>perm</code>: implementation for the perm class</p></li>
 </ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='pvals.html'>pvals</a></code></p></div>
     
 
   </div>
@@ -146,8 +155,6 @@
       <li><a href="#value">Value</a></li>
 
       <li><a href="#methods-by-class-">Methods (by class)</a></li>
-
-      <li><a href="#see-also">See also</a></li>
           </ul>
 
   </div>

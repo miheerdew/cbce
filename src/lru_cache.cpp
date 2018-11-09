@@ -1,4 +1,4 @@
-/* Modificatoin of:
+/*
  * 
  *
  * File:   lrucache.hpp
