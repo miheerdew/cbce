@@ -7,7 +7,14 @@ Authors@R: c(
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
       )
 License: MIT + file LICENSE
-Suggests: testthat, mvtnorm, tcltk2, tcltk, tkrplot
+Suggests: 
+    testthat,
+    mvtnorm,
+    tcltk2,
+    tcltk,
+    tkrplot,
+    knitr,
+    rmarkdown
 Imports: rlist, dplyr, pipeR, methods, digest, Rcpp (>= 0.12.19)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
@@ -15,3 +22,4 @@ SystemRequirements: C++11
 Encoding: UTF-8
 BugReports: https://github.com/miheerdew/cbce/issues
 URL: https://miheerdew.github.io/cbce/
+VignetteBuilder: knitr

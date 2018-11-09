@@ -51,7 +51,6 @@
 #' the extraction.
 #' 
 #' @examples 
-#' \dontrun{
 #' library(cbce)
 #' #Sample size
 #' n <- 40
@@ -72,7 +71,6 @@
 #' #If the strength of the correlation was higher
 #' #all the indices could be recovered.
 #' res$comms
-#'}
 #' @export
 cbce <- function(X, Y, 
                   alpha = 0.05, 
