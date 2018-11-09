@@ -21,9 +21,11 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
@@ -33,6 +35,7 @@
 <meta property="og:description" content="A backend is an S3 class which implments the methods pvals, cors and pvals_singleton. Different backends provide p-value computation under different scenarios (e.g. squared vs sum of squared correlations, Indpendence within Gene and SNP's) and may do complicated precomputations on the data matrices (X and Y) behind the scenes. Yet all of them provide a unified interface.
 The methods below are constructors for the differnt backend objects and return an S3 object which implements pvalue methods listed above." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -59,7 +62,7 @@ The methods below are constructors for the differnt backend objects and return a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cbce</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.6</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -102,20 +105,7 @@ The methods below are constructors for the differnt backend objects and return a
     
     </div>
 
-    <pre class="usage"><span class='fu'>backend.chisq</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>fast_approx</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.indepNormal</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.indepChiSq</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.normal</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.normal_two_sided</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.normalc</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
-
-<span class='fu'>backend.perm</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>calc_full_cor</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>backend.perm</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>cache.size</span> <span class='kw'>=</span> <span class='fl'>0</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -129,28 +119,14 @@ The methods below are constructors for the differnt backend objects and return a
       <td><p>Matrix. The data vector for the Y side</p></td>
     </tr>
     <tr>
-      <th>parallel</th>
-      <td><p>Logical Run pvalue computation using multiple threads?</p></td>
-    </tr>
-    <tr>
-      <th>calc_full_cor</th>
-      <td><p>Logical. Should it calculate the <code>c(ncol(X),ncol(Y))</code> dimensional correlation matrix or not? Calculating this matrix upfront makes the pvalue computation faster but it also takes up lot of memory.</p></td>
-    </tr>
-    <tr>
-      <th>fast_approx</th>
-      <td><p>Use the BigX_fast approximation?</p></td>
+      <th>cache.size</th>
+      <td><p>The cache size storing the correlations. Defaults to 0 (don't store anything).</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="functions"><a class="anchor" href="#functions"></a>Functions</h2>
 
     <ul>
-<li><p><code>backend.chisq</code>: Constructor for sum of squared correlations under uncorrelated Gene ans SNP sets (the weak null).</p></li>
-<li><p><code>backend.indepNormal</code>: Constructor for sum of correlations (one sided) under the strong independece (within Gene and Snips and between them).</p></li>
-<li><p><code>backend.indepChiSq</code>: Constructor for sum of squared correlations under strong independence.</p></li>
-<li><p><code>backend.normal</code>: Constructor for one sided sum of correlations under uncorrelated Gene ans SNP sets (the weak null).</p></li>
-<li><p><code>backend.normal_two_sided</code>: Constructor for two sided sum of correlations under uncorrelated Gene and SNP sets (the weak null).</p></li>
-<li><p><code>backend.normalc</code>: Constructor for sum of correlations under uncorrelated Gene ans SNP sets (the weak null).</p></li>
 <li><p><code>backend.perm</code>: Constructor for sum of squared correlations under independent Gene and SNP sets (the strong null).</p></li>
 </ul>
     

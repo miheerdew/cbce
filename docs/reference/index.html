@@ -21,14 +21,17 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
 <meta property="og:title" content="Function reference" />
+
 
 
 <!-- mathjax -->
@@ -55,7 +58,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cbce</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.6</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -92,6 +95,7 @@
     <table class="ref-index">
 
     <colgroup>
+      
       <col class="alias" />
       <col class="title" />
     </colgroup>
@@ -104,77 +108,25 @@
         </th>
       </tr>
       <tr>
-        <!--  -->
-        <td>
-          <p><code><a href="backend.html">backend.chisq()</a></code> <code><a href="backend.html">backend.indepNormal()</a></code> <code><a href="backend.html">backend.indepChiSq()</a></code> <code><a href="backend.html">backend.normal()</a></code> <code><a href="backend.html">backend.normal_two_sided()</a></code> <code><a href="backend.html">backend.normalc()</a></code> <code><a href="backend.html">backend.perm()</a></code> </p>
-        </td>
-        <td><p>Backends : engines for p-value computation.</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="score_quick.html">score_quick()</a></code> </p>
-        </td>
-        <td><p>Calculate score for a Bi-set</p></td>
-      </tr><tr>
-        <!--  -->
+        
         <td>
           <p><code><a href="cbce.html">cbce()</a></code> </p>
         </td>
         <td><p>Correlation Bi-community Extraction method</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
-          <p><code><a href="pvals_quick.html">pvals_quick()</a></code> </p>
+          <p><code><a href="interaction_cli.html">interaction_cli()</a></code> </p>
         </td>
-        <td><p>Calculate p-values against a testing set quickly.</p></td>
+        <td><p>Provides a command line progress indicator for <code>cbce</code>
+Just pass <code>interaction=interaction_cli</code> as an argument to cbce.</p></td>
       </tr><tr>
-        <!--  -->
+        
         <td>
-          <p><code><a href="filter_and_summarize.html">filter_and_summarize()</a></code> </p>
+          <p><code><a href="interaction_gui.html">interaction_gui()</a></code> </p>
         </td>
-        <td><p>Filter and summarize the results</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="pvals_singleton.html">pvals_singleton()</a></code> </p>
-        </td>
-        <td><p>Calculate p-values against a single variable.</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="cors.html">cors()</a></code> </p>
-        </td>
-        <td><p>Calculate correlation vector from the set A</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="cbce2.html">cbce2()</a></code> </p>
-        </td>
-        <td><p>Correlation Bi-community Extraction method</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="backend.base.html">backend.base()</a></code> </p>
-        </td>
-        <td><p>An incomplete backend.</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="mask.html">mask()</a></code> </p>
-        </td>
-        <td><p>Masks the set B in future computations.</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="pvals.html">pvals()</a></code> <code><a href="pvals.html">pvals_quick(<i>&lt;normalc&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Calculate p-values against a testing set.</p></td>
-      </tr><tr>
-        <!--  -->
-        <td>
-          <p><code><a href="init.html">init()</a></code> </p>
-        </td>
-        <td><p>Initialization function</p></td>
+        <td><p>Provides a GUI for interaction with cbce. Pass 
+<code>interaction=interaction_gui</code> to cbce to use the GUI interface.</p></td>
       </tr>
     </tbody>
     </table>

@@ -72,7 +72,7 @@ diagnostics <- function(event, e=parent.frame()) {
 
 #' Don't collect any diagnostics from the method.
 #' 
-#' @describeIn diagnositcs2
+#' @describeIn diagnositcs
 #' 
 #' @keywords internal
 #' @export

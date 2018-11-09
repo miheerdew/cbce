@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Initialization function — init • cbce</title>
+<title>Provides a command line progress indicator for <code><a href='cbce.html'>cbce</a></code>
+Just pass <code>interaction=interaction_cli</code> as an argument to cbce. — interaction_cli • cbce</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +31,11 @@
 
 
 
-<meta property="og:title" content="Initialization function — init" />
+<meta property="og:title" content="Provides a command line progress indicator for <code><a href='cbce.html'>cbce</a></code>
+Just pass <code>interaction=interaction_cli</code> as an argument to cbce. — interaction_cli" />
 
-<meta property="og:description" content="Initialization function" />
+<meta property="og:description" content="Provides a command line progress indicator for cbce
+Just pass interaction=interaction_cli as an argument to cbce." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -92,39 +95,32 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Initialization function</h1>
+    <h1>Provides a command line progress indicator for <code><a href='cbce.html'>cbce</a></code>
+Just pass <code>interaction=interaction_cli</code> as an argument to cbce.</h1>
     
-    <div class="hidden name"><code>init.Rd</code></div>
+    <div class="hidden name"><code>interaction_cli.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Initialization function</p>
+    <p>Provides a command line progress indicator for <code><a href='cbce.html'>cbce</a></code>
+Just pass <code>interaction=interaction_cli</code> as an argument to cbce.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>init</span>(<span class='no'>p</span>, <span class='no'>indx</span>, <span class='no'>alpha</span>, <span class='no'>init_method</span>)</pre>
+    <pre class="usage"><span class='fu'>interaction_cli</span>(<span class='no'>event</span>, <span class='kw'>env</span> <span class='kw'>=</span> <span class='fu'>parent.frame</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>p</th>
-      <td><p>backend</p></td>
+      <th>event</th>
+      <td><p>The name of the event of the callback</p></td>
     </tr>
     <tr>
-      <th>indx</th>
-      <td><p>The node (in global numbering to initialize from)</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>The cutoff to use for pvalues.</p></td>
-    </tr>
-    <tr>
-      <th>init_method</th>
-      <td><p>One of <code>c("conservative-BH", 
-"non-conservative-BH", "BH-0.5", "no-multiple-testing")</code>
-        gives the type of initializtion scheme.</p></td>
+      <th>env</th>
+      <td><p>The environment to access the method internals and store
+persistent state.</p></td>
     </tr>
     </table>
     

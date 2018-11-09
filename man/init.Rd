@@ -13,9 +13,11 @@ init(p, indx, alpha, init_method)
 
 \item{alpha}{The cutoff to use for pvalues.}
 
-\item{init_method}{One of c("conservative-BH", "non-conservative-BH", "BH-0.5", "no-multiple-testing")
-gives the type of initializtion scheme.}
+\item{init_method}{One of \code{c("conservative-BH", 
+"non-conservative-BH", "BH-0.5", "no-multiple-testing")}
+        gives the type of initializtion scheme.}
 }
 \description{
 Initialization function
 }
+\keyword{internal}

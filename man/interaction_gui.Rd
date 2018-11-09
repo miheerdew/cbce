@@ -2,12 +2,24 @@
 % Please edit documentation in R/interaction.R
 \name{interaction_gui}
 \alias{interaction_gui}
-\title{Provides a GUI for interaction with cbce.}
+\title{Provides a GUI for interaction with cbce. Pass 
+\code{interaction=interaction_gui} to cbce to use the GUI interface.}
 \usage{
-interaction_gui(...)
+interaction_gui(event, env = parent.frame())
+}
+\arguments{
+\item{event}{The name of the event of the callback}
+
+\item{env}{The environment to access the method internals and store
+persistent state}
 }
 \description{
-Pass interaction=\code{interaction_gui} to cbce for a GUI interface.
 The global variable \code{TITLE} constrols the title of the GUI.
+Within the GUI, the \code{stop} button will stop the procedure at any 
+point and return partial resutls.
 }
-\keyword{internal}
+\details{
+\emph{Advance:} If \code{cbce} is run from RStudio, then the \code{browser} button
+will run the \code{browser()} command and will allow the user to 
+step into the method.
+}

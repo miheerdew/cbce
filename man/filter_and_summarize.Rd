@@ -8,12 +8,15 @@ filter_and_summarize(extract_res, plot.dendrogram = FALSE,
   hclust.method = "average")
 }
 \arguments{
-\item{extract_res}{Pass result$extract_res where result is the returned 
-by the cbce2 procedure}
+\item{extract_res}{\code{result$extract_res} where 
+\code{result} is the returned by the \code{\link{cbce}} 
+procedure}
 
-\item{plot.dendrogram}{Plot the dendrogram along with the line it is cut at.}
+\item{plot.dendrogram}{logical Plot the dendrogram 
+along with the line it is cut at.}
 
-\item{hclust.method}{The clustering method to use (passed to hclust)}
+\item{hclust.method}{The clustering method to use 
+(passed to hclust)}
 }
 \value{
 A data frame, each row of which represents the summary of a filtered bimodule. 
@@ -27,10 +30,11 @@ The columns of the frame are:
 }
 }
 \description{
-The bimodules are clustered based on their jaccard distances, 
-and the dendrogram is cut to obtain the same number of bimodules as are obtained 
-by the effective-count formula. For each of the cut subtree an appropriate bimodule
-is chosen to represent it.
+The communities are clustered based on their jaccard 
+distances and the dendrogram is cut to obtain the same
+number of communities as are obtained by the 
+effective-count formula. For each of the cut 
+subtree an appropriate bimodule is chosen to represent it.
 }
 \examples{
 \dontrun{
@@ -50,3 +54,4 @@ bms <- rlist::list.map(res$extract_res[df$index], bimod)
 }
 
 }
+\keyword{internal}

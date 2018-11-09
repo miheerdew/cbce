@@ -2,11 +2,12 @@
 
 #' An incomplete backend.
 #'
-#' Other backends build on this. See and use \link{backend} instead.
+#' Other backends build on this. See and use backend instead.
 #'
 #' @param X Matrix. The data vector for the X side
 #' @param Y Matrix. The data vector for the Y side
 #' @param cache.size The cache size storing the correlations. Defaults to 0 (don't store anything).
+#' @keywords internal
 backend.base <- function(X, Y, cache.size=0) {
   p <- list(dx = ncol(X), dy = ncol(Y), n = nrow(X),
             X = scale(X), Y = scale(Y),

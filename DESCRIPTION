@@ -13,3 +13,5 @@ LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
 SystemRequirements: C++11
 Encoding: UTF-8
+BugReports: https://github.com/miheerdew/cbce/issues
+URL: https://miheerdew.github.io/cbce/

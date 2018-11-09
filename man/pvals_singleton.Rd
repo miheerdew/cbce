@@ -14,19 +14,24 @@ pvals_singleton(bk, indx, thresh.alpha = 1)
 
 \item{indx}{Either an X or Y indices (using global numbering).}
 
-\item{thresh.alpha}{We are only interested in p-values less than thresh.alpha. So the method free to return NA for pvalues > thresh.alpha if it helps with optimization.}
+\item{thresh.alpha}{We are only interested in p-values less than
+thresh.alpha. So the method free to return NA for 
+pvalues > thresh.alpha if it helps with optimization.}
 }
 \value{
-The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether indx is from Y or X respectively.
+The result is a vector of p-values of 
+length ncol(X) or ncol(Y) depending on whether indx is 
+from Y or X respectively.
 }
 \description{
-Given a node return the p-values for the opposite side for the correlations to this node. This is supposed to be a special case of \code{\link{pvals}} (with a singleton set) but it is more faster and accurate.
+Given a node return the p-values for the opposite side for the 
+correlations to this node. This is supposed to be a special 
+case of \code{\link{pvals}} (with a singleton set) but it 
+is more faster and accurate.
 }
 \section{Methods (by class)}{
 \itemize{
 \item \code{perm}: implementation for the perm class
 }}
 
-\seealso{
-\code{\link{pvals}}
-}
+\keyword{internal}

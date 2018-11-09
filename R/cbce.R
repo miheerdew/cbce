@@ -1,26 +1,58 @@
 #' Correlation Bi-community Extraction method
 #'
-#' Given two groups of variables, find correlation bi-communities between them. For such a community, the nodes from the first group are are higly correlated to the community-nodes from the second group, and vice versa.
+#' Consider two sets of high-dimensional measurements on the same 
+#' set of samples. CBCE (Correlation Bi-Community Extraction method) 
+#' finds sets of variables from the first measurement and sets of 
+#' variables from the second measurement which are correlated to each 
+#' other.
 #'
-#'  \code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
+#' \code{cbce} applies an update function (mapping subsets of
+#'  variables to subsets of variables) iteratively until a fixed point 
+#'  is found. These fixed points are reported as communities. 
+#' The update starts from a single variable (the initialization step) 
+#' and is repeated till either a fixed point is found or some set 
+#' repeats. Each such run is called an extraction. Since the extraction
+#'  only starts from singleton node, there are \code{ncol(X)+ncol(Y)} 
+#'  possible extractions.
 #'
-#' The update starts from a single node (starting with the initialization step) and is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
-#'
-#' @param X,Y Numeric Matices. Represents the two groups of variables.
-#' @param alpha \eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for multiple_testing procedure
-#' @param alpha.init \eqn{\in (0,1)} Controls the type1 error for the initialization step. This should perhaps be more lax than alpha.
-#' @param start_nodes The initial set of nodes to start with. If Null start from all the nodes.
-#' @param cache.size The amount of memory to dedicate for caching correlations. This will speed things up. Defaults to the average memory required by X and Y matrices
-#' @param interaction This is a function that will be called between extracts to allow interaction with the program. For instance one cas pass interaction_gui (EXPERIMENTAL!) or interaction_none.  
-#' @param max_iterations The maximum number of iterations per extraction. If a fixed point is not found by this step, the extraciton is terminated.
-#' @param diagnostic This is a function for probing the internal state of the method. It will be called at "Events" and can look into what the method is doing. Pass either diagnostics2, diagnostics_none or a custom function.
+#' @param X,Y Numeric Matices. Represents the two groups of variables. 
+#' Rows represent samples and columns represent variables.
+#' @param alpha \eqn{\in (0,1)}. Controls the type1 error for the 
+#' update (for the multiple testing procedure). 
+#' @param alpha.init \eqn{\in (0,1)} Controls the type1 error 
+#' for the initialization step. This could be more liberal 
+#' (i.e greater than) than the alpha for the update step.
+#' @param start_nodes list The initial set of variables to start with. 
+#' If Null, extractions are run starting from each varable from X and Y.
+#' Otherwise \code{start_node$x} gives the X variables to start from
+#' and \code{start_nodes$y} gives the Y variables to start from.
+#' @param cache.size integer The amount of memory to dedicate for 
+#' caching correlations. This will speed things up. 
+#' Defaults to the average memory required by X and Y matrices
+#' @param max_iterations integer The maximum number of iterations per 
+#' extraction. If a fixed point is not found by this step, 
+#' the extraciton is terminated. This limit is set so that the
+#' program terminates.
+#' @param interaction (internal) This is a function that will be called 
+#' between extractions to allow interaction with the program. 
+#' For instance one cas pass the function \code{\link{interaction_gui}}
+#' (EXPERIMENTAL) or \code{\link{interaction_cli}}.  
+#' @param diagnostic (internal) This is a internal function for 
+#' probing the internal state of the method. It will be 
+#' called at special hooks and can look into what the method is doing. 
+#' Pass either \code{\link{diagnostics}}, 
+#' \code{\link{diagnostics_none}}.
 #' 
-#' @return The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
+#' @return The return value is a list with the results and 
+#' meta-data about the extraction. The most useful field is
+#' \code{comms} - this is a list of all the Correlation Bi-communities 
+#' that was detected after filtering, while \code{comms_all} 
+#' consist of all the communities (possibly duplicate) found in 
+#' the extraction.
 #' 
 #' @examples 
 #' \dontrun{
 #' library(cbce)
-#' 
 #' #Sample size
 #' n <- 40
 #' #Dimension of measurement 1
@@ -30,16 +62,12 @@
 #' #Correlation strength
 #' rho <- 0.5
 #' set.seed(1245)
-#'
 #' # Assume first measurement is gaussian
 #' X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
-#' 
 #' # Measurements 3:6 in set 2 are correlated to 4:7 in set 1
 #' Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
 #' Y[, 3:6] <- sqrt(1-rho)*Y[, 3:6] + sqrt(rho)*rowSums(X[, 4:5])
-#' 
 #' res <- cbce(X, Y)
-#' 
 #' #Recovers the indices 4:5 for X and 3:6 for Y
 #' #If the strength of the correlation was higher
 #' #all the indices could be recovered.
@@ -49,7 +77,8 @@
 cbce <- function(X, Y, 
                   alpha = 0.05, 
                   alpha.init = alpha,
-                  cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
+                  cache.size = (utils::object.size(X) + 
+                                utils::object.size(Y))/2,
                   start_nodes=NULL,
                   max_iterations = 20,
                   interaction=interaction_none,
@@ -59,9 +88,12 @@ cbce <- function(X, Y,
   # Defining useful functions.
 
   # Initialize the extraction.
-  # Use the backend to do most of the work, but correct for global indices
-  # @param indx The (global) index of the node (variable) to initialize from.
-  # @return list(x=integer-vector, y=integer-vector): The initialized x, y sets.
+  # Use the backend to do most of the work, but correct for global 
+  # indices
+  # @param indx The (global) index of the node (variable) to 
+  # initialize from.
+  # @return list(x=integer-vector, y=integer-vector): The 
+  # initialized x, y sets.
   initialize <- function(indx) {
     B01 <- rejectPvals(bk, indx, alpha.init)
 
@@ -71,7 +103,8 @@ cbce <- function(X, Y,
       B02 <- rejectPvals(bk, B01, alpha.init)
       return(list(x = B02, y = B01))
     } else {
-      #indx on the Y side, so only need to correct the half update following the init step.
+      #indx on the Y side, so only need to correct the half update 
+      #following the init step.
       B02 <- rejectPvals(bk, B01, alpha.init) + dx
       return(list(x = B01, y = B02))
     }
@@ -86,15 +119,18 @@ cbce <- function(X, Y,
   
   # Store the X and Y sets of B in a single vector.
   # This is an inverse to split
-  # Note B$y is already uses global numbering, so no information is lost.
+  # Note B$y is already uses global numbering, so no information is 
+  # lost.
   merge <- function(B) {
     c(B$x, B$y)
   }
   
   update <- function(B0, env=parent.frame(), first.update.X=TRUE) {
     # Do the update starting from B.
-    # @param B0 list(x, y) : x is a subset of X nodes, y is a subset of Y nodes (using the global index).
-    # @return list(x, y) : The X and Y subsets corresponding to the updated set (again using global numbering)
+    # @param B0 list(x, y) : x is a subset of X nodes, y is a subset 
+    # of Y nodes (using the global index).
+    # @return list(x, y) : The X and Y subsets corresponding to the 
+    #updated set (again using global numbering)
     
       B1 <- list()
       
@@ -110,7 +146,8 @@ cbce <- function(X, Y,
       #env$py <- py
       
       #diagnostic("Update:Pvalues", env)
-      #Note that the positions returned by bh_reject are already the global
+      #Note that the positions returned by bh_reject are already the 
+      #global
       #numbers.
       return(B1)
   }
@@ -122,12 +159,14 @@ cbce <- function(X, Y,
   extract <- function(indx) {
     # Start the extraction from indx
     #
-    # First do the initialization at indx, and then repeateadly apply update till a fixed point is found, or one of the sets repeates (forming a non-trivial cycle).
-    #
-    #@return The return value is the extract_res field of the final method results.
+    # First do the initialization at indx, and then repeateadly apply 
+    #update till a fixed point is found, or one of the sets repeates 
+    #(forming a non-trivial cycle).
+    #@return The return value is the extract_res field of the final
+    #method results.
     
-    #Is indx an X or Y node. This is important for the two-step update to
-    # tell \code{update()} which side to start initialization from.
+    #Is indx an X or Y node. This is important for the two-step update
+    #to tell \code{update()} which side to start initialization from.
     
 
     cycle_count <- 0
@@ -203,7 +242,8 @@ cbce <- function(X, Y,
     if(!collapsed) {
       B0$y <- B0$y - dx
       stableComm <- B0 
-      log.pval <- summary_pval(X[, B0$x, drop=FALSE], Y[, B0$y, drop=FALSE])
+      log.pval <- summary_pval(X[, B0$x, drop=FALSE], 
+                               Y[, B0$y, drop=FALSE])
     } else {
       stableComm <- list(x=integer(0), y=integer(0))
       log.pval <- NA
@@ -220,7 +260,7 @@ cbce <- function(X, Y,
                   diagnostic_info))
   }
   
-  #-------------------------------------------------------------------------------
+  #-----------------------------------------------------
   # Extractions
   
   
@@ -245,9 +285,16 @@ cbce <- function(X, Y,
   cor_Y_to_Xsums <- abs(as.vector(t(Xsum) %*% bk$Y))
   extractord <- indices[order(c(cor_X_to_Ysums, cor_Y_to_Xsums),
                                 decreasing = TRUE)]
-  if (!is.null(start_nodes))
-    extractord <- extractord[extractord %in% start_nodes]
   
+  if (!is.null(start_nodes)) {
+    start_nodes_global <- c(start_nodes$x, start_nodes$y + dx)
+    if(is.null(start_nodes_global)) {
+      warning(paste0("start_nodes must be a list of size 2",
+                  "and must have names x and y. Ignoring it."))
+    } else {
+      extractord <- extractord[extractord %in% start_nodes_global]
+    }
+  }
   # --------- Extraction loop starts ----------------
   extract_res <- rlist::list.map(1:length(extractord), NULL)
   res <- NULL

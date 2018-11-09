@@ -156,16 +156,24 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
          warning("Unknown event in interaction_gui ", event))
 }
 
-#' Provides a GUI for interaction with cbce.
+#' Provides a GUI for interaction with cbce. Pass 
+#' \code{interaction=interaction_gui} to cbce to use the GUI interface.
 #' 
-#' Pass interaction=\code{interaction_gui} to cbce for a GUI interface.
 #' The global variable \code{TITLE} constrols the title of the GUI.
+#' Within the GUI, the \code{stop} button will stop the procedure at any 
+#' point and return partial resutls. 
 #' 
-#' @keywords internal
+#' \emph{Advance:} If \code{cbce} is run from RStudio, then the \code{browser} button
+#' will run the \code{browser()} command and will allow the user to 
+#' step into the method.
+#' 
+#' @param event The name of the event of the callback
+#' @param env The environment to access the method internals and store
+#' persistent state
 #' @export
-interaction_gui <- function(...) {
+interaction_gui <- function(event, env=parent.frame()) {
   tryCatch({
-    interaction_gui_non_safe(...)
+    interaction_gui_non_safe(event, env)
   }, error=function(e) {
     warning("Error detected by GUI:", e)
   }, warning=function(w) {
@@ -175,11 +183,12 @@ interaction_gui <- function(...) {
 
 interaction_none <- function(...) TRUE
 
-#' Provides a CLI for interaction with cbce.
+#' Provides a command line progress indicator for \code{\link{cbce}}
+#' Just pass \code{interaction=interaction_cli} as an argument to cbce.
 #' 
-#' Pass interaction=\code{interaction_cli} to get a progress indicator.
-#' 
-#' @keywords internal
+#' @param event The name of the event of the callback
+#' @param env The environment to access the method internals and store
+#' persistent state.
 #' @export
 interaction_cli <- function(event, env=parent.frame()) {
   switch (event,

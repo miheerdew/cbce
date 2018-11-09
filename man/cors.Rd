@@ -7,11 +7,14 @@
 cors(bk, A)
 }
 \arguments{
-\item{bk}{An object of class \link{backend}}
+\item{bk}{An object of class backend}
 
 \item{A}{Either a subset of X or Y columns (in global numbering)}
 }
 \description{
-The backends typically have a faster way to implement this (using precomputations)
-but this is roughly equivalent to \code{cor(X, Y[,A-dx])} if \code{min(A) > dx} else it is equal to \code{cor(Y, X[,A])}.
+The backends typically have a faster way to implement 
+this (using precomputations) but this is roughly equivalent 
+to \code{cor(X, Y[,A-dx])} if \code{min(A) > dx} 
+else it is equal to \code{cor(Y, X[,A])}.
 }
+\keyword{internal}

@@ -10,37 +10,69 @@ cbce(X, Y, alpha = 0.05, alpha.init = alpha,
   interaction = interaction_none, diagnostic = diagnostics)
 }
 \arguments{
-\item{X, Y}{Numeric Matices. Represents the two groups of variables.}
+\item{X, Y}{Numeric Matices. Represents the two groups of variables. 
+Rows represent samples and columns represent variables.}
 
-\item{alpha}{\eqn{\in (0,1)}. Controls the type1 error per update. This is the type1 error to use for multiple_testing procedure}
+\item{alpha}{\eqn{\in (0,1)}. Controls the type1 error for the 
+update (for the multiple testing procedure).}
 
-\item{alpha.init}{\eqn{\in (0,1)} Controls the type1 error for the initialization step. This should perhaps be more lax than alpha.}
+\item{alpha.init}{\eqn{\in (0,1)} Controls the type1 error 
+for the initialization step. This could be more liberal 
+(i.e greater than) than the alpha for the update step.}
 
-\item{cache.size}{The amount of memory to dedicate for caching correlations. This will speed things up. Defaults to the average memory required by X and Y matrices}
+\item{cache.size}{integer The amount of memory to dedicate for 
+caching correlations. This will speed things up. 
+Defaults to the average memory required by X and Y matrices}
 
-\item{start_nodes}{The initial set of nodes to start with. If Null start from all the nodes.}
+\item{start_nodes}{list The initial set of variables to start with. 
+If Null, extractions are run starting from each varable from X and Y.
+Otherwise \code{start_node$x} gives the X variables to start from
+and \code{start_nodes$y} gives the Y variables to start from.}
 
-\item{max_iterations}{The maximum number of iterations per extraction. If a fixed point is not found by this step, the extraciton is terminated.}
+\item{max_iterations}{integer The maximum number of iterations per 
+extraction. If a fixed point is not found by this step, 
+the extraciton is terminated. This limit is set so that the
+program terminates.}
 
-\item{interaction}{This is a function that will be called between extracts to allow interaction with the program. For instance one cas pass interaction_gui (EXPERIMENTAL!) or interaction_none.}
+\item{interaction}{(internal) This is a function that will be called 
+between extractions to allow interaction with the program. 
+For instance one cas pass the function \code{\link{interaction_gui}}
+(EXPERIMENTAL) or \code{\link{interaction_cli}}.}
 
-\item{diagnostic}{This is a function for probing the internal state of the method. It will be called at "Events" and can look into what the method is doing. Pass either diagnostics2, diagnostics_none or a custom function.}
+\item{diagnostic}{(internal) This is a internal function for 
+probing the internal state of the method. It will be 
+called at special hooks and can look into what the method is doing. 
+Pass either \code{\link{diagnostics}}, 
+\code{\link{diagnostics_none}}.}
 }
 \value{
-The return value is a list with details of the extraction and list of indices representing the communities. See example below (finding communities in noise). Note that the variables from the X and Y set are denoted using a single numbering. Hence the nodes in X are denoted by \code{1:dx} and the nodes in Y are denoted by the numbers following dx (hence \code{dx+1:dy})
+The return value is a list with the results and 
+meta-data about the extraction. The most useful field is
+\code{comms} - this is a list of all the Correlation Bi-communities 
+that was detected after filtering, while \code{comms_all} 
+consist of all the communities (possibly duplicate) found in 
+the extraction.
 }
 \description{
-Given two groups of variables, find correlation bi-communities between them. For such a community, the nodes from the first group are are higly correlated to the community-nodes from the second group, and vice versa.
+Consider two sets of high-dimensional measurements on the same 
+set of samples. CBCE (Correlation Bi-Community Extraction method) 
+finds sets of variables from the first measurement and sets of 
+variables from the second measurement which are correlated to each 
+other.
 }
 \details{
-\code{cbce} applies an update function (mapping subsets of variables to subsets of variables) iteratively until a fixed point is found. These fixed points are reported as communities. The update function uses multiple-testing procedure to find variables correlated to the current set of variables.
-
-The update starts from a single node (starting with the initialization step) and is repeated till either a fixed point is found or some set repeats. Each such run is called an extraction. Since the extraction only starts from singleton node, there are \code{ncol(X)+ncol(Y)} possible extractions.
+\code{cbce} applies an update function (mapping subsets of
+ variables to subsets of variables) iteratively until a fixed point 
+ is found. These fixed points are reported as communities. 
+The update starts from a single variable (the initialization step) 
+and is repeated till either a fixed point is found or some set 
+repeats. Each such run is called an extraction. Since the extraction
+ only starts from singleton node, there are \code{ncol(X)+ncol(Y)} 
+ possible extractions.
 }
 \examples{
 \dontrun{
 library(cbce)
-
 #Sample size
 n <- 40
 #Dimension of measurement 1
@@ -50,16 +82,15 @@ dy <- 50
 #Correlation strength
 rho <- 0.5
 set.seed(1245)
-
 # Assume first measurement is gaussian
 X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
-
 # Measurements 3:6 in set 2 are correlated to 4:7 in set 1
 Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
 Y[, 3:6] <- sqrt(1-rho)*Y[, 3:6] + sqrt(rho)*rowSums(X[, 4:5])
-
 res <- cbce(X, Y)
 #Recovers the indices 4:5 for X and 3:6 for Y
-res$comms[[1]]
+#If the strength of the correlation was higher
+#all the indices could be recovered.
+res$comms
 }
 }

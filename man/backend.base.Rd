@@ -14,5 +14,6 @@ backend.base(X, Y, cache.size = 0)
 \item{cache.size}{The cache size storing the correlations. Defaults to 0 (don't store anything).}
 }
 \description{
-Other backends build on this. See and use \link{backend} instead.
+Other backends build on this. See and use backend instead.
 }
+\keyword{internal}

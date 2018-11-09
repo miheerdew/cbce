@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate p-values against a testing set. — pvals • cbce</title>
+<title>Backends : engines for p-value computation. — pvals • cbce</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -21,18 +21,30 @@
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
 
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 
 
-<meta property="og:title" content="Calculate p-values against a testing set. — pvals" />
+<meta property="og:title" content="Backends : engines for p-value computation. — pvals" />
 
-<meta property="og:description" content="Given a testing set B, return the p-values for the opposite side.
-This is an S3 method that is implemented by all backends." />
+<meta property="og:description" content="A backend is an S3 class which implments the methods 
+pvals, cors and 
+pvals_singleton. Different backends provide 
+p-value computation under different scenarios 
+(e.g. squared vs sum of squared correlations, 
+Indpendence within Gene and SNP's) and may do complicated
+ precomputations on the data matrices (X and Y) 
+ behind the scenes. Yet all of them provide a unified interface.
+The methods below are constructors for the differnt backend 
+objects and return an S3 object which implements pvalue 
+methods listed above." />
 <meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -59,7 +71,7 @@ This is an S3 method that is implemented by all backends." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cbce</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.1.6</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0</span>
       </span>
     </div>
 
@@ -90,43 +102,31 @@ This is an S3 method that is implemented by all backends." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate p-values against a testing set.</h1>
+    <h1>Backends : engines for p-value computation.</h1>
     
     <div class="hidden name"><code>pvals.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Given a testing set B, return the p-values for the opposite side.
-This is an S3 method that is implemented by all backends.</p>
+    <p>A backend is an S3 class which implments the methods 
+<code>pvals</code>, <code><a href='cors.html'>cors</a></code> and 
+<code><a href='pvals_singleton.html'>pvals_singleton</a></code>. Different backends provide 
+p-value computation under different scenarios 
+(e.g. squared vs sum of squared correlations, 
+Indpendence within Gene and SNP's) and may do complicated
+ precomputations on the data matrices (<code>X</code> and <code>Y</code>) 
+ behind the scenes. Yet all of them provide a unified interface.
+The methods below are constructors for the differnt backend 
+objects and return an S3 object which implements pvalue 
+methods listed above.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for chisq</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for indepNormal</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for indepChiSq</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for normal</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for normal_two_sided</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for normalc</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)
-
-<span class='co'># S3 method for normalc</span>
-<span class='fu'><a href='pvals_quick.html'>pvals_quick</a></span>(<span class='no'>bk</span>, <span class='no'>B</span>)
+    <pre class="usage"><span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>, <span class='kw'>thresh.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>)
 
 <span class='co'># S3 method for perm</span>
-<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>)</pre>
+<span class='fu'>pvals</span>(<span class='no'>bk</span>, <span class='no'>B</span>, <span class='kw'>thresh.alpha</span> <span class='kw'>=</span> <span class='fl'>1</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -139,29 +139,27 @@ This is an S3 method that is implemented by all backends.</p>
       <th>B</th>
       <td><p>A set of either X or Y indices (using global numbering). The method calculates the pvalues from this set to the opposite side.</p></td>
     </tr>
+    <tr>
+      <th>thresh.alpha</th>
+      <td><p>We are only interested in p-values less than thresh.alpha. So the method free to return NA for pvalues &gt; thresh.alpha if it helps with optimization.</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether B is from Y or X respectively.</p>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Given a testing set B, return the p-values for the opposite side.
+This is an S3 method that is implemented by all backends.</p>
+    
     <h2 class="hasAnchor" id="methods-by-class-"><a class="anchor" href="#methods-by-class-"></a>Methods (by class)</h2>
 
     <ul>
-<li><p><code>chisq</code>: C implementation for sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)</p></li>
-<li><p><code>indepNormal</code>: p-values for the sum of correlations under strong independence (with in Gene and SNP's and between them too).</p></li>
-<li><p><code>indepChiSq</code>: p-values for the sum of squared correlations under strong independence (with in Gene and SNP's and between them too).</p></li>
-<li><p><code>normal</code>: implementation for the one sided sum of correlations under uncorrelated Gene and SNP sets (the weak null)</p></li>
-<li><p><code>normal_two_sided</code>: implementation for the two sided sum of squared correlations under uncorrelated Gene and SNP sets (the weak null)</p></li>
-<li><p><code>normalc</code>: C implementation for sum of correlations under uncorrelated Gene and SNP sets (the weak null)</p></li>
-<li><p><code>normalc</code>: C implementation for sum of correlations under uncorrelated Gene and SNP sets (the weak null)</p></li>
 <li><p><code>perm</code>: Implementation for sum of squared correlations under independent Gene and SNP sets. 
 Uses the permutation moments approximation.</p></li>
 </ul>
-    
-    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
-
-    <div class='dont-index'><p><code><a href='pvals_singleton.html'>pvals_singleton</a></code></p></div>
     
 
   </div>
@@ -172,9 +170,9 @@ Uses the permutation moments approximation.</p></li>
       
       <li><a href="#value">Value</a></li>
 
-      <li><a href="#methods-by-class-">Methods (by class)</a></li>
+      <li><a href="#details">Details</a></li>
 
-      <li><a href="#see-also">See also</a></li>
+      <li><a href="#methods-by-class-">Methods (by class)</a></li>
           </ul>
 
   </div>

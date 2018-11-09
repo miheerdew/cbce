@@ -3,7 +3,7 @@
 \name{pvals}
 \alias{pvals}
 \alias{pvals.perm}
-\title{Calculate p-values against a testing set.}
+\title{Backends : engines for p-value computation.}
 \usage{
 pvals(bk, B, thresh.alpha = 1)
 
@@ -20,6 +20,19 @@ pvals(bk, B, thresh.alpha = 1)
 The result is a vector of p-values of length ncol(X) or ncol(Y) depending on whether B is from Y or X respectively.
 }
 \description{
+A backend is an S3 class which implments the methods 
+\code{\link{pvals}}, \code{\link{cors}} and 
+\code{\link{pvals_singleton}}. Different backends provide 
+p-value computation under different scenarios 
+(e.g. squared vs sum of squared correlations, 
+Indpendence within Gene and SNP's) and may do complicated
+ precomputations on the data matrices (\code{X} and \code{Y}) 
+ behind the scenes. Yet all of them provide a unified interface.
+The methods below are constructors for the differnt backend 
+objects and return an S3 object which implements pvalue 
+methods listed above.
+}
+\details{
 Given a testing set B, return the p-values for the opposite side.
 This is an S3 method that is implemented by all backends.
 }
@@ -29,6 +42,4 @@ This is an S3 method that is implemented by all backends.
 Uses the permutation moments approximation.
 }}
 
-\seealso{
-\code{\link{pvals_singleton}}
-}
+\keyword{internal}

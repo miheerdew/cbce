@@ -2,11 +2,18 @@
 % Please edit documentation in R/interaction.R
 \name{interaction_cli}
 \alias{interaction_cli}
-\title{Provides a CLI for interaction with cbce.}
+\title{Provides a command line progress indicator for \code{\link{cbce}}
+Just pass \code{interaction=interaction_cli} as an argument to cbce.}
 \usage{
 interaction_cli(event, env = parent.frame())
 }
-\description{
-Pass interaction=\code{interaction_cli} to get a progress indicator.
+\arguments{
+\item{event}{The name of the event of the callback}
+
+\item{env}{The environment to access the method internals and store
+persistent state.}
 }
-\keyword{internal}
+\description{
+Provides a command line progress indicator for \code{\link{cbce}}
+Just pass \code{interaction=interaction_cli} as an argument to cbce.
+}
