@@ -1,3 +1,5 @@
+# cbce 0.2.2
+
 # cbce 0.2.1
 
 Use local numbering for the extraction index.
