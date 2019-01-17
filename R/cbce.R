@@ -194,7 +194,9 @@ cbce <- function(X, Y,
       log.pval <- NA
     }
     
-    return(c(list("indx" = indx,
+    return(c(list(
+                  #Convert index to local number 
+                  "indx" = if(indx > dx) c(y=indx-dx) else c(x=indx),
                   "bimod" = stableComm,
                   "itCount" = itCount,
                   "fixed_point" = success,
