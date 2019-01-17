@@ -33,6 +33,10 @@
 #' extraction. If a fixed point is not found by this step, 
 #' the extraciton is terminated. This limit is set so that the
 #' program terminates.
+#' @param size_threshold The maximum size of bimodule we want to search for.
+#'                    The search will be terminated when sets grow beyond this size.
+#'                    The size of a bimodule is defined as the geometric mean of
+#'                    its X and Y sizes.
 #' @param interaction (internal) This is a function that will be called 
 #' between extractions to allow interaction with the program. 
 #' For instance one cas pass the function \code{\link{interaction_gui}}
@@ -79,6 +83,7 @@ cbce <- function(X, Y,
                                 utils::object.size(Y))/2,
                   start_nodes=NULL,
                   max_iterations = 20,
+                  size_threshold = 0.5*sqrt(ncol(X)*ncol(Y)),
                   interaction=interaction_none,
                   diagnostic=diagnostics) {
   
@@ -171,6 +176,7 @@ cbce <- function(X, Y,
     collapsed <- FALSE
     success <- FALSE
     itCount <- 0
+    size_exceeded <- TRUE
     stop <- FALSE
 
     f <- new.env()
@@ -197,9 +203,17 @@ cbce <- function(X, Y,
       itCount <- itCount + 1
       B1 <- update(B0, f, first.update.X = (indx > dx))
       
-      if (length(B1$y) * length(B1$x) == 0) {
+      bm.size <- sqrt(length(B1$y)*length(B1$x))
+      
+      if (bm.size == 0) {
         stop <- collapsed <- TRUE
         diagnostic("Extract:Collapsed", f)
+        break
+      }
+      
+      if(bm.size > size_threshold) {
+        size_exceeded <- stop <- TRUE
+        diagnostic("Extract:SizeExceeded", f)
         break
       }
       
@@ -256,6 +270,7 @@ cbce <- function(X, Y,
                   "collapsed" = collapsed,
                   "cycle_count" = cycle_count,
                   "overflowed" = !stop,
+                  "size_exceeded" = size_exceeded,
                   "log.pvalue" = log.pval), 
                   diagnostic_info))
   }

@@ -6,8 +6,9 @@
 \usage{
 cbce(X, Y, alpha = 0.05, alpha.init = alpha,
   cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
-  start_nodes = NULL, max_iterations = 20,
-  interaction = interaction_none, diagnostic = diagnostics)
+  start_nodes = NULL, max_iterations = 20, size_threshold = 0.5 *
+  sqrt(ncol(X) * ncol(Y)), interaction = interaction_none,
+  diagnostic = diagnostics)
 }
 \arguments{
 \item{X, Y}{Numeric Matices. Represents the two groups of variables. 
@@ -33,6 +34,11 @@ and \code{start_nodes$y} gives the Y variables to start from.}
 extraction. If a fixed point is not found by this step, 
 the extraciton is terminated. This limit is set so that the
 program terminates.}
+
+\item{size_threshold}{The maximum size of bimodule we want to search for.
+The search will be terminated when sets grow beyond this size.
+The size of a bimodule is defined as the geometric mean of
+its X and Y sizes.}
 
 \item{interaction}{(internal) This is a function that will be called 
 between extractions to allow interaction with the program. 
