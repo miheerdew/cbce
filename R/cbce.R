@@ -83,7 +83,7 @@ cbce <- function(X, Y,
                                 utils::object.size(Y))/2,
                   start_nodes=NULL,
                   max_iterations = 20,
-                  size_threshold = 0.5*sqrt(ncol(X)*ncol(Y)),
+                  size_threshold = 0.01*exp(log(ncol(X))/2 + log(ncol(Y))/2),
                   interaction=interaction_none,
                   diagnostic=diagnostics) {
   
@@ -205,7 +205,7 @@ cbce <- function(X, Y,
       
       bm.size <- sqrt(length(B1$y)*length(B1$x))
       
-      if (bm.size == 0) {
+      if (bm.size < 1) {
         stop <- collapsed <- TRUE
         diagnostic("Extract:Collapsed", f)
         break
