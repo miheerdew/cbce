@@ -83,7 +83,7 @@ cbce <- function(X, Y,
                                 utils::object.size(Y))/2,
                   start_nodes=NULL,
                   max_iterations = 20,
-                  size_threshold = 0.01*exp(log(ncol(X))/2 + log(ncol(Y))/2),
+                  size_threshold = 0.5*exp(log(ncol(X))/2 + log(ncol(Y))/2),
                   interaction=interaction_none,
                   diagnostic=diagnostics) {
   
