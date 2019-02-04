@@ -39,6 +39,10 @@ diagnostics <- function(event, e=parent.frame()) {
              B1 <- get("B1", e)
              e$sizes[[j]] <- list(x=length(B1$x), y=length(B1$y))
            },
+           SizeExceeded={
+             B1 <- get("B1", e)
+             e$sizes[[j]] <- list(x=length(B1$x), y=length(B1$y))
+           },
            AfterUpdate={
              B1 <- get("B1", e)
              jac <- get("dist_to_prev", e)

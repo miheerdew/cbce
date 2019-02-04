@@ -7,7 +7,7 @@
 cbce(X, Y, alpha = 0.05, alpha.init = alpha,
   cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
   start_nodes = NULL, max_iterations = 20, size_threshold = 0.5 *
-  sqrt(ncol(X) * ncol(Y)), interaction = interaction_none,
+  exp(log(ncol(X))/2 + log(ncol(Y))/2), interaction = interaction_none,
   diagnostic = diagnostics)
 }
 \arguments{

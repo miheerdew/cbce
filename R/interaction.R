@@ -8,6 +8,7 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
            env$collapsed <- 0
            env$cycled <- 0
            env$overflowed <- 0
+           env$size_exceeded <- 0
            env$tot <- length(get("extractord", envir=env))
            env$start_time <- Sys.time()
            env$timestamp_plot  <- env$timestamp_update <- Sys.time()
@@ -18,9 +19,9 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
                if(is.null(res <- env$old_res)) {
                  return(NULL)
                }
+             } else {
+              env$old_res <- res
              }
-             
-             env$old_res <- res
              
              u <- res$update_info
              itCount <- res$itCount
@@ -30,7 +31,8 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
                               cycles = 5,
                               fixed_point = 19,
                               collapse = 8,
-                              overflow = 13)
+                              overflow = 13,
+                              size_exceeded = 11)
              
              #The plotting characters
              chars = rep(char_map$default, itCount)
@@ -41,6 +43,8 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
                chars[itCount] <- char_map$collapse
              } else if(res$overflow) {
                chars[itCount] <- char_map$overflow
+             } else if(res$size_exceeded) {
+               chars[itCount] <- char_map$size_exceeded
              }
              
              chars[rlist::list.mapv(u$cycle_info, itCount)] <- char_map$cycles
@@ -77,19 +81,22 @@ interaction_gui_non_safe <- function(event, env=parent.frame()) {
              env$collapsed <- env$collapsed + (res$collapsed && res$itCount > 0)
              env$cycled <- env$cycled + (res$cycle_count > 0)
              env$overflowed <- env$overflowed + res$overflowed
+             env$size_exceeded <- env$size_exceeded + res$size_exceeded
+             
              i <- get("i", envir=env)
              
              if(Sys.time() - env$timestamp_update > 1 || i == 1) {
                env$timestamp_update <- Sys.time()
                # Update status every second
                tcltk::tclvalue(env$statusLabel) <- sprintf(
-                 "%d iterations, %d: fixed points, %d: duds, %d: collapsed, %d: cycled, %d: overflowed",
+                 "%d iterations, %d: fixed points, %d: duds, %d: collapsed, %d: cycled, %d: overflowed, %d: Size Exceeded",
                  i, 
                  env$fixed_points, 
                  env$duds, 
                  env$collapsed, 
                  env$cycled, 
-                 env$overflowed)
+                 env$overflowed,
+                 env$size_exceeded)
                tcltk::tcl("update")
                tcltk::tkconfigure(env$pb, value=i)
                if(Sys.time() - env$timestamp_plot > 5 || i == 1) {
