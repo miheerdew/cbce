@@ -176,7 +176,7 @@ cbce <- function(X, Y,
     collapsed <- FALSE
     success <- FALSE
     itCount <- 0
-    size_exceeded <- TRUE
+    size_exceeded <- FALSE
     stop <- FALSE
 
     f <- new.env()
