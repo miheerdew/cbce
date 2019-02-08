@@ -22,7 +22,12 @@
 #' @param alpha.init \eqn{\in (0,1)} Controls the type1 error 
 #' for the initialization step. This could be more liberal 
 #' (i.e greater than) than the alpha for the update step.
-#' @param start_nodes list The initial set of variables to start with. 
+#' @param start_frac \eqn{\in (0,1)} The random proportion of nodes to 
+#' start extractions from. This is used to randomly sample 
+#' \code{start_nodes}. If \code{start_node} is provided this parameter 
+#' is ignored.
+#' @param start_nodes list The initial set of variables to start with.
+#' If this is provided, \code{start_frac} will be ignored. 
 #' If Null, extractions are run starting from each varable from X and Y.
 #' Otherwise \code{start_node$x} gives the X variables to start from
 #' and \code{start_nodes$y} gives the Y variables to start from.
@@ -81,7 +86,11 @@ cbce <- function(X, Y,
                   alpha.init = alpha,
                   cache.size = (utils::object.size(X) + 
                                 utils::object.size(Y))/2,
-                  start_nodes=NULL,
+                  start_frac = 0.5,
+                  start_nodes = list(x=sample(1:ncol(X), 
+                                            ceiling(ncol(X)*start_frac)), 
+                                   y=sample(1:ncol(Y),
+                                            ceiling(ncol(Y)*start_frac))),
                   max_iterations = 20,
                   size_threshold = 0.5*exp(log(ncol(X))/2 + log(ncol(Y))/2),
                   interaction=interaction_none,
