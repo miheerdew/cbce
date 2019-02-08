@@ -65,7 +65,7 @@ other." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cbce</a>
-        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.0.9000</span>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">0.2.2</span>
       </span>
     </div>
 
@@ -82,6 +82,9 @@ other." />
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       
@@ -116,8 +119,11 @@ other.</p>
 
     <pre class="usage"><span class='fu'>cbce</span>(<span class='no'>X</span>, <span class='no'>Y</span>, <span class='kw'>alpha</span> <span class='kw'>=</span> <span class='fl'>0.05</span>, <span class='kw'>alpha.init</span> <span class='kw'>=</span> <span class='no'>alpha</span>,
   <span class='kw'>cache.size</span> <span class='kw'>=</span> (<span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/utils/topics/object.size'>object.size</a></span>(<span class='no'>X</span>) + <span class='kw pkg'>utils</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/utils/topics/object.size'>object.size</a></span>(<span class='no'>Y</span>))/<span class='fl'>2</span>,
-  <span class='kw'>start_nodes</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fl'>20</span>,
-  <span class='kw'>interaction</span> <span class='kw'>=</span> <span class='no'>interaction_none</span>, <span class='kw'>diagnostic</span> <span class='kw'>=</span> <span class='no'>diagnostics</span>)</pre>
+  <span class='kw'>start_frac</span> <span class='kw'>=</span> <span class='fl'>0.5</span>, <span class='kw'>start_nodes</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='fl'>1</span>:<span class='fu'>ncol</span>(<span class='no'>X</span>),
+  <span class='fu'>ceiling</span>(<span class='fu'>ncol</span>(<span class='no'>X</span>) * <span class='no'>start_frac</span>)), <span class='kw'>y</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='fl'>1</span>:<span class='fu'>ncol</span>(<span class='no'>Y</span>), <span class='fu'>ceiling</span>(<span class='fu'>ncol</span>(<span class='no'>Y</span>) *
+  <span class='no'>start_frac</span>))), <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>size_threshold</span> <span class='kw'>=</span> <span class='fl'>0.5</span> *
+  <span class='fu'>exp</span>(<span class='fu'>log</span>(<span class='fu'>ncol</span>(<span class='no'>X</span>))/<span class='fl'>2</span> + <span class='fu'>log</span>(<span class='fu'>ncol</span>(<span class='no'>Y</span>))/<span class='fl'>2</span>), <span class='kw'>interaction</span> <span class='kw'>=</span> <span class='no'>interaction_none</span>,
+  <span class='kw'>diagnostic</span> <span class='kw'>=</span> <span class='no'>diagnostics</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,8 +151,16 @@ caching correlations. This will speed things up.
 Defaults to the average memory required by X and Y matrices</p></td>
     </tr>
     <tr>
+      <th>start_frac</th>
+      <td><p>\(\in (0,1)\) The random proportion of nodes to 
+start extractions from. This is used to randomly sample 
+<code>start_nodes</code>. If <code>start_node</code> is provided this parameter 
+is ignored.</p></td>
+    </tr>
+    <tr>
       <th>start_nodes</th>
-      <td><p>list The initial set of variables to start with. 
+      <td><p>list The initial set of variables to start with.
+If this is provided, <code>start_frac</code> will be ignored. 
 If Null, extractions are run starting from each varable from X and Y.
 Otherwise <code>start_node$x</code> gives the X variables to start from
 and <code>start_nodes$y</code> gives the Y variables to start from.</p></td>
@@ -157,6 +171,13 @@ and <code>start_nodes$y</code> gives the Y variables to start from.</p></td>
 extraction. If a fixed point is not found by this step, 
 the extraciton is terminated. This limit is set so that the
 program terminates.</p></td>
+    </tr>
+    <tr>
+      <th>size_threshold</th>
+      <td><p>The maximum size of bimodule we want to search for.
+The search will be terminated when sets grow beyond this size.
+The size of a bimodule is defined as the geometric mean of
+its X and Y sizes.</p></td>
     </tr>
     <tr>
       <th>interaction</th>
