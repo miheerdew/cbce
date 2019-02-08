@@ -1,5 +1,7 @@
 # cbce 0.2.3
 
+Randomly choose initial sets to starts with.
+
 # cbce 0.2.2
 
 Parameter to stop extractions from growing very large.
