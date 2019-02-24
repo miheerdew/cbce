@@ -86,7 +86,7 @@ cbce <- function(X, Y,
                   alpha.init = alpha,
                   cache.size = (utils::object.size(X) + 
                                 utils::object.size(Y))/2,
-                  start_frac = 0.5,
+                  start_frac = 1,
                   start_nodes = list(x=sample(1:ncol(X), 
                                             ceiling(ncol(X)*start_frac)), 
                                    y=sample(1:ncol(Y),
