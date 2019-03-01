@@ -6,7 +6,7 @@
 \usage{
 cbce(X, Y, alpha = 0.05, alpha.init = alpha,
   cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
-  start_frac = 0.5, start_nodes = list(x = sample(1:ncol(X),
+  start_frac = 1, start_nodes = list(x = sample(1:ncol(X),
   ceiling(ncol(X) * start_frac)), y = sample(1:ncol(Y), ceiling(ncol(Y) *
   start_frac))), max_iterations = 20, size_threshold = 0.5 *
   exp(log(ncol(X))/2 + log(ncol(Y))/2), interaction = interaction_none,
