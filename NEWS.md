@@ -1,5 +1,7 @@
 # cbce 0.2.4
 
+Use deterministic starts by default to avoid surpirses
+
 # cbce 0.2.3
 
 Randomly choose initial sets to starts with.
