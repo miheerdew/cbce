@@ -1,3 +1,5 @@
+# cbce 0.2.4
+
 # cbce 0.2.3
 
 Randomly choose initial sets to starts with.
