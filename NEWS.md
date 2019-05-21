@@ -1,3 +1,5 @@
+# cbce 0.2.5
+
 # cbce 0.2.4
 
 Use deterministic starts by default to avoid surpirses
