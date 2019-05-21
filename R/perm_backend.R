@@ -80,16 +80,23 @@ pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
 }
 
 
-rejectPvals.perm <- function(bk, A, alpha) {
+rejectPvals.perm <- function(bk, A, alpha, conservative=TRUE) {
   if(length(A) == 1) {
     # An easy way to calculate p-values from an indx
     # Use beta approximation.
     a <- 0.5
     b <- 0.5*(bk$n - 2)
-    fast_bh_beta(cors(bk, A)^2, alpha, a, b)
+    Tstat <- cors(bk, A)^2
+    if(conservative) {
+      alpha <- alpha/log(length(Tstat))
+    }
+    fast_bh_beta(Tstat, alpha, a, b)
   } else if(length(A) > 1) {
     pm <- perm_moments(bk, A)
     Tstat <- (getTstat(bk, A) - pm$d)/pm$a
+    if(conservative) {
+      alpha <- alpha/log(length(Tstat))
+    }
     fast_bh_chisq(Tstat, alpha, pm$b)
   } else {
     integer(0)

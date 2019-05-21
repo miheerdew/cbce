@@ -70,7 +70,7 @@ getTstat <- function(bk, A) {
   UseMethod("getTstat", bk)
 }
 
-rejectPvals <- function(bk, A, alpha) {
+rejectPvals <- function(bk, A, alpha, conservative=TRUE) {
  UseMethod("rejectPvals", bk) 
 }
 
@@ -101,10 +101,11 @@ pvals_singleton.default <- function(bk, indx, thresh.alpha=1) {
   pvals(bk, indx, thresh.alpha)
 }
 
-rejectPvals.default <- function(bk, A, alpha) {
+rejectPvals.default <- function(bk, A, alpha, conservative=TRUE) {
+  type <- if(conservative) "BY" else "BH"
   if(length(A) == 1) {
-    bh_reject(pvals_singleton(bk, A, alpha), alpha, "BH")
+    bh_reject(pvals_singleton(bk, A, alpha), alpha, type)
   } else {
-    bh_reject(pvals(bk, A, alpha), alpha, "BH")
+    bh_reject(pvals(bk, A, alpha), alpha, type)
   }
 }

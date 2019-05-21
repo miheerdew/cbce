@@ -25,7 +25,7 @@ jaccard_pairs <- function(B1, B2) {
   (jaccard(B1$x, B2$x) + jaccard(B1$y, B2$y))/2
 }
 
-bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
+bh_reject <- function(pvals, alpha, multiple_testing_method = 'BY') {
   
   #pvals may now have NAs, which should not be selected 
   m <- length(pvals)
@@ -34,7 +34,7 @@ bh_reject <- function(pvals, alpha, multiple_testing_method = 'BHY') {
   ranks <- rank(pvals, ties.method = "first")
   
   pvals_adj <- switch(multiple_testing_method,
-        BHY=sum(1 / c(1:m)) * m * pvals / ranks, 
+        BY=sum(1 / c(1:m)) * m * pvals / ranks, 
         BH=m * pvals / ranks,
         sqrt_BH= m * pvals / sqrt(ranks),
         sqrt_BHY= sum(1 / c(1:m)) * m * pvals / sqrt(ranks),
