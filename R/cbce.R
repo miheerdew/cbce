@@ -17,6 +17,10 @@
 #'
 #' @param X,Y Numeric Matices. Represents the two groups of variables. 
 #' Rows represent samples and columns represent variables.
+#' @param n.eff Effective sample size. This is the number of rows of 
+#' X and Y if they are independent. If covariates were removed, one has 
+#' to subtract the number of covariates removed from the original
+#' sample size.
 #' @param alpha \eqn{\in (0,1)}. Controls the type1 error for the 
 #' update (for the multiple testing procedure). 
 #' @param alpha.init \eqn{\in (0,1)} Controls the type1 error 
@@ -84,6 +88,7 @@
 cbce <- function(X, Y, 
                   alpha = 0.05, 
                   alpha.init = alpha,
+                  n.eff = nrow(X),
                   cache.size = (utils::object.size(X) + 
                                 utils::object.size(Y))/2,
                   start_frac = 1,
@@ -264,7 +269,8 @@ cbce <- function(X, Y,
       B0$y <- B0$y - dx
       stableComm <- B0 
       log.pval <- summary_pval(X[, B0$x, drop=FALSE], 
-                               Y[, B0$y, drop=FALSE])
+                               Y[, B0$y, drop=FALSE],
+                               n.eff=n.eff)
     } else {
       stableComm <- list(x=integer(0), y=integer(0))
       log.pval <- NA
@@ -289,7 +295,7 @@ cbce <- function(X, Y,
   
   
   # -------------- Global variables -------------------- 
-  bk <- backend.perm(X, Y, cache.size)
+  bk <- backend.perm(X, Y, cache.size, n.eff=n.eff)
   
   dx <- ncol(X)
   dy <- ncol(Y)

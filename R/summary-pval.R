@@ -1,4 +1,4 @@
-summary_perm_moments <- function(X, Y) {
+summary_perm_moments <- function(X, Y, n.eff=nrow(X)) {
   
   n <- nrow(X)
   
@@ -19,7 +19,7 @@ summary_perm_moments <- function(X, Y) {
   sum.cube.2 <- sum(lambda2^3)
   
   #Degree of freedom
-  df <- nrow(X) - 1
+  df <- n.eff - 1
   
   #Central moments.
   mu1 <- sum.1 * sum.2 / df
@@ -84,8 +84,9 @@ symmetric_eigenvals <- function(X) {
 #' 
 #' @export
 #' @keywords internal
-summary_pval <- function(X, Y, log.p = TRUE, summary=NULL) {
-  pm <- as.list(summary_perm_moments(X, Y))
+summary_pval <- function(X, Y, log.p = TRUE, summary=NULL, 
+                         n.eff=nrow(X)) {
+  pm <- as.list(summary_perm_moments(X, Y, n.eff = n.eff))
   
   b <- 8/pm$skewness^2
   a <- sqrt(pm$var/(2*b))

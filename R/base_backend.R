@@ -7,10 +7,12 @@
 #' @param X Matrix. The data vector for the X side
 #' @param Y Matrix. The data vector for the Y side
 #' @param cache.size The cache size storing the correlations. Defaults to 0 (don't store anything).
+#' @param n.eff Effective sample size. Nothing to change if 
+#' rows of X and Y are independent.
 #' @keywords internal
-backend.base <- function(X, Y, cache.size=0) {
+backend.base <- function(X, Y, cache.size=0, n.eff=nrow(X)) {
   p <- list(dx = ncol(X), dy = ncol(Y), n = nrow(X),
-            X = scale(X), Y = scale(Y),
+            n.eff=n.eff, X = scale(X), Y = scale(Y),
             two_sided = FALSE)
   p <- list2env(p)
   p$bk <- new(CorBackend, X, Y, cache.size%/%2, cache.size%/%2)

@@ -3,8 +3,10 @@
 #' @inheritParams backend.base
 #' @keywords internal
 #'@importFrom methods new
-backend.perm <- function(X, Y, cache.size=0) {
-  p <- backend.base(X, Y, cache.size=cache.size)
+backend.perm <- function(X, Y, cache.size=0, n.eff=nrow(X)) {
+  p <- backend.base(X, Y, 
+                    cache.size=cache.size, 
+                    n.eff=n.eff)
   p$two_sided <- TRUE
   # No need to change:
   #  p$normal_vector_pval
@@ -15,7 +17,7 @@ backend.perm <- function(X, Y, cache.size=0) {
 perm_moments <- function(bk, B) {
   #Fred Wright's code
   m <- length(B)
-  n <- bk$n
+  n <- bk$n.eff
   
   X <- (if(min(B) > bk$dx) bk$Y[,B-bk$dx] else bk$X[,B])/sqrt(n-1)
   A <- if(m <= n) crossprod(X) else tcrossprod(X)
@@ -66,7 +68,7 @@ pvals_quick.perm <- function(bk, B) {
 pvals_singleton.perm <- function(bk, indx, thresh.alpha=1) {
   # An easy way to calculate p-values from an indx
   a <- 0.5
-  b <- 0.5*(bk$n - 2)
+  b <- 0.5*(bk$n.eff - 2)
   
   thresh <- qbeta(thresh.alpha, a, b, lower.tail = FALSE)
 
@@ -85,7 +87,7 @@ rejectPvals.perm <- function(bk, A, alpha, conservative=TRUE) {
     # An easy way to calculate p-values from an indx
     # Use beta approximation.
     a <- 0.5
-    b <- 0.5*(bk$n - 2)
+    b <- 0.5*(bk$n.eff - 2)
     Tstat <- cors(bk, A)^2
     if(conservative) {
       alpha <- alpha/log(length(Tstat))
