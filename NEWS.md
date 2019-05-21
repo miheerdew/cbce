@@ -1,5 +1,7 @@
 # cbce 0.2.5
 
+Use conservative multiple testing correction (BY) by default.
+
 # cbce 0.2.4
 
 Use deterministic starts by default to avoid surpirses
