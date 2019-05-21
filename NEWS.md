@@ -1,3 +1,5 @@
+# cbce 0.3.0
+
 # cbce 0.2.5
 
 Use conservative multiple testing correction (BY) by default.
