@@ -5,7 +5,7 @@
 \title{Compute the score (i.e a summarizing p-vlaue) for the 
 bimodule given by the entire X and Y matrices.}
 \usage{
-summary_pval(X, Y, log.p = TRUE, summary = NULL)
+summary_pval(X, Y, log.p = TRUE, summary = NULL, n.eff = nrow(X))
 }
 \description{
 Compute the score (i.e a summarizing p-vlaue) for the 

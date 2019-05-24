@@ -4,7 +4,7 @@
 \alias{backend.base}
 \title{An incomplete backend.}
 \usage{
-backend.base(X, Y, cache.size = 0)
+backend.base(X, Y, cache.size = 0, n.eff = nrow(X))
 }
 \arguments{
 \item{X}{Matrix. The data vector for the X side}
@@ -12,6 +12,9 @@ backend.base(X, Y, cache.size = 0)
 \item{Y}{Matrix. The data vector for the Y side}
 
 \item{cache.size}{The cache size storing the correlations. Defaults to 0 (don't store anything).}
+
+\item{n.eff}{Effective sample size. Nothing to change if 
+rows of X and Y are independent.}
 }
 \description{
 Other backends build on this. See and use backend instead.

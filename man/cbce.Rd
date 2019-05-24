@@ -4,7 +4,7 @@
 \alias{cbce}
 \title{Correlation Bi-community Extraction method}
 \usage{
-cbce(X, Y, alpha = 0.05, alpha.init = alpha,
+cbce(X, Y, alpha = 0.05, alpha.init = alpha, n.eff = nrow(X),
   cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
   start_frac = 1, start_nodes = list(x = sample(1:ncol(X),
   ceiling(ncol(X) * start_frac)), y = sample(1:ncol(Y), ceiling(ncol(Y) *
@@ -22,6 +22,11 @@ update (for the multiple testing procedure).}
 \item{alpha.init}{\eqn{\in (0,1)} Controls the type1 error 
 for the initialization step. This could be more liberal 
 (i.e greater than) than the alpha for the update step.}
+
+\item{n.eff}{Effective sample size. This is the number of rows of 
+X and Y if they are independent. If covariates were removed, one has 
+to subtract the number of covariates removed from the original
+sample size.}
 
 \item{cache.size}{integer The amount of memory to dedicate for 
 caching correlations. This will speed things up. 
