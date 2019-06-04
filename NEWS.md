@@ -1,5 +1,7 @@
 # cbce 0.5.0
 
+Brought back the heursitic search!
+
 # cbce 0.4.0
 
 Allow covariates directly to be passed to our method.
