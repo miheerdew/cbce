@@ -1,5 +1,7 @@
 # cbce 0.4.0
 
+Allow covariates directly to be passed to our method.
+
 # cbce 0.3.0
 
 To correct for covariate removal, added a new parameter n.eff. Removal of each covariate, reduces the degrees of freedom and that must be accounted for in the p-value calculations. This doesn't matter when the sample size is large, but it does make a difference when it is small.
