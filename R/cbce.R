@@ -55,7 +55,9 @@
 #' called at special hooks and can look into what the method is doing. 
 #' Pass either \code{\link{diagnostics}}, 
 #' \code{\link{diagnostics_none}}.
-#' 
+#' @param heuristic_search Use a fast, but incomplete, version of 
+#' heuristic search that doesn't start from nodes inside bimodules 
+#' already found.
 #' @return The return value is a list with the results and 
 #' meta-data about the extraction. The most useful field is
 #' \code{comms} - this is a list of all the Correlation Bi-communities 
@@ -99,6 +101,7 @@ cbce <- function(X, Y,
                   max_iterations = 20,
                   size_threshold = 0.5*exp(log(ncol(X))/2 + log(ncol(Y))/2),
                   interaction=interaction_none,
+                  heuristic_search=FALSE,
                   diagnostic=diagnostics) {
   
   #--------------------------------
@@ -346,10 +349,25 @@ cbce <- function(X, Y,
   #Create a new env to pass to interaction() 
   e <- new.env()
   
+  # All the nodes in the bimodules found so far.
+  # Helps with heuristic search.
+  bimod.nodes <- hash::hash()
+  
   interaction("Main:Setup", e)
   
   for(i in seq_along(extractord)) {
+    if(heuristic_search && 
+        hash::has.key(hash::make.keys(i), bimod.nodes)
+       ) {
+      next
+    }
+    
     res <- extract(extractord[i])
+    
+    if(res$fixed_point) {
+      bimod.nodes[hash::make.keys(
+        c(res$bimod$x, res$bimod$y + dx))] <- TRUE
+    }
     
     action <- interaction("Main:NextExtraction", e)
     

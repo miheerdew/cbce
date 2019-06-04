@@ -15,7 +15,14 @@ Suggests:
     tkrplot,
     knitr,
     rmarkdown
-Imports: rlist, dplyr, pipeR, methods, digest, Rcpp (>= 0.12.19)
+Imports: 
+    rlist,
+    dplyr,
+    pipeR,
+    methods,
+    digest,
+    Rcpp (>= 0.12.19),
+    hash
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1
 SystemRequirements: C++11
