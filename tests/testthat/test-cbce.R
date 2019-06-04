@@ -13,6 +13,8 @@ THRESH1 <- 0.90
 THRESH75 <- 0.75 
 #Resasonable thresh
 THRESH2 <- 0.6
+#Low thresh
+THRESH.low<- 0.2
 
 sim1 <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
 sim2 <- sim_eQTL_network(make_param_list(cmin=5, cmax=20, b=10, bgmult=0.05))
@@ -66,5 +68,17 @@ test_that("Checking sim for cbce", {
   check_sim(sim1)
   check_sim(sim2)
   check_sim(sim3, thresh2a=THRESH2)
+})
+
+test_that("Check heuristic_search for type1 error", {
+  check_sim(sim1, heuristic_search=TRUE)
+  check_sim(sim2, heuristic_search=TRUE,
+            thresh2a = THRESH.low,
+            thresh2b = THRESH.low, 
+            thresh3 = THRESH.low)
+  check_sim(sim3, heuristic_search=TRUE,
+            thresh2a = THRESH.low,
+            thresh2b = THRESH.low, 
+            thresh3 = THRESH.low)
 })
 
