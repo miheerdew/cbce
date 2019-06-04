@@ -10,7 +10,7 @@ cbce(X, Y, alpha = 0.05, alpha.init = alpha, cov = NULL,
   ceiling(ncol(X) * start_frac)), y = sample(1:ncol(Y), ceiling(ncol(Y) *
   start_frac))), max_iterations = 20, size_threshold = 0.5 *
   exp(log(ncol(X))/2 + log(ncol(Y))/2), interaction = interaction_none,
-  diagnostic = diagnostics)
+  heuristic_search = FALSE, diagnostic = diagnostics)
 }
 \arguments{
 \item{X, Y}{Numeric Matices. Represents the two groups of variables. 
@@ -57,6 +57,10 @@ its X and Y sizes.}
 between extractions to allow interaction with the program. 
 For instance one cas pass the function \code{\link{interaction_gui}}
 (EXPERIMENTAL) or \code{\link{interaction_cli}}.}
+
+\item{heuristic_search}{Use a fast, but incomplete, version of 
+heuristic search that doesn't start from nodes inside bimodules 
+already found.}
 
 \item{diagnostic}{(internal) This is a internal function for 
 probing the internal state of the method. It will be 
