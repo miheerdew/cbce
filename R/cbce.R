@@ -17,10 +17,10 @@
 #'
 #' @param X,Y Numeric Matices. Represents the two groups of variables. 
 #' Rows represent samples and columns represent variables.
-#' @param n.eff Effective sample size. This is the number of rows of 
-#' X and Y if they are independent. If covariates were removed, one has 
-#' to subtract the number of covariates removed from the original
-#' sample size.
+#' @param cov The covariates to account for; This should be a matrix 
+#' with the same number of rows as X and Y. Each column represents
+#' a covariate whose effect needs to be removed. If this is null,
+#' no covariate will be removed.
 #' @param alpha \eqn{\in (0,1)}. Controls the type1 error for the 
 #' update (for the multiple testing procedure). 
 #' @param alpha.init \eqn{\in (0,1)} Controls the type1 error 
@@ -88,7 +88,7 @@
 cbce <- function(X, Y, 
                   alpha = 0.05, 
                   alpha.init = alpha,
-                  n.eff = nrow(X),
+                  cov = NULL,
                   cache.size = (utils::object.size(X) + 
                                 utils::object.size(Y))/2,
                   start_frac = 1,
@@ -293,8 +293,22 @@ cbce <- function(X, Y,
   #-----------------------------------------------------
   # Extractions
   
-  
-  # -------------- Global variables -------------------- 
+  if(!is.null(cov)) {
+    # ------------- Covariate correction -----------------
+    # center the covariance matrix
+    cov <- scale(cov, scale=FALSE)
+    q <- qr(cov)
+    Q <- qr.Q(q)
+    
+    #Residualize the X and Y matrices
+    X <- X - Q %*% crossprod(Q,X)
+    Y <- Y - Q %*% crossprod(Q,Y)
+    #Reduce the effective dimension effective dimension
+    n.eff <- nrow(X) - q$rank
+  } else {
+    n.eff <- nrow(X)
+  }
+  # -------------- Global variables --------------------
   bk <- backend.perm(X, Y, cache.size, n.eff=n.eff)
   
   dx <- ncol(X)
