@@ -382,6 +382,8 @@ cbce <- function(X, Y,
     extract_res[[i]] <- res
   }
   
+  extract_res <- rlist::list.filter(extract_res, !is.null(.))
+    
   interaction("Main:Filtering", e)
   df <- filter_and_summarize(extract_res)
   

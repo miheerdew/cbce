@@ -36,6 +36,7 @@ report <- function(res1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=functi
 }
 
 check_sim <- function(sim, 
+                      add.cov = NULL,
                       thresh1 = THRESH1, 
                       thresh2a = THRESH1,
                       thresh2b = THRESH2,
@@ -43,7 +44,15 @@ check_sim <- function(sim,
                       ...) {
   args <- list(...)
   
-  res <- cbce(sim$X, sim$Y, ...)
+  if(!is.null(add.cov)) {
+    sample.size <- nrow(sim$X)
+    cvrt <- matrix(rnorm(add.cov*sample.size), nrow=sample.size)
+    X <- sim$X + rowSums(cvrt)
+    Y <- sim$Y + rowSums(cvrt)
+    res <- cbce(X, Y, cov=cvrt, ...)
+  } else {
+    res <- cbce(sim$X, sim$Y, ...)
+  }
   
   rep <- report(res$extract_res[res$filtered_res.df$index], sim)
   
@@ -72,13 +81,12 @@ test_that("Checking sim for cbce", {
 
 test_that("Check heuristic_search for type1 error", {
   check_sim(sim1, heuristic_search=TRUE)
-  check_sim(sim2, heuristic_search=TRUE,
-            thresh2a = THRESH.low,
-            thresh2b = THRESH.low, 
-            thresh3 = THRESH.low)
-  check_sim(sim3, heuristic_search=TRUE,
-            thresh2a = THRESH.low,
-            thresh2b = THRESH.low, 
-            thresh3 = THRESH.low)
+  check_sim(sim2, heuristic_search=TRUE)
+  check_sim(sim3, heuristic_search=TRUE, thresh2a=THRESH2)
 })
 
+test_that("Test for correction of covariate", {
+  check_sim(sim1, heuristic_search=TRUE, add.cov=3)
+  check_sim(sim2, heuristic_search=TRUE, add.cov=7)
+  check_sim(sim3, heuristic_search=TRUE, thresh2a=THRESH2, add.cov=10)
+})

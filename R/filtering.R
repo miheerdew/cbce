@@ -49,9 +49,7 @@
 filter_and_summarize <- function(extract_res, 
                                  plot.dendrogram=FALSE,
                                  hclust.method="average") {
-  
-  rlist::list.takeWhile(extract_res, !is.null(.)) %>>%
-    rlist::list.update(index.orig=.i) %>>%
+    rlist::list.update(extract_res, index.orig=.i) %>>%
     rlist::list.filter(fixed_point) %>>%
       rlist::list.select(bimod, index.orig, log.pvalue) -> ex.fixed
   
