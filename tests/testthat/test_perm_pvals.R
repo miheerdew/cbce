@@ -73,13 +73,50 @@ test_that("pvals are same as simulation", {
   expect_equal(fp$y, py)
 })
 
+test_df_correction <- function(dx, dy, n, ncov) {
+  alpha <- 0.01
+  
+  z <- matrix(rnorm(ncov*n), nrow=n, ncol=ncov)
+  
+  X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
+  Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
+  
+  X[, 1:2] <- X[, 1:2] + rowSums(X)
+  Y[, 1] <- Y[,1] + rowSums(Y)
+  
+  #Residualize the X and Y matrices w.r.t Z
+  z <- scale(z, scale=FALSE)
+  q <- qr(z)
+  Q <- qr.Q(q)
+  X <- X - Q %*% crossprod(Q,X)
+  Y <- Y - Q %*% crossprod(Q,Y)
+  
+  bk <- backend.perm(X, Y, n.eff=n - q$rank)
+  
+  py <- pvals(bk, 1:dx)
+  px <- pvals(bk, (1:5) + dx)
+  
+  pv <- c(py, px)
+  expect_gte(ks.test(pv, punif)$p.value, alpha)
+}
+
+test_that("pvals with df correction", {
+  set.seed(123456)
+  
+  test_df_correction(10, 6, 10, 1) 
+  test_df_correction(40, 30, 40, 10) 
+  test_df_correction(10, 6, 10, 1) 
+  test_df_correction(10, 6, 10, 2) 
+  test_df_correction(10, 6, 10, 3) 
+})
+
 test_that("pvals_singleton is uniform", {
   dy <- 100
   dx <- 1
   n <- 10
   alpha <- 0.01
   
-  set.seed(12345)
+  set.seed(123456)
   
   X <- matrix(rnorm(dx*n), nrow=n, ncol=dx)
   Y <- matrix(rnorm(dy*n), nrow=n, ncol=dy)
