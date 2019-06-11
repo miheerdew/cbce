@@ -103,11 +103,11 @@ test_df_correction <- function(dx, dy, n, ncov) {
 test_that("pvals with df correction", {
   set.seed(123456)
   
-  test_df_correction(10, 6, 10, 1) 
+  test_df_correction(10, 8, 10, 1) 
   test_df_correction(40, 30, 40, 10) 
-  test_df_correction(10, 6, 10, 1) 
-  test_df_correction(10, 6, 10, 2) 
-  test_df_correction(10, 6, 10, 3) 
+  test_df_correction(10, 8, 10, 1) 
+  test_df_correction(10, 8, 10, 2) 
+  test_df_correction(10, 8, 10, 3) 
 })
 
 test_that("pvals_singleton is uniform", {

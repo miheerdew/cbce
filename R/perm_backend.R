@@ -17,16 +17,17 @@ backend.perm <- function(X, Y, cache.size=0, n.eff=nrow(X)) {
 perm_moments <- function(bk, B) {
   #Fred Wright's code
   m <- length(B)
-  n <- bk$n.eff
+  n <- bk$n
+  df <- bk$n.eff 
   
   X <- (if(min(B) > bk$dx) bk$Y[,B-bk$dx] else bk$X[,B])/sqrt(n-1)
   A <- if(m <= n) crossprod(X) else tcrossprod(X)
   lambda <- eigen(A, symmetric = TRUE, only.values = TRUE)$values
   
   # The code for the moments of the permutation distribution.
-  mu <- m/(n-1) #Mean
-  sigma2 <- (sum(lambda^2) - m^2/(n-1))*(2/(n^2-1)) #Variance
-  c <- 1/((n^2-1)*(n+3))
+  mu <- m/(df-1) #Mean
+  sigma2 <- (sum(lambda^2) - m^2/(df-1))*(2/(df^2-1)) #Variance
+  c <- 1/((df^2-1)*(df+3))
   mu3 <- c*(m^3+6*m*sum(lambda^2)+8*sum(lambda^3)) #non-central 3rd moment
   gamma1 <- (mu3-3*mu*sigma2-mu^3)/(sigma2^1.5) #skewness
   
@@ -57,11 +58,6 @@ pvals.perm <- function(bk, B, thresh.alpha=1) {
   return(pvals)
 }
 
-pvals_quick.perm <- function(bk, B) {
-  R <- cors(bk, B)
-  stats::pchisq(bk$n * rowSums(R^2), length(B), lower.tail = FALSE)
-  
-}
 
 #' @describeIn pvals_singleton implementation for the perm class
 #' @keywords internal
