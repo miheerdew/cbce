@@ -385,16 +385,14 @@ cbce <- function(X, Y,
   extract_res <- rlist::list.filter(extract_res, !is.null(.))
     
   interaction("Main:Filtering", e)
-  df <- filter_and_summarize(extract_res)
+  summary <- filter_and_summarize(extract_res)
   
   interaction("Main:End", e)
   
   list(extract_res=extract_res,
-       filtered_res.df=df,
-       comms=rlist::list.map(extract_res[df$index], bimod),
-       comms_all=rlist::list.map(
-         rlist::list.filter(extract_res, 
-                  exists("fixed_point") && fixed_point),
-         bimod)
+       summary=summary,
+       comms.fil=rlist::list.map(extract_res[summary$df.fil$index], bimod),
+       comms=rlist::list.map(extract_res[summary$df.unique$index],
+                                 bimod)
   )
 }

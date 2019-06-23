@@ -55,7 +55,7 @@ filter_and_summarize <- function(extract_res,
   
   bms <- rlist::list.map(ex.fixed, bimod)
   
-  if(length(bms) <= 1) {
+  if(length(bms) < 1) {
     rlist::list.select(ex.fixed, 
                        x.size=length(bimod$x), 
                        y.size=length(bimod$y),
@@ -64,14 +64,21 @@ filter_and_summarize <- function(extract_res,
                        group.size=1,
                        index=index.orig) %>>%
       rlist::list.stack() -> df
-    return(df)
+    return(list(df.fil=df, 
+                df.unique=df, 
+                df.all=df))
   } 
   
   Jac <- jacc_matrix_c(bms)
-  efnum <- effective_num_c(bms) 
+  
+
+  
+  #The effective number of bimodules 
+  #after accounting for overlap
+  eff.num <- effective_num_c(bms) 
     
   n.tot <- length(bms)
-  n.cut <- ceiling(efnum)
+  n.cut <- ceiling(eff.num)
     
   hc <- hclust(as.dist(1-Jac), method=hclust.method) 
   grps <- cutree(hc, k=n.cut)
@@ -93,17 +100,39 @@ filter_and_summarize <- function(extract_res,
     rlist::list.stack() -> df.fixed_all
   
   #Assign a representative to each group
+  #Within the group bms[index], select a representative
   df.fixed_all %>>%
     dplyr::group_by(group) %>>% 
-      dplyr::summarise(index=index[select_rep(bms[index])], count=n()) -> group_rep
+      dplyr::summarise(index=index[select_rep(bms[index])], 
+                       count=n()) -> group_rep
 
-  df <- df.fixed_all[group_rep$index, ] 
-  df$index <- df$index.orig
-  df$group.size <- group_rep$count
-  df$index.orig <- NULL
-  df
+  df.fixed_all$index <- df.fixed_all$index.orig
+  df.fixed_all$index.orig <- NULL
+  
+  df.fil <- df.fixed_all[group_rep$index, ] 
+  df.fil$group.size <- group_rep$count
+  
+  #Find the distinct bimodules
+  grps.distinct <- cutree(hc, h=0)
+  unique.ids <- which(!duplicated(grps.distinct))
+  
+  df.unique <- df.fixed_all[unique.ids, ]
+  df.unique$count <- count_instances(grps.distinct[unique.ids],
+                              grps.distinct)
+  
+  list(df.fil=df.fil, 
+       df.unique=df.unique, 
+       df.all=df.fixed_all,
+       eff.num=eff.num,
+       tot.num=n.tot,
+       unique.num=length(unique.ids))
 }
 
+#http://r.789695.n4.nabble.com/Count-matches-of-a-sequence-in-a-vector-td2019018.html
+count_instances <- function(p, v) { 
+  #Return a vector counting the instances of p in v
+  sapply(p,function(x) sum(x==v)) 
+}
 
 effective.num2 <- function(Jac) {
   sum(1/rowSums(Jac))
