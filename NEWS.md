@@ -1,3 +1,5 @@
+# cbce 0.6.0
+
 # cbce 0.5.0
 
 Brought back the heursitic search!
