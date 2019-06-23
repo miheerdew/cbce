@@ -1,5 +1,7 @@
 # cbce 0.6.0
 
+Change the output format. `result$comms` will be all unqiue communities, `result$comms.fil` will be the filtered communities. `result$summary` gives a summary.
+
 # cbce 0.5.0
 
 Brought back the heursitic search!
