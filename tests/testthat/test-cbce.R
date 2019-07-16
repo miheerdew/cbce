@@ -20,13 +20,7 @@ sim1 <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
 sim2 <- sim_eQTL_network(make_param_list(cmin=5, cmax=20, b=10, bgmult=0.05))
 sim3 <- sim_eQTL_network(make_param_list(cmin=5, cmax=40, b=10, bgmult=0.1))
 
-comms <- function(extract_res) {
-  extract_res %>>% 
-    list.filter(fixed_point) %>>%
-      list.map(bimod)
-}
-report <- function(res1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nums) nums > .9) {
-  com1 <- comms(res1)
+report <- function(com1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=function(nums) nums > .9) {
   if(is.null(res2)) {
     com2 <- comms_sim(sim)
   } else {
@@ -54,7 +48,7 @@ check_sim <- function(sim,
     res <- cbce(sim$X, sim$Y, ...)
   }
   
-  rep <- report(res$extract_res[res$filtered_res.df$index], sim)
+  rep <- report(res$comms.fil, sim)
   
   #TYPE1
   expect_true(all(rep$report1$coverage >= thresh1))
@@ -62,7 +56,7 @@ check_sim <- function(sim,
   expect_true(mean(rep$report2$coverage >= thresh2a) >= thresh2b)
   
   n <- length(sim$bms)
-  expect_lte(abs(nrow(res$filtered_res.df) - n)/n, 1 - thresh3)
+  expect_lte(abs(res$summary$eff.num - n)/n, 1 - thresh3)
 }
 
 check_results_are_almost_same <- function(res1, res2, sim, 
