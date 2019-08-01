@@ -68,7 +68,7 @@ filter_and_summarize <- function(extract_res,
                 df.unique=df, 
                 df.all=df,
                 eff.num=0,
-                unqiue.num=0,
+                unique.num=0,
                 tot.num=0))
   } 
   
