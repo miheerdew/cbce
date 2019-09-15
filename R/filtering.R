@@ -66,7 +66,10 @@ filter_and_summarize <- function(extract_res,
       rlist::list.stack() -> df
     return(list(df.fil=df, 
                 df.unique=df, 
-                df.all=df))
+                df.all=df,
+                eff.num=0,
+                unique.num=0,
+                tot.num=0))
   } 
   
   Jac <- jacc_matrix_c(bms)
