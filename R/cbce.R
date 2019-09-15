@@ -202,7 +202,7 @@ cbce <- function(X, Y,
     B0 <- initialize(indx)
     
     # Check for dud
-    if (length(B0$x)*length(B0$y) <= 1) {
+    if (length(B0$x)*length(B0$y) <= 0) {
       collapsed <- stop <- TRUE
       #diagnostic('Extract:Dud', f)
     }
