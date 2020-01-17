@@ -25,7 +25,9 @@ on.}
 
 \item{method}{The method to run. The method should take 
 arguments \code{X, Y, cov, alpha} and return 
-a collection of bi-modules. It can be one of \c}
+a collection of bi-modules.}
+
+\item{fdr}{The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'}
 
 \item{timeout}{}
 }
