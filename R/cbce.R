@@ -61,9 +61,9 @@
 #' @return The return value is a list with the results and 
 #' meta-data about the extraction. The most useful field is
 #' \code{comms} - this is a list of all the Correlation Bi-communities 
-#' that was detected after filtering, while \code{comms_all} 
-#' consist of all the communities (possibly duplicate) found in 
-#' the extraction.
+#' that was detected after filtering, while \code{comms.fil} 
+#' consist of all the communities that were found after 
+#' filtering similar communities.
 #' 
 #' @examples 
 #' library(cbce)

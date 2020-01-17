@@ -8,23 +8,24 @@ Authors@R: c(
       )
 License: MIT + file LICENSE
 Suggests: 
-    testthat,
+    knitr,
     mvtnorm,
+    rmarkdown,
     tcltk2,
     tcltk,
-    tkrplot,
-    knitr,
-    rmarkdown
+    testthat,
+    tkrplot
 Imports: 
-    rlist,
-    dplyr,
-    pipeR,
-    methods,
     digest,
+    dplyr,
+    hash,
+    methods,
+    pipeR,
+    purrr,
     Rcpp (>= 0.12.19),
-    hash
+    rlist
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 SystemRequirements: C++11
 Encoding: UTF-8
 BugReports: https://github.com/miheerdew/cbce/issues
