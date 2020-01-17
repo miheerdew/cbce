@@ -12,7 +12,8 @@ half_permutation_fdr(
   num.sims,
   method = cbce.fast,
   cov = NULL,
-  fdr = "all.pairs"
+  fdr = "all.pairs",
+  timeout = Inf
 )
 }
 \arguments{
@@ -27,9 +28,10 @@ on.}
 arguments \code{X, Y, cov, alpha} and return 
 a collection of bi-modules.}
 
-\item{fdr}{The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'}
+\item{fdr}{The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'.}
 
-\item{timeout}{}
+\item{timeout}{The maximum amount of time in seconds to let each method run, 
+before stopping it. If set to Inf or NULL, the method will never be timed out.}
 }
 \value{
 Returns a numeric vector of size length(alphas) that have the fdrs.

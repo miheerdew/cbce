@@ -13,7 +13,8 @@
 #'               a collection of bi-modules. 
 #' @param fdr The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'.
 #'
-#' @param timeout
+#' @param timeout The maximum amount of time in seconds to let each method run, 
+#' before stopping it. If set to Inf or NULL, the method will never be timed out.
 #' 
 #' @return 
 #' Returns a numeric vector of size length(alphas) that have the fdrs.
@@ -21,7 +22,16 @@
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
                        num.sims, method=cbce.fast, cov=NULL, 
-                       fdr='all.pairs') {
+                       fdr='all.pairs', timeout=Inf) {
+  
+  if(is.null(timeout)) timeout <- Inf
+  
+  if(timeout < Inf) {
+    if (!requireNamespace("R.utils", quietly = TRUE)) {
+      stop("Package \"R.utils\" needed for timeout functionality to work. Please install it.",
+           call. = FALSE)
+    }
+  }
   
   fdr.mat <- matrix(numeric(num.sims*length(alphas)),
                  nrow=num.sims)
@@ -40,7 +50,19 @@ half_permutation_fdr <- function(X, Y, alphas,
     X.scr[, scr.cols$x] <- X.scr[sample(nsample), scr.cols$x]
     
     for(j in seq_along(alphas)) {
-      bimods <- method(X.scr, Y.scr, alphas[j], cov)
+      print(sprintf("Data %d, alpha=%.2E", i, alphas[j]))
+      if(timeout < Inf) {
+        e <- try(
+          bimods <- R.utils::withTimeout(method(X.scr, Y.scr, alphas[j], cov), 
+                                        timeout=timeout, onTimeout = "error"),
+          silent=FALSE,
+          outFile = stdout()
+        )
+      } else {
+        e <- NULL
+        bimods <- method(X.scr, Y.scr, alphas[j], cov)
+      }
+      
       fds <- purrr::map_dbl(bimods, ~
                        switch(fdr,
                               all.pairs=P.pairs(scr.cols, .),
@@ -48,10 +70,15 @@ half_permutation_fdr <- function(X, Y, alphas,
                                 cor(
                                   X.scr[, .$x, drop=FALSE], 
                                   Y.scr[, .$y, drop=FALSE]), 
-                                na.omit(match(scr$x, .$x)),
-                                na.omit(match(scr$y, .$y))
+                                na.omit(match(scr.cols$x, .$x)),
+                                na.omit(match(scr.cols$y, .$y))
                               )))
-      fdr.mat[i, j] <- if(length(fds) > 0) mean(fds) else 0
+      
+      if (inherits(e, "try-error")) {
+        fdr.mat[i,j] <- NA
+      } else {
+        fdr.mat[i, j] <- if(length(fds) > 0) mean(fds) else 0
+      }
     }
   }
   colMeans(fdr.mat)
@@ -82,17 +109,21 @@ FDR.imp_pairs <- function(R, scr.x, scr.y) {
 }
 
 cbce.fast <- function(X, Y, alpha, cov=NULL) {
-  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE)$comms
+  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
+       interaction=interaction_cli, start_frac = 0.5)$comms
 }
 
 cbce.fast.fil <- function(X, Y, alpha, cov=NULL) {
-  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE)$comms.fil
+  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
+       interaction=interaction_cli)$comms.fil
 }
 
 cbce.fil <- function(X, Y, alpha, cov=NULL) {
-  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE)$comms.fil
+  cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
+       interaction=interaction_cli)$comms.fil
 }
 
 cbce.bare <- function(X, Y, alpha, cov=NULL) {
-  cbce(X, Y, alpha, cov=cov)$comms
+  cbce(X, Y, alpha, cov=cov,
+       interaction=interaction_cli)$comms
 }
