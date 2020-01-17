@@ -1,3 +1,7 @@
+# cbce 0.8.0
+
+Implemet a half-permutation FDR scheme to find a good parameter value.
+
 # cbce 0.7.0
 
 Allow singleton bimodules (the KISS principle).
