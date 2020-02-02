@@ -10,11 +10,9 @@ set.seed(1234556)
 
 #High thresh
 THRESH1 <- 0.90
-THRESH75 <- 0.75 
+THRESH75 <- 0.75
 #Resasonable thresh
 THRESH2 <- 0.6
-#Low thresh
-THRESH.low<- 0.2
 
 sim1 <- sim_eQTL_network(make_param_list(cmin=10, cmax=30, b=5, bgmult=0.05))
 sim2 <- sim_eQTL_network(make_param_list(cmin=5, cmax=20, b=10, bgmult=0.05))
@@ -70,7 +68,8 @@ check_results_are_almost_same <- function(res1, res2, sim,
 test_that("Checking sim for cbce", {
   check_sim(sim1)
   check_sim(sim2)
-  check_sim(sim3, thresh2a=THRESH2)
+  check_sim(sim3, thresh2a=THRESH2,
+            alpha=0.01)
 })
 
 test_that("Check heuristic_search for type1 error", {
@@ -83,4 +82,11 @@ test_that("Test for correction of covariate", {
   check_sim(sim1, heuristic_search=TRUE, add.cov=3)
   check_sim(sim2, heuristic_search=TRUE, add.cov=7)
   check_sim(sim3, heuristic_search=TRUE, thresh2a=THRESH2, add.cov=10)
+})
+
+test_that("Parameter tuning works", {
+  fdrs <- half_permutation_fdr(sim1$X, sim1$Y, 
+                               alphas=c(0.01, 0.02, 0.03),
+                               num.sims=5)
+  expect_lt(max(fdrs), 0.05)
 })

@@ -107,7 +107,7 @@ filter_and_summarize <- function(extract_res,
   df.fixed_all %>>%
     dplyr::group_by(group) %>>% 
       dplyr::summarise(index=index[select_rep(bms[index])], 
-                       count=n()) -> group_rep
+                       count=dplyr::n()) -> group_rep
 
   df.fixed_all$index <- df.fixed_all$index.orig
   df.fixed_all$index.orig <- NULL
@@ -129,6 +129,62 @@ filter_and_summarize <- function(extract_res,
        eff.num=eff.num,
        tot.num=n.tot,
        unique.num=length(unique.ids))
+}
+
+#' Filter bimodules for results that look similar.
+#' 
+#' The bimodules are clustered based on their jaccard 
+#' distances and the dendrogram is cut to obtain the same
+#' number of bimodules as are obtained by the 
+#' effective-count formula. For each of the cut 
+#' subtree an appropriate bimodule is chosen to represent it.
+#' 
+#' @param bms a list of bimodules. Each bimodule should be 
+#'    a list with two elements x and y.
+#' @param plot.dendrogram logical Plot the dendrogram 
+#' along with the line it is cut at. 
+#' @param hclust.method The clustering method to use 
+#' (passed to hclust)
+#' 
+#' @return 
+#' The list of filtered bimodules. If there are 
+#' ties the first one in order is preferred. 
+#' @export
+filter_bimodules <- function(bms, hclust.method="average",
+                   plot.dendrogram=FALSE) {
+  
+  if(length(bms) < 1) {
+    return(list())
+  }
+  
+  Jac <- jacc_matrix_c(bms)
+  
+  
+  #The effective number of bimodules 
+  #after accounting for overlap
+  eff.num <- effective_num_c(bms) 
+  
+  n.tot <- length(bms)
+
+  n.cut <- ceiling(eff.num)
+  hc <- hclust(as.dist(1-Jac), method=hclust.method) 
+  grps <- cutree(hc, k=n.cut)
+  
+  if(plot.dendrogram) {
+    # Plot the dendrogram and draw the height at which it is cut.
+    height <- hc$height[n.tot - n.cut]
+    plot(hc, labels=FALSE)
+    abline(h=height, lty=2)
+  }
+  
+  bms.filtered <- rep(list(NULL), n.cut)
+  for(i in seq_len(n.cut)) {
+    #Identify the ith cluster and select a representative.
+    bms.cluster <- bms[grps == i]
+    bms.filtered[[i]] <- bms.cluster[[select_rep(bms.cluster)]]
+  }
+  
+  return(bms.filtered)
 }
 
 #http://r.789695.n4.nabble.com/Count-matches-of-a-sequence-in-a-vector-td2019018.html
