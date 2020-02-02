@@ -1,6 +1,9 @@
 # cbce 0.8.0
 
-Implemet a half-permutation FDR scheme to find a good parameter value.
+Th new function `half_permutation_fdr` estimates CBCE's false discovery rate across different values of alpha using half-permutation.
+
+The function `filter_bimodules` filters bimodules for overlaps.
+
 
 # cbce 0.7.0
 

@@ -12,7 +12,7 @@ half_permutation_fdr(
   num.sims,
   method = cbce.fast,
   cov = NULL,
-  fdr = "all.pairs",
+  fdr = "imp.pairs",
   timeout = Inf
 )
 }

@@ -21,8 +21,8 @@
 #'@keywords internal
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
-                       num.sims, method=cbce.fast, cov=NULL, 
-                       fdr='all.pairs', timeout=Inf) {
+                       num.sims, method=cbce.fast, cov=NULL,
+                       fdr='imp.pairs', timeout=Inf) {
   
   if(is.null(timeout)) timeout <- Inf
   
@@ -32,7 +32,7 @@ half_permutation_fdr <- function(X, Y, alphas,
            call. = FALSE)
     }
   }
-  
+
   fdr.mat <- matrix(numeric(num.sims*length(alphas)),
                  nrow=num.sims)
 
@@ -52,6 +52,7 @@ half_permutation_fdr <- function(X, Y, alphas,
     for(j in seq_along(alphas)) {
       print(sprintf("Data %d, alpha=%.2E", i, alphas[j]))
       if(timeout < Inf) {
+        bimods <- NULL
         e <- try(
           bimods <- R.utils::withTimeout(method(X.scr, Y.scr, alphas[j], cov), 
                                         timeout=timeout, onTimeout = "error"),
@@ -62,7 +63,7 @@ half_permutation_fdr <- function(X, Y, alphas,
         e <- NULL
         bimods <- method(X.scr, Y.scr, alphas[j], cov)
       }
-      
+      bimods <- filter_bimodules(bimods)
       fds <- purrr::map_dbl(bimods, ~
                        switch(fdr,
                               all.pairs=P.pairs(scr.cols, .),
