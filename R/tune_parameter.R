@@ -10,7 +10,9 @@
 #' @param num.sims The number of simulation to evaluate over.
 #' @param method The method to run. The method should take 
 #'               arguments \code{X, Y, cov, alpha} and return 
-#'               a collection of bi-modules. It can be one of \c
+#'               a collection of bi-modules. 
+#' @param fdr The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'.
+#'
 #' @param timeout
 #' 
 #' @return 
@@ -19,7 +21,7 @@
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
                        num.sims, method=cbce.fast, cov=NULL, 
-                       fdr='all.pairs') {
+                       fdr='imp.pairs') {
   
   fdr.mat <- matrix(numeric(num.sims*length(alphas)),
                  nrow=num.sims)
