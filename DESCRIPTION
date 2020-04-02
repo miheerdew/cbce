@@ -1,30 +1,31 @@
 Package: cbce
 Title: Correlation Bi-Community Extraction method
 Description: Find correlated communities in a  bipartite graph of variables.
-Version: 0.7.0
+Version: 0.8.0
 Authors@R: c(
       person("John", "Palowitch", email= "johnpalowitch@gmail.com", role="aut"),
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
       )
 License: MIT + file LICENSE
 Suggests: 
-    testthat,
+    knitr,
     mvtnorm,
+    rmarkdown,
     tcltk2,
     tcltk,
-    tkrplot,
-    knitr,
-    rmarkdown
+    testthat (>= 2.1.0),
+    tkrplot
 Imports: 
-    rlist,
-    dplyr,
-    pipeR,
-    methods,
     digest,
+    dplyr,
+    hash,
+    methods,
+    pipeR,
+    purrr,
     Rcpp (>= 0.12.19),
-    hash
+    rlist
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 SystemRequirements: C++11
 Encoding: UTF-8
 BugReports: https://github.com/miheerdew/cbce/issues

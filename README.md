@@ -44,3 +44,7 @@ res <- cbce(X, Y)
 # all the indices could be recovered.
 res$comms
 ```
+
+## Acknowledgement
+
+This project has been funded by NIH R01 HG009125-01 grant.

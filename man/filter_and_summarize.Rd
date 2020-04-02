@@ -4,8 +4,11 @@
 \alias{filter_and_summarize}
 \title{Filter and summarize the results}
 \usage{
-filter_and_summarize(extract_res, plot.dendrogram = FALSE,
-  hclust.method = "average")
+filter_and_summarize(
+  extract_res,
+  plot.dendrogram = FALSE,
+  hclust.method = "average"
+)
 }
 \arguments{
 \item{extract_res}{\code{result$extract_res} where 

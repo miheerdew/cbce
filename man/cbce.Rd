@@ -4,13 +4,22 @@
 \alias{cbce}
 \title{Correlation Bi-community Extraction method}
 \usage{
-cbce(X, Y, alpha = 0.05, alpha.init = alpha, cov = NULL,
+cbce(
+  X,
+  Y,
+  alpha = 0.05,
+  alpha.init = alpha,
+  cov = NULL,
   cache.size = (utils::object.size(X) + utils::object.size(Y))/2,
-  start_frac = 1, start_nodes = list(x = sample(1:ncol(X),
-  ceiling(ncol(X) * start_frac)), y = sample(1:ncol(Y), ceiling(ncol(Y) *
-  start_frac))), max_iterations = 20, size_threshold = 0.5 *
-  exp(log(ncol(X))/2 + log(ncol(Y))/2), interaction = interaction_none,
-  heuristic_search = FALSE, diagnostic = diagnostics)
+  start_frac = 1,
+  start_nodes = list(x = sample(1:ncol(X), ceiling(ncol(X) * start_frac)), y =
+    sample(1:ncol(Y), ceiling(ncol(Y) * start_frac))),
+  max_iterations = 20,
+  size_threshold = 0.5 * exp(log(ncol(X))/2 + log(ncol(Y))/2),
+  interaction = interaction_none,
+  heuristic_search = FALSE,
+  diagnostic = diagnostics
+)
 }
 \arguments{
 \item{X, Y}{Numeric Matices. Represents the two groups of variables. 
@@ -72,9 +81,9 @@ Pass either \code{\link{diagnostics}},
 The return value is a list with the results and 
 meta-data about the extraction. The most useful field is
 \code{comms} - this is a list of all the Correlation Bi-communities 
-that was detected after filtering, while \code{comms_all} 
-consist of all the communities (possibly duplicate) found in 
-the extraction.
+that was detected after filtering, while \code{comms.fil} 
+consist of all the communities that were found after 
+filtering similar communities.
 }
 \description{
 Consider two sets of high-dimensional measurements on the same 
