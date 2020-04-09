@@ -14,7 +14,8 @@ Suggests:
     tcltk2,
     tcltk,
     testthat (>= 2.1.0),
-    tkrplot
+    tkrplot,
+    R.utils
 Imports: 
     digest,
     dplyr,

@@ -30,7 +30,7 @@ report <- function(com1, sim, res2=NULL, wt.x=0.5, wt.y = 1-wt.x, weights=functi
 check_sim <- function(sim, 
                       add.cov = NULL,
                       thresh1 = THRESH1, 
-                      thresh2a = THRESH1,
+                      thresh2a = THRESH2,
                       thresh2b = THRESH2,
                       thresh3 = THRESH75,
                       ...) {
@@ -46,7 +46,7 @@ check_sim <- function(sim,
     res <- cbce(sim$X, sim$Y, ...)
   }
   
-  rep <- report(res$comms.fil, sim)
+  rep <- report(res$comms, sim)
   
   #TYPE1
   expect_true(all(rep$report1$coverage >= thresh1))
@@ -66,7 +66,7 @@ check_results_are_almost_same <- function(res1, res2, sim,
 }
 
 test_that("Checking sim for cbce", {
-  check_sim(sim1)
+  check_sim(sim1, thresh3=0.5)
   check_sim(sim2)
   check_sim(sim3, thresh2a=THRESH2,
             alpha=0.01)

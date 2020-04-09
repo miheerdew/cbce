@@ -385,7 +385,7 @@ cbce <- function(X, Y,
   extract_res <- rlist::list.filter(extract_res, !is.null(.))
     
   interaction("Main:Filtering", e)
-  summary <- filter_and_summarize(extract_res)
+  summary <- filter_and_summarize(extract_res, pval.thresh=alpha/(dx*dy))
   
   interaction("Main:End", e)
   

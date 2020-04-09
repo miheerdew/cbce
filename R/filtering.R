@@ -48,9 +48,11 @@
 #'@keywords internal
 filter_and_summarize <- function(extract_res, 
                                  plot.dendrogram=FALSE,
-                                 hclust.method="average") {
+                                 hclust.method="average",
+                                 pval.thresh=1) {
+  
     rlist::list.update(extract_res, index.orig=.i) %>>%
-    rlist::list.filter(fixed_point) %>>%
+    rlist::list.filter(fixed_point && log.pvalue < log(pval.thresh)) %>>%
       rlist::list.select(bimod, index.orig, log.pvalue) -> ex.fixed
   
   bms <- rlist::list.map(ex.fixed, bimod)
