@@ -1,7 +1,7 @@
 Package: cbce
 Title: Correlation Bi-Community Extraction method
 Description: Find correlated communities in a  bipartite graph of variables.
-Version: 0.8.0
+Version: 0.8.1
 Authors@R: c(
       person("John", "Palowitch", email= "johnpalowitch@gmail.com", role="aut"),
       person("Miheer", "Dewaskar", email= "miheerdew@live.unc.edu", role=c("aut", "cre"))
@@ -14,7 +14,8 @@ Suggests:
     tcltk2,
     tcltk,
     testthat (>= 2.1.0),
-    tkrplot
+    tkrplot,
+    R.utils
 Imports: 
     digest,
     dplyr,

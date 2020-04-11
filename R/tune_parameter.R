@@ -21,7 +21,7 @@
 #'@keywords internal
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
-                       num.sims, method=cbce.fast, cov=NULL,
+                       num.sims, method=cbce.fast.fil, cov=NULL,
                        fdr='imp.pairs', timeout=Inf) {
   
   if(is.null(timeout)) timeout <- Inf
@@ -111,20 +111,24 @@ FDR.imp_pairs <- function(R, scr.x, scr.y) {
 
 cbce.fast <- function(X, Y, alpha, cov=NULL) {
   cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
-       interaction=interaction_cli, start_frac = 0.5)$comms
+       interaction=interaction_cli, start_frac = 0.5,
+       filter_low_score=FALSE)$comms
 }
 
 cbce.fast.fil <- function(X, Y, alpha, cov=NULL) {
   cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
-       interaction=interaction_cli)$comms.fil
+       interaction=interaction_cli,
+       filter_low_score=FALSE)$comms.fil
 }
 
 cbce.fil <- function(X, Y, alpha, cov=NULL) {
   cbce(X, Y, alpha, cov=cov, heuristic_search=TRUE,
-       interaction=interaction_cli)$comms.fil
+       interaction=interaction_cli,
+       filter_low_score=FALSE)$comms.fil
 }
 
 cbce.bare <- function(X, Y, alpha, cov=NULL) {
   cbce(X, Y, alpha, cov=cov,
-       interaction=interaction_cli)$comms
+       interaction=interaction_cli,
+       filter_low_score=FALSE)$comms
 }

@@ -50,6 +50,7 @@
 #' between extractions to allow interaction with the program. 
 #' For instance one cas pass the function \code{\link{interaction_gui}}
 #' (EXPERIMENTAL) or \code{\link{interaction_cli}}.  
+#' @param filter_low_score Should we remove bimodules with low score? (recommended).
 #' @param diagnostic (internal) This is a internal function for 
 #' probing the internal state of the method. It will be 
 #' called at special hooks and can look into what the method is doing. 
@@ -102,6 +103,7 @@ cbce <- function(X, Y,
                   size_threshold = 0.5*exp(log(ncol(X))/2 + log(ncol(Y))/2),
                   interaction=interaction_none,
                   heuristic_search=FALSE,
+                  filter_low_score=TRUE,
                   diagnostic=diagnostics) {
   
   #--------------------------------
@@ -385,8 +387,11 @@ cbce <- function(X, Y,
   extract_res <- rlist::list.filter(extract_res, !is.null(.))
     
   interaction("Main:Filtering", e)
-  summary <- filter_and_summarize(extract_res)
   
+  logpval.thresh <- if(filter_low_score) log(alpha)-(log(dx)+log(dy)) else 0
+
+  summary <- filter_and_summarize(extract_res, 
+                                  logpval.thresh=logpval.thresh)
   interaction("Main:End", e)
   
   list(extract_res=extract_res,
