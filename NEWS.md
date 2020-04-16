@@ -1,3 +1,9 @@
+# cbce 0.8.2
+In the fdr calculations, don't filter bimodules by default, since it is expensive.
+
+# cbce 0.8.1
+CBCE now removes bimodules that have lower score. However, for the fdr calculations, the score is not used.
+
 # cbce 0.8.0
 
 Th new function `half_permutation_fdr` estimates CBCE's false discovery rate across different values of alpha using half-permutation.
