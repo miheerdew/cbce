@@ -7,7 +7,8 @@
 filter_and_summarize(
   extract_res,
   plot.dendrogram = FALSE,
-  hclust.method = "average"
+  hclust.method = "average",
+  logpval.thresh = 0
 )
 }
 \arguments{

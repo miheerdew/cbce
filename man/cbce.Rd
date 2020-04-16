@@ -18,6 +18,7 @@ cbce(
   size_threshold = 0.5 * exp(log(ncol(X))/2 + log(ncol(Y))/2),
   interaction = interaction_none,
   heuristic_search = FALSE,
+  filter_low_score = TRUE,
   diagnostic = diagnostics
 )
 }
@@ -70,6 +71,8 @@ For instance one cas pass the function \code{\link{interaction_gui}}
 \item{heuristic_search}{Use a fast, but incomplete, version of 
 heuristic search that doesn't start from nodes inside bimodules 
 already found.}
+
+\item{filter_low_score}{Should we remove bimodules with low score? (recommended).}
 
 \item{diagnostic}{(internal) This is a internal function for 
 probing the internal state of the method. It will be 

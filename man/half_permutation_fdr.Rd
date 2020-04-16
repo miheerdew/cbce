@@ -10,10 +10,11 @@ half_permutation_fdr(
   Y,
   alphas,
   num.sims,
-  method = cbce.fast,
+  method = cbce.fast.fil,
   cov = NULL,
   fdr = "imp.pairs",
-  timeout = Inf
+  timeout = Inf,
+  filter = FALSE
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ a collection of bi-modules.}
 
 \item{timeout}{The maximum amount of time in seconds to let each method run, 
 before stopping it. If set to Inf or NULL, the method will never be timed out.}
+
+\item{filter}{Logical. Filter the communities before passing through fdr calculation?}
 }
 \value{
 Returns a numeric vector of size length(alphas) that have the fdrs.

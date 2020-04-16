@@ -16,13 +16,16 @@
 #' @param timeout The maximum amount of time in seconds to let each method run, 
 #' before stopping it. If set to Inf or NULL, the method will never be timed out.
 #' 
+#' @param filter Logical. Filter the communities before passing through fdr calculation?
+#' 
 #' @return 
 #' Returns a numeric vector of size length(alphas) that have the fdrs.
 #'@keywords internal
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
                        num.sims, method=cbce.fast.fil, cov=NULL,
-                       fdr='imp.pairs', timeout=Inf) {
+                       fdr='imp.pairs', timeout=Inf,
+                       filter=FALSE) {
   
   if(is.null(timeout)) timeout <- Inf
   
@@ -63,7 +66,11 @@ half_permutation_fdr <- function(X, Y, alphas,
         e <- NULL
         bimods <- method(X.scr, Y.scr, alphas[j], cov)
       }
-      bimods <- filter_bimodules(bimods)
+      
+      if(filter) {
+        bimods <- filter_bimodules(bimods)
+      }
+      
       fds <- purrr::map_dbl(bimods, ~
                        switch(fdr,
                               all.pairs=P.pairs(scr.cols, .),
