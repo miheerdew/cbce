@@ -1,3 +1,7 @@
+# cbce 0.8.1
+
+Filter bimodules with scores lower than the BH multiple testing threshold. But this doesn't help with scrambled much. 
+
 # cbce 0.8.0
 
 Th new function `half_permutation_fdr` estimates CBCE's false discovery rate across different values of alpha using half-permutation.
