@@ -63,8 +63,12 @@ half_permutation_fdr <- function(X, Y, alphas,
         e <- NULL
         bimods <- method(X.scr, Y.scr, alphas[j], cov)
       }
-      bimods <- filter_bimodules(bimods)
-      fds <- purrr::map_dbl(bimods, ~
+      
+      if(filter) {
+        bimods <- filter_bimodules(bimods)
+      }
+      
+      fd.table <- purrr::map_dfr(bimods, ~
                        switch(fdr,
                               all.pairs=P.pairs(scr.cols, .),
                               imp.pairs=FDR.imp_pairs(
@@ -78,7 +82,7 @@ half_permutation_fdr <- function(X, Y, alphas,
       if (inherits(e, "try-error")) {
         fdr.mat[i,j] <- NA
       } else {
-        fdr.mat[i, j] <- if(length(fds) > 0) mean(fds) else 0
+        fdr.mat[i, j] <- if(length(fd.table) > 0) with(fd.table, sum(fd)/sum(tot)) else 0
       }
     }
   }
@@ -98,7 +102,7 @@ P.pairs <- function(Ap, Bp) {
   sx <- length(Bp$x)
   sy <- length(Bp$y)
   
-  (sx*cy + cx*sy - cx*cy)/(sx*sy)
+  data.frame(fd=sx*cy + cx*sy - cx*cy, tot=sx*sy)
 }
 
 FDR.imp_pairs <- function(R, scr.x, scr.y) {
@@ -106,7 +110,7 @@ FDR.imp_pairs <- function(R, scr.x, scr.y) {
   M <- abs(R) > th
   tot <- sum(M)
   fd <- sum(M[scr.x,]) + sum(M[, scr.y]) - sum(M[scr.x, scr.y])
-  fd/tot
+  data.frame(fd=fd, tot=tot)
 }
 
 cbce.fast <- function(X, Y, alpha, cov=NULL) {
