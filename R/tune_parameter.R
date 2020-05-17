@@ -22,7 +22,7 @@
 #'@export
 half_permutation_fdr <- function(X, Y, alphas,  
                        num.sims, method=cbce.fast.fil, cov=NULL,
-                       fdr='imp.pairs', timeout=Inf) {
+                       fdr='imp.pairs', filter=FALSE, timeout=Inf) {
   
   if(is.null(timeout)) timeout <- Inf
   
