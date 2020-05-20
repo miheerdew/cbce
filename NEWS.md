@@ -1,5 +1,5 @@
-# cbce 0.8.2
-The filtering process would produce an error for a single bimodule. Fixed that. Next, the FDR calculation now takes into account the size of a bimodule.
+# cbce 0.8.2.9000
+The filtering process would produce an error for a single bimodule. Fixed that. 
 
 # cbce 0.8.1
 
