@@ -57,7 +57,8 @@ filter_and_summarize <- function(extract_res,
   
   bms <- rlist::list.map(ex.fixed, bimod)
   
-  if(length(bms) < 1) {
+  if(length(bms) <= 1) {
+    n <- length(bms)
     rlist::list.select(ex.fixed, 
                        x.size=length(bimod$x), 
                        y.size=length(bimod$y),
@@ -69,9 +70,9 @@ filter_and_summarize <- function(extract_res,
     return(list(df.fil=df, 
                 df.unique=df, 
                 df.all=df,
-                eff.num=0,
-                unique.num=0,
-                tot.num=0))
+                eff.num=n,
+                unique.num=n,
+                tot.num=n))
   } 
   
   Jac <- jacc_matrix_c(bms)
