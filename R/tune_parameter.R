@@ -63,7 +63,9 @@ half_permutation_fdr <- function(X, Y, alphas,
         e <- NULL
         bimods <- method(X.scr, Y.scr, alphas[j], cov)
       }
-      bimods <- filter_bimodules(bimods)
+      if(filter) {
+        bimods <- filter_bimodules(bimods)
+      }
       fds <- purrr::map_dbl(bimods, ~
                        switch(fdr,
                               all.pairs=P.pairs(scr.cols, .),
