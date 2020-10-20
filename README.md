@@ -2,7 +2,7 @@
 
 This repository provides an R package for Multi-view data analysis. Consider two types of high-dimensional measurements on the same samples. CBCE (Correlation Bi-Community Extraction method) finds a set of features `A`, from the first measurement type, and set of features `B`, from the second measurement type, such that features in `A` and `B` are correlated to each other in aggregate. 
 
-Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimodule Search Procedure (BSP) is introduced in [[1]](#1). We have used this method for analysis of multi-view data in areas like genomics and climate science. 
+Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimodule Search Procedure (BSP) is introduced in [[1]](#1). We have used this method for the analysis of multi-view data in areas like genomics and climate science. 
 
 
 ## Features of CBCE
@@ -56,7 +56,7 @@ res <- cbce(X, Y)
 res$comms
 ```
 ## Documentation
-More information is aviable on the [software webpage](https://miheerdew.github.io/cbce/reference/index.html).
+More information is available on the [software webpage](https://miheerdew.github.io/cbce/reference/index.html).
 
 ## Acknowledgement
 
