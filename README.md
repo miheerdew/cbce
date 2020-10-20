@@ -1,8 +1,19 @@
-# cbce
+# CBCE
 
-Consider two sets of high-dimensional measurements on the same set of samples. CBCE (Correlation Bi-Community Extraction method) finds sets of variables from the first measurement and sets of variables from the second measurement which are correlated to each other.
+This repository provides an R package for Multi-view data analysis. Consider two types of high-dimensional measurements on the same samples. CBCE (Correlation Bi-Community Extraction method) finds a set of features `A`, from the first measurement type, and set of features `B`, from the second measurement type, such that features in `A` and `B` are correlated to each other in aggregate. 
 
-## Installation
+Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimodule Search Procedure (BSP) is introduced in [[1]](#1). We have used this method for analysis of multi-view data in areas like genomics and climate science. 
+
+
+## Features of CBCE
+
+-  [RCpp](http://www.rcpp.org/) implementation of the iterative testing framework; multicore if using [ROpen](https://mran.microsoft.com/rro).  
+- Multiple backends to calculate p-values. It is also easy to use your own backend. 
+- Code tested using [testthat](https://github.com/r-lib/testthat/).
+- A simple GUI interface to monitor progress and terminate early. 
+- Documented using [Roxygen](https://roxygen2.r-lib.org/) and [pkgdown](https://pkgdown.r-lib.org/).
+
+## How to install CBCE
 
 You can install the latest version of cbce directly from the github repo by first installing [devtools](https://github.com/r-lib/devtools).
 
@@ -13,7 +24,7 @@ if("devtools" %in% rownames(installed.packages()) == FALSE) {
 devtools::install_github("miheerdew/cbce")
 ```
 
-## Example
+## Example usage
 
 ``` r
 library(cbce)
@@ -44,7 +55,14 @@ res <- cbce(X, Y)
 # all the indices could be recovered.
 res$comms
 ```
+## Documentation
+More information is aviable on the [software webpage](https://miheerdew.github.io/cbce/reference/index.html).
 
 ## Acknowledgement
 
 This project has been funded by NIH R01 HG009125-01 grant.
+
+
+## References
+<a id="1">[1]</a> 
+Dewaskar, Miheer, John Palowitch, Mark He, Michael I. Love, and Andrew Nobel. "Finding Stable Groups of Cross-Correlated Features in Multi-View data." arXiv preprint arXiv:2009.05079 (2020).

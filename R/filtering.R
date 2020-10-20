@@ -48,14 +48,17 @@
 #'@keywords internal
 filter_and_summarize <- function(extract_res, 
                                  plot.dendrogram=FALSE,
-                                 hclust.method="average") {
+                                 hclust.method="average",
+                                 logpval.thresh=0) {
+  
     rlist::list.update(extract_res, index.orig=.i) %>>%
-    rlist::list.filter(fixed_point) %>>%
+    rlist::list.filter(fixed_point && log.pvalue < logpval.thresh) %>>%
       rlist::list.select(bimod, index.orig, log.pvalue) -> ex.fixed
   
   bms <- rlist::list.map(ex.fixed, bimod)
   
-  if(length(bms) < 1) {
+  if(length(bms) <= 1) {
+    n <- length(bms)
     rlist::list.select(ex.fixed, 
                        x.size=length(bimod$x), 
                        y.size=length(bimod$y),
@@ -67,9 +70,9 @@ filter_and_summarize <- function(extract_res,
     return(list(df.fil=df, 
                 df.unique=df, 
                 df.all=df,
-                eff.num=0,
-                unique.num=0,
-                tot.num=0))
+                eff.num=n,
+                unique.num=n,
+                tot.num=n))
   } 
   
   Jac <- jacc_matrix_c(bms)

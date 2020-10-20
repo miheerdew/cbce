@@ -1,3 +1,13 @@
+# cbce 1.0.0
+Moving to a stable verison!
+
+# cbce 0.8.2.9000
+The filtering process would produce an error for a single bimodule. Fixed that. 
+
+# cbce 0.8.1
+
+Filter bimodules with scores lower than the BH multiple testing threshold. But this doesn't help with scrambled much. 
+
 # cbce 0.8.0
 
 Th new function `half_permutation_fdr` estimates CBCE's false discovery rate across different values of alpha using half-permutation.

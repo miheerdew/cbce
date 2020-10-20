@@ -76,8 +76,8 @@ test_that("Effective num works", {
     list(x=2:4, y=4:7)
   )
   
-  expect_identical(cbce:::effective.num1(bimods), cbce:::effective_num_c(bimods))
+  expect_equal(cbce:::effective.num1(bimods), cbce:::effective_num_c(bimods))
   
-  expect_identical(cbce:::effective.num1(list()), cbce:::effective_num_c(list()))
+  expect_equal(cbce:::effective.num1(list()), cbce:::effective_num_c(list()))
   
 })
