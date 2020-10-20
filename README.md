@@ -1,6 +1,8 @@
 # cbce
 
-Consider two sets of high-dimensional measurements on the same set of samples. CBCE (Correlation Bi-Community Extraction method) finds sets of variables from the first measurement and sets of variables from the second measurement which are correlated to each other.
+Consider two types of high-dimensional measurements on the same samples. CBCE (Correlation Bi-Community Extraction method) finds a set of features `A` of the first measurement type and set of features of `B` from the second measurement type, that are correlated to each other in aggregate. 
+
+Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimodule Search Procedure (BSP) is introduced in [[1]](#1). We have used this method for analysis multi-view data in areas like genomics and climate science. 
 
 ## Installation
 
@@ -48,3 +50,8 @@ res$comms
 ## Acknowledgement
 
 This project has been funded by NIH R01 HG009125-01 grant.
+
+
+## References
+<a id="1">[1]</a> 
+Dewaskar, Miheer, John Palowitch, Mark He, Michael I. Love, and Andrew Nobel. "Finding Stable Groups of Cross-Correlated Features in Multi-View data." arXiv preprint arXiv:2009.05079 (2020).
