@@ -4,7 +4,13 @@ This repository provides an R package for Multi-view data analysis. Consider two
 
 Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimodule Search Procedure (BSP) is introduced in [[1]](#1). We have used this method for analysis of multi-view data in areas like genomics and climate science. 
 
-## Installation
+
+## Features of CBCE
+
+- Parallel C++ implementation of the iterative testing framework.
+- Multiple backends to calculate p-values, and the ease to use a custom backend. 
+
+## How to install CBCE
 
 You can install the latest version of cbce directly from the github repo by first installing [devtools](https://github.com/r-lib/devtools).
 
