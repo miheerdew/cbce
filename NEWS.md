@@ -1,3 +1,6 @@
+# cbce 1.0.0
+Moving to a stable verison!
+
 # cbce 0.8.2.9000
 The filtering process would produce an error for a single bimodule. Fixed that. 
 
