@@ -7,8 +7,11 @@ Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimo
 
 ## Features of CBCE
 
-- Parallel C++ implementation of the iterative testing framework.
-- Multiple backends to calculate p-values, and the ease to use your own backend. 
+-  [RCpp](http://www.rcpp.org/) implementation of the iterative testing framework; multicore if using [ROpen](https://mran.microsoft.com/rro).  
+- Multiple backends to calculate p-values. It is also easy to use your own backend. 
+- Code tested using [testthat](https://github.com/r-lib/testthat/).
+- A simple GUI interface to monitor progress and terminate early. 
+- Documented using [Roxygen](https://roxygen2.r-lib.org/) and [pkgdown](https://pkgdown.r-lib.org/).
 
 ## How to install CBCE
 
@@ -52,6 +55,8 @@ res <- cbce(X, Y)
 # all the indices could be recovered.
 res$comms
 ```
+## Documentation
+More information is aviable on the [software webpage](https://miheerdew.github.io/cbce/reference/index.html).
 
 ## Acknowledgement
 

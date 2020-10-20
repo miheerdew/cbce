@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • cbce</title>
+<title>Estimate the false discovery rate for the method across a 
+variety of parameters. — half_permutation_fdr • cbce</title>
 
 
 <!-- jquery -->
@@ -39,7 +40,10 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Estimate the false discovery rate for the method across a 
+variety of parameters. — half_permutation_fdr" />
+<meta property="og:description" content="For each parameter value, generate num.sims half-permuted 
+datasets, and estimate the half-permutation FDR." />
 
 
 
@@ -58,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,18 +117,71 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Estimate the false discovery rate for the method across a 
+variety of parameters.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/miheerdew/cbce/blob/master/R/tune_parameter.R'><code>R/tune_parameter.R</code></a></small>
+    <div class="hidden name"><code>half_permutation_fdr.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="cbce.html">Getting Started</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>For each parameter value, generate <code>num.sims</code> half-permuted 
+datasets, and estimate the half-permutation FDR.</p>
     </div>
+
+    <pre class="usage"><span class='fu'>half_permutation_fdr</span><span class='op'>(</span>
+  <span class='va'>X</span>,
+  <span class='va'>Y</span>,
+  <span class='va'>alphas</span>,
+  <span class='va'>num.sims</span>,
+  method <span class='op'>=</span> <span class='va'>cbce.fast.fil</span>,
+  cov <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fdr <span class='op'>=</span> <span class='st'>"imp.pairs"</span>,
+  filter <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  timeout <span class='op'>=</span> <span class='cn'>Inf</span>
+<span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>X, Y, cov</th>
+      <td><p>The original data that we intend to run the method 
+on.</p></td>
+    </tr>
+    <tr>
+      <th>alphas</th>
+      <td><p>List of parameters to run the method on.</p></td>
+    </tr>
+    <tr>
+      <th>num.sims</th>
+      <td><p>The number of simulation to evaluate over.</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>The method to run. The method should take 
+arguments <code>X, Y, cov, alpha</code> and return 
+a collection of bi-modules.</p></td>
+    </tr>
+    <tr>
+      <th>fdr</th>
+      <td><p>The type of false discovery metric to use. Can be one of 'all.pairs' or 'imp.pairs'.</p></td>
+    </tr>
+    <tr>
+      <th>timeout</th>
+      <td><p>The maximum amount of time in seconds to let each method run, 
+before stopping it. If set to Inf or NULL, the method will never be timed out.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a numeric vector of size length(alphas) that have the fdrs.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

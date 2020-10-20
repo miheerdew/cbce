@@ -26,7 +26,7 @@ Imports:
     Rcpp (>= 0.12.19),
     rlist
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 SystemRequirements: C++11
 Encoding: UTF-8
 BugReports: https://github.com/miheerdew/cbce/issues

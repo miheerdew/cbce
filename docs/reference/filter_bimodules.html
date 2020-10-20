@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • cbce</title>
+<title>Filter bimodules for results that look similar. — filter_bimodules • cbce</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,12 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Filter bimodules for results that look similar. — filter_bimodules" />
+<meta property="og:description" content="The bimodules are clustered based on their jaccard 
+distances and the dendrogram is cut to obtain the same
+number of bimodules as are obtained by the 
+effective-count formula. For each of the cut 
+subtree an appropriate bimodule is chosen to represent it." />
 
 
 
@@ -58,7 +63,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -113,18 +118,51 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Filter bimodules for results that look similar.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/miheerdew/cbce/blob/master/R/filtering.R'><code>R/filtering.R</code></a></small>
+    <div class="hidden name"><code>filter_bimodules.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="cbce.html">Getting Started</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>The bimodules are clustered based on their jaccard 
+distances and the dendrogram is cut to obtain the same
+number of bimodules as are obtained by the 
+effective-count formula. For each of the cut 
+subtree an appropriate bimodule is chosen to represent it.</p>
     </div>
+
+    <pre class="usage"><span class='fu'>filter_bimodules</span><span class='op'>(</span><span class='va'>bms</span>, hclust.method <span class='op'>=</span> <span class='st'>"average"</span>, plot.dendrogram <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>bms</th>
+      <td><p>a list of bimodules. Each bimodule should be 
+a list with two elements x and y.</p></td>
+    </tr>
+    <tr>
+      <th>hclust.method</th>
+      <td><p>The clustering method to use 
+(passed to hclust)</p></td>
+    </tr>
+    <tr>
+      <th>plot.dendrogram</th>
+      <td><p>logical Plot the dendrogram 
+along with the line it is cut at.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>The list of filtered bimodules. If there are 
+ties the first one in order is preferred.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 
