@@ -8,7 +8,7 @@ Formally the pair `(A,B)` is called a bimodule and the algorithm called the Bimo
 ## Features of CBCE
 
 - Parallel C++ implementation of the iterative testing framework.
-- Multiple backends to calculate p-values, and the ease to use a custom backend. 
+- Multiple backends to calculate p-values, and the ease to use your own backend. 
 
 ## How to install CBCE
 
