@@ -24,6 +24,12 @@ if("devtools" %in% rownames(installed.packages()) == FALSE) {
 devtools::install_github("miheerdew/cbce")
 ```
 
+### MacOS compilation issues 
+
+(July 2023, update)
+
+If you are facing compilation issues on MacOS due to the inability to load the `gfortran` library, you may need to [check your setup](https://mac.r-project.org/tools/). I was able to address this issue on my computer by using the `macrtools::gfortran_install()` function from the [macrtools package](https://github.com/coatless-mac/macrtools).
+
 ## Example usage
 
 ``` r
