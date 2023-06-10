@@ -6,6 +6,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // fast_bh_beta
 IntegerVector fast_bh_beta(NumericVector Tstat, double alpha, double shape1, double shape2, bool lower);
 RcppExport SEXP _cbce_fast_bh_beta(SEXP TstatSEXP, SEXP alphaSEXP, SEXP shape1SEXP, SEXP shape2SEXP, SEXP lowerSEXP) {
